@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/searchStudentYear.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/searchStudentYear.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {pyCall} = require("../_linkers/pyCall.js");
+const {eventSelectFavorite} = require("../_linkers/common/selectFavorite");
+
+// load the favorites
+let favoritesDict = jsonToArray(JSON.parse(readFavorites("ucs")));
+let toast = new ToastComponent();   
+
+$('#table-wrapper-favorites').DataTable({
+    data: favoritesDict,
+    columns: [
+        {title: 'Código'},
+        {title: 'Tipo'}, 
+        {title: 'Nome'}, 
+        {title: 'Sigla'}, 
+    ], 
+    "columnDefs": [
+        {
+            "targets": [ 1 ],
+            "visible": false,
+            "searchable": false
+        },
+    ]
+});
+
+document.querySelector("button#search").addEventListener("click", handleSearch);
+eventSelectFavorite();
+
+function validateInput(){
+    const courseElement = document.querySelector("#code");
+    const year = getYear();   
+    const radioElement = document.querySelector("input[type=radio]")
+    let isValid = true;  
+
+    if (courseElement.value.trim() == ""){
+        setInvalidInput(courseElement, "Este campo deve ser preenchido"); 
+        isValid = false; 
+    } else setValidInput(courseElement); 
+
+    return isValid; 
+}
+
+function handleSearch() { 
+    if (!validateInput()) return;
+    const course = document.querySelector("#code").value; 
+    const year = getYear();  
+
+    toast.show("Carregando...", toastColor.BLUE, false); 
+    pyCall("search_student_year", "finalHandleSearch", [course, year]);
+}
+
+function getYear() {
+    const radios = document.querySelectorAll("input[type=radio]");
+    for (let i = 0; i &lt; radios.length; i++) {
+        if (radios[i].checked)
+            return radios[i].getAttribute("id").split("-")[1];
+    }
+    return "";
+}
+
+function finalHandleSearch(response){
+    if (response.error === "true") toast.show("Não foi possível processar dados", toastColor.RED);
+    else {
+        toast.show("Sucesso!", toastColor.GREEN);
+        buildTableSearch(response['table']);
+        window.location.href = "#table-wrapper";
+    }
+
+}
+
+function buildTableSearch(responseTable){
+    const parser = new DOMParser();
+
+    let htmlWithTable = parser.parseFromString(responseTable, 'text/html');
+    let table = htmlWithTable.querySelector("table");
+    setTableAttr(table);
+
+    createTableButtons(table);
+    createCopyColButton();
+
+    addTableToHtml(table);
+
+    listenCopyColButton('N.º Estudante');
+    listenCopy();
+    listenCSV();
+}
+
+
+/**
+ * Set classes and id for the table.
+ * @param table - Table to be used.
+ */
+function setTableAttr(table){
+    table.classList.add("table");
+    table.classList.add("table-striped");
+    table.classList.add("table-bordered");
+    table.id = "table_id";
+}
+
+
+/**
+ * Renders the table with the DataTable and adds it to the document.
+ * @param table - Table to be rendered.
+ */
+function addTableToHtml(table){
+    let tableWrapper = document.querySelector("#table-wrapper");
+    tableWrapper.appendChild(table);
+
+    $('#table_id').DataTable();
+}
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="pyshellCaller.html">pyshellCaller</a></li><li><a href="ReadJson.html">ReadJson</a></li><li><a href="ScheduleTable.html">ScheduleTable</a></li><li><a href="TimeFrame.html">TimeFrame</a></li><li><a href="ToastComponent.html">ToastComponent</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addFavorite">addFavorite</a></li><li><a href="global.html#addRowDataTable">addRowDataTable</a></li><li><a href="global.html#addTableToHtml">addTableToHtml</a></li><li><a href="global.html#addToInput">addToInput</a></li><li><a href="global.html#buildTableStudent">buildTableStudent</a></li><li><a href="global.html#createCopyColButton">createCopyColButton</a></li><li><a href="global.html#eventSelectFavorite">eventSelectFavorite</a></li><li><a href="global.html#final_handleScheduleTime">final_handleScheduleTime</a></li><li><a href="global.html#final_handleSearchStd">final_handleSearchStd</a></li><li><a href="global.html#getFavorites">getFavorites</a></li><li><a href="global.html#getLogged">getLogged</a></li><li><a href="global.html#groupByDate">groupByDate</a></li><li><a href="global.html#handleScheduleTime">handleScheduleTime</a></li><li><a href="global.html#handleSearchStd">handleSearchStd</a></li><li><a href="global.html#handleThesis">handleThesis</a></li><li><a href="global.html#listenCopy">listenCopy</a></li><li><a href="global.html#listenCopyColButton">listenCopyColButton</a></li><li><a href="global.html#mergeDates">mergeDates</a></li><li><a href="global.html#pyCall">pyCall</a></li><li><a href="global.html#readFavorites">readFavorites</a></li><li><a href="global.html#setHeaderFields">setHeaderFields</a></li><li><a href="global.html#setInvalidInput">setInvalidInput</a></li><li><a href="global.html#setLogged">setLogged</a></li><li><a href="global.html#setTableAttr">setTableAttr</a></li><li><a href="global.html#setValidInput">setValidInput</a></li><li><a href="global.html#toastColor">toastColor</a></li><li><a href="global.html#toggleSelected">toggleSelected</a></li><li><a href="global.html#updateDataTable">updateDataTable</a></li><li><a href="global.html#validateInput">validateInput</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Sun Oct 10 2021 21:02:21 GMT+0100 (Western European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "name": "Sigtools",
+  "version": "1.0.0",
+  "description": "Tools for sigarra",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "sass": "sass --watch ./_views/css/style.scss ./_views/css/style.css",
+    "doc": "jsdoc _linkers/ -r -c jsdoc.json -d docs"
+  },
+  "build": {
+    "appId": "com.Sigtools.app",
+    "asar": true,
+    "asarUnpack": [
+      "_engine/askInfo.py",
+      "_engine/Core.py",
+      "webdev/"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jumaruba/guiSigtools.git"
+  },
+  "keywords": [
+    "Electron"
+  ],
+  "author": "Jumaruba",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^8.0.3",
+    "electron-builder": "^22.4.1",
+    "electron-packager": "^14.2.1",
+    "jsdoc": "^3.6.5"
+  },
+  "bugs": {
+    "url": "https://github.com/Jumaruba/guiSigtools/issues"
+  },
+  "homepage": "https://github.com/Jumaruba/guiSigtools/",
+  "dependencies": {
+    "clipboard": "^2.0.6",
+    "node-sass": "^6.0.1",
+    "python": "^0.0.4",
+    "python-shell": "^1.0.8",
+    "require": "^2.4.20",
+    "table2csv": "^1.1.4",
+    "toastify-js": "^1.10.0"
+  }
+}

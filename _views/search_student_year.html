@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pesquisar estudante</title>
+    <link rel="stylesheet" type="text/css" href="../_views/css/style.css">
+    <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/datatables.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/rowsGroup.js" defer></script>
+    <script src="../_linkers/common/init.js" defer></script> 
+    <script src="../_linkers/utils/utils.js" defer></script>
+    <script src="../_linkers/common/header.js" defer></script>
+    <script src="../_linkers/common/saveTable.js" defer></script>
+    <script src="../_linkers/pages/searchStudentYear.js" defer></script>
+    <script src="../_linkers/common/login.js" defer></script>
+
+</head>
+
+<body>
+
+<div class="container text-center">
+    <div class="row" id="title">
+        <h1 >Pesquisa de estudante </h1>
+        <p>Pesquisa personalizada de estudantes na FEUP</p>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="../_views/search_student.html">Percurso acadêmico</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Pesquisa por curso/ano</a>
+        </li>
+    </ul>
+
+    <form id="searchStudent">
+        <div class="row">
+            <label class="form-label mt-5 text-start" for="code">Código de curso*:</label>
+            <div class="d-flex p-0">
+                <div class="input-group">
+                    <input class="form-control me-3" type="text" name="code-course" id="code"
+                       placeholder="Ex: 742"> 
+                    <div class="invalid-tooltip"></div>
+                </div>
+                <button type="button" class="btn btn-outline-primary w-25 h-75" data-bs-toggle="modal"
+                        data-bs-target="#insertFavorite" id="insertFavoriteButton">
+                    <span>Inserir favorito</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-7">
+            <div class="d-flex flex-row my-1">
+                <label class="form-label text-start me-3">Ano Curricular*:</label>
+                <div class="btn-group-sm" role="group" aria-label="Ano curricular">
+                    <input type="radio" class="form-check-input" id="A-1" autocomplete="off" checked>
+                    <label class="form-check-label" for="A-1">1º Ano</label>
+
+                    <input type="radio" class="form-check-input" id="A-2" autocomplete="off">
+                    <label class="form-check-label" for="A-2">2º Ano</label>
+
+                    <input type="radio" class="form-check-input" id="A-3" autocomplete="off">
+                    <label class="form-check-label" for="A-3">3º Ano</label>
+
+                    <input type="radio" class="form-check-input" id="A-4" autocomplete="off">
+                    <label class="form-check-label" for="A-4">4º Ano</label>
+
+                    <input type="radio" class="form-check-input" id="A-5" autocomplete="off">
+                    <label class="form-check-label" for="A-5">5º Ano</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex-d justify-content-center my-5">
+            <button type="button" class="btn btn-primary px-5" id="search">Submeter</button>
+        </div>
+    </form>
+
+
+    <div id="table-wrapper" class="mt-5">
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="insertFavorite">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Favorito</h5>
+            </div>
+
+            <div class="modal-body">
+                <table id="table-wrapper-favorites" class="table table-striped w-100">
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeFavorite" data-bs-dismiss="modal">Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="saveFavorite" data-bs-dismiss="modal">Selecionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>

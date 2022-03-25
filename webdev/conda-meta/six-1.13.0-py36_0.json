@@ -1,0 +1,102 @@
+{
+  "build": "py36_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "extracted_package_dir": "C:\\Users\\julia\\Anaconda3\\pkgs\\six-1.13.0-py36_0",
+  "features": "",
+  "files": [
+    "Lib/site-packages/__pycache__/six.cpython-36.pyc",
+    "Lib/site-packages/six-1.13.0.dist-info/INSTALLER",
+    "Lib/site-packages/six-1.13.0.dist-info/LICENSE",
+    "Lib/site-packages/six-1.13.0.dist-info/METADATA",
+    "Lib/site-packages/six-1.13.0.dist-info/RECORD",
+    "Lib/site-packages/six-1.13.0.dist-info/WHEEL",
+    "Lib/site-packages/six-1.13.0.dist-info/top_level.txt",
+    "Lib/site-packages/six.py",
+    ".nonadmin"
+  ],
+  "fn": "six-1.13.0-py36_0.conda",
+  "legacy_bz2_md5": "438f5b2545e2836d00fa9958a19cf6e1",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "C:\\Users\\julia\\Anaconda3\\pkgs\\six-1.13.0-py36_0",
+    "type": 1
+  },
+  "md5": "124d3b7ed2d02ebbd30f294b6ed04ea5",
+  "name": "six",
+  "package_tarball_full_path": "C:\\Users\\julia\\Anaconda3\\pkgs\\six-1.13.0-py36_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Lib/site-packages/__pycache__/six.cpython-36.pyc",
+        "path_type": "hardlink",
+        "sha256": "a8a8e0a9a6879cf34b79729f2d3317966b198462a6b7407de3c4d5d632af7c50",
+        "sha256_in_prefix": "a8a8e0a9a6879cf34b79729f2d3317966b198462a6b7407de3c4d5d632af7c50",
+        "size_in_bytes": 26711
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/INSTALLER",
+        "path_type": "hardlink",
+        "sha256": "d0edee15f91b406f3f99726e44eb990be6e34fd0345b52b910c568e0eef6a2a8",
+        "sha256_in_prefix": "d0edee15f91b406f3f99726e44eb990be6e34fd0345b52b910c568e0eef6a2a8",
+        "size_in_bytes": 5
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/LICENSE",
+        "path_type": "hardlink",
+        "sha256": "b7529b8c07171a78a8c36c3283905528e4812945d977d125eb926e8ccbf245b6",
+        "sha256_in_prefix": "b7529b8c07171a78a8c36c3283905528e4812945d977d125eb926e8ccbf245b6",
+        "size_in_bytes": 1066
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/METADATA",
+        "path_type": "hardlink",
+        "sha256": "8714b8ad23d17cef1ec1b70b4b7d1a9e8162e8b160510de693fc649d9f11578c",
+        "sha256_in_prefix": "8714b8ad23d17cef1ec1b70b4b7d1a9e8162e8b160510de693fc649d9f11578c",
+        "size_in_bytes": 1940
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/RECORD",
+        "path_type": "hardlink",
+        "sha256": "a4f192c96a02afe03592b9c7c46cd9f6d9a8eeee6e2b6e2cae6a699139a04341",
+        "sha256_in_prefix": "a4f192c96a02afe03592b9c7c46cd9f6d9a8eeee6e2b6e2cae6a699139a04341",
+        "size_in_bytes": 560
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/WHEEL",
+        "path_type": "hardlink",
+        "sha256": "2595ed61ea5916c7f82288af3699d280a21ce2a4c76a7d3c0d1779ea4a28fc33",
+        "sha256_in_prefix": "2595ed61ea5916c7f82288af3699d280a21ce2a4c76a7d3c0d1779ea4a28fc33",
+        "size_in_bytes": 116
+      },
+      {
+        "_path": "Lib/site-packages/six-1.13.0.dist-info/top_level.txt",
+        "path_type": "hardlink",
+        "sha256": "fe2547fe2604b445e70fc9d819062960552f9145bdb043b51986e478a4806a2b",
+        "sha256_in_prefix": "fe2547fe2604b445e70fc9d819062960552f9145bdb043b51986e478a4806a2b",
+        "size_in_bytes": 4
+      },
+      {
+        "_path": "Lib/site-packages/six.py",
+        "path_type": "hardlink",
+        "sha256": "6ec1334854d94f1e3dc10b6d2ce4664994eba6319cf146d7b7e1c16bf2d95fb4",
+        "sha256_in_prefix": "6ec1334854d94f1e3dc10b6d2ce4664994eba6319cf146d7b7e1c16bf2d95fb4",
+        "size_in_bytes": 33045
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "882afc51ed0425477031066c233624318ad629f51ada8fa11540c0d4028008b2",
+  "size": 27260,
+  "subdir": "win-64",
+  "timestamp": 1573251381924,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/six-1.13.0-py36_0.conda",
+  "version": "1.13.0"
+}

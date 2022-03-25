@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/utils.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/utils.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+
+var clipboard;
+
+/**
+ * Build a table from a data dictionary using bootstrap at datatables.net
+ * @param data - python output formated as Dictionary
+ */
+function buildTable(data) {
+
+    let table = '&lt;br>&lt;br>&lt;table id="table_id" class="display" cellspacing="0" >';
+
+    table = buildHead(table, data);
+    table = buildBody(table, data);
+
+    table += "&lt;/table>";
+
+    //creating button to parse table to clipboard and also csv button
+    let button = "&lt;div class='button-wrapper' id='button-wrapper'>&lt;button type ='button' class ='copy copy-button btn btn-success' id = 'copy' data-clipboard-target ='table#table_id' data-clipboard-action='copy' >" +
+        "&lt;img src='../images/copy-icon.svg' alt='copy' width='15' height='15'/>&lt;/button> " +
+        "&lt;button id = 'toCSV' class ='btn btn-success'>CSV&lt;/button>&lt;/div>" +    //csv button
+        "&lt;div id='successMessage'>&lt;/div>&lt;div id='errorMessage'>&lt;/div>";         //copy/csv success and error 
+    document.getElementById("table-wrapper").innerHTML = button;
+
+    //add table to the html
+    document.getElementById("table-wrapper").innerHTML += table;
+
+    clipboard = new ClipboardJS('.copy');
+
+    $('#table_id').DataTable();                 //formating table with datatable.net
+
+    document.getElementById("toCSV").addEventListener("click", function () {
+        dict_to_csv(data);
+    });
+
+    clipboard.on('success', function(e) {
+        document.getElementById("successMessage").innerHTML = "Copied!";
+        //delete message after 3 senconds 
+        setTimeout(function(){
+            document.getElementById("successMessage").innerHTML = '';
+        }, 3000);
+        e.clearSelection();     //clear the selection 
+    });
+
+    clipboard.on('error', function(e) {
+        document.getElementById("errorMessage").innerHTML = "Erro!";
+        //delete message after 3 senconds 
+        setTimeout(function(){
+            document.getElementById("errorMessage").innerHTML = '';
+        }, 3000);
+        e.clearSelection();     //clear the selection 
+    });
+}
+
+
+
+function buildHead(table, data) {
+    table += "&lt;thead>&lt;tr>";
+    table += "&lt;th>#&lt;/th>";
+    for (let keys of Object.keys(data[Object.keys(data)[0]]))   // keys of the first element of the data dictionary
+        if (keys !== 'error') table += "&lt;th>" + keys + "&lt;/th>";
+
+    table += "&lt;/tr>&lt;/thead>";
+    return table;
+}
+
+function buildBody(table, data) {
+    table += "&lt;tbody>";
+    let counter = 0; 		                                //the counter of the position in the array of values
+
+    for (let key of Object.keys(data)) {
+        if (key === 'error') continue;
+
+        table += "&lt;tr>";
+        table += "&lt;th>" + counter + "&lt;/th>";
+
+        for (let sub_key of Object.keys(data[key])) {
+            if (sub_key === 'Link' || sub_key === 'link') table += "&lt;td>&lt;a class='link-table' href='" + data[key][sub_key] + "'> link &lt;/a>&lt;/td>";
+            else table += "&lt;td>" + data[key][sub_key] + "&lt;/td>";
+        }
+        table += "&lt;/tr>";
+        counter++;
+    }
+    table += "&lt;/tbody>";
+    return table;
+}
+
+/*
+ * ===  FUNCTION  ======================================================================
+ *         Name:  clearSelection
+ *  Description:  Unselect all the document
+ * =====================================================================================
+ */
+
+function clearSelection(){
+ if (window.getSelection) window.getSelection().removeAllRanges();
+ else if (document.selection) document.selection.empty();
+}
+
+/*
+ * ===  FUNCTION  ======================================================================
+ *         Name:  dict_to_csv
+ *  Description:  Parse a dictionary to csv file
+ * =====================================================================================
+ */
+
+function dict_to_csv(data){
+    let text = ""
+
+
+    // columns name
+    let keys = Object.keys(data[Object.keys(data)[0]])
+    for (let i = 0; i &lt; keys.length-1; i++)   // keys of the first element of the data dictionary
+        if (keys[i] !== 'error') text += keys[i] + ", ";
+    text += keys[keys.length-1] + "\n";
+
+    //items
+    for (let student of Object.keys(data)){
+        if (student === 'error') continue;
+
+        let info_student = Object.keys(data[student]);
+        for (let i = 0 ; i &lt; info_student.length -1; i++){
+            text += data[student][info_student[i]] + ", ";
+        }
+        text += data[student][info_student[info_student.length-1]] + "\n";
+    }
+
+    const fs = require('fs');
+    fs.writeFile('Output.csv', text, "utf16le", (err) => {
+    if (err) console.log("Not possible to create csv file");
+});
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="pyshellCaller.html">pyshellCaller</a></li><li><a href="ReadJson.html">ReadJson</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildTable">buildTable</a></li><li><a href="global.html#checkLogin">checkLogin</a></li><li><a href="global.html#decisionLogin">decisionLogin</a></li><li><a href="global.html#final_handleLogin">final_handleLogin</a></li><li><a href="global.html#final_handleTeacherSched">final_handleTeacherSched</a></li><li><a href="global.html#get_logged">get_logged</a></li><li><a href="global.html#handleLogin">handleLogin</a></li><li><a href="global.html#handleTheacherSched">handleTheacherSched</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#pyCall">pyCall</a></li><li><a href="global.html#set_login_modal">set_login_modal</a></li><li><a href="global.html#set_menu_bar">set_menu_bar</a></li><li><a href="global.html#set_menu_search">set_menu_search</a></li><li><a href="global.html#shell">shell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Thu Sep 17 2020 17:22:47 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+node_modules
+.vscode
+.idea/
+dist/
+yarn.lock
+cookies.txt 
+*.pyc
+*__pycache__/
+.spyproject/  
+.\logged 
+
