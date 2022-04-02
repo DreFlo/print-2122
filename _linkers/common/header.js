@@ -31,6 +31,9 @@ let header = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white
     '        <li class="nav-item">\n' +
     '          <a class="nav-link" href="../_views/schedule_time.html">Conflito de horários</a>\n' +
     '        </li>\n' +
+    '        <li class="nav-item">\n' +
+    '          <a class="nav-link" href="../_views/student_uc_conflicts.html">Conflito de Alunos</a>\n' +
+    '        </li>\n' +
     '      </ul>\n';
 
 

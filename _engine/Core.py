@@ -168,6 +168,24 @@ def get_teacher_schedule_html(teacher_id, year, url=None):
 
     return htmlTable, week_range
 
+def get_curricular_unit_students(UC_code):
+    i = 1
+    htmlTables = []
+    while True:
+        url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + i +"&pv_ocorrencia_id=" + UC_code
+
+        html = get_html_logged(url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            break
+
+        htmlTables.append(soup.find('table', {"class" : "dadossz"}).find_all('td', {"class" : "k"}))
+
+        i += 1
+
+    return htmlTables
+
 
 # TODO: redo this 
 def HTMLtable2Sched(trs_list):
