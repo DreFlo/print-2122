@@ -24,8 +24,7 @@ function eventSelectFavorite(){
  */
 function addToInput(){
     let inputLine = document.getElementById("code");
-    inputLine.value += " " + selectedFavorites.join(" ");
-    resetSelected();
+    inputLine.value = selectedFavorites.join(" ");
 }
 
 /**
