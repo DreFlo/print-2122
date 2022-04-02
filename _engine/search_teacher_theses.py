@@ -13,7 +13,7 @@ def getCode():
 
 
 def getSite():
-    return "https://sigarra.up.pt/feup/en/teses.teses_orientador?p_record_set_size=100" + "&p_sigla=&p_ord_campo=DATA_INICIO&p_docente=" + getCode() + "&p_tipo_lista=C"
+    return "https://sigarra.up.pt/feup/en/teses.teses_orientador?p_record_set_size=1000" + "&p_sigla=&p_ord_campo=DATA_INICIO&p_docente=" + getCode() + "&p_tipo_lista=C"
 
 
 def get_info(lista):
@@ -34,6 +34,7 @@ def get_info(lista):
 
         temp_dict['Role'] = spans[3].findNext("span").text.replace("Papel:", "").split(":")[1]
         temp_dict['Link'] = 'https://sigarra.up.pt/feup/pt/' + item.findNext('a', href=True)['href']
+
         final_dict[i] = temp_dict
 
     return final_dict
@@ -52,7 +53,7 @@ def main():
         thesis_dict = get_info(thesis_list)
         df = pd.DataFrame(thesis_dict)
         df = df.transpose()
-        df['Link'] = '<a href="' + df['Link'] + "'>Link</a>"
+        df['Link'] = "<a href='" + df['Link'] + "'>Link</a>"
         final_dict = {'Name': name, 'html': df.to_html(index=False, escape=False)}
         json = BuildJson(final_dict)
     finally:
