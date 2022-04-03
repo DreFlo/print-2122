@@ -111,6 +111,30 @@ def get_media(soup):
     return soup.find(text="Média:").parent.find_next_sibling("td").text
 
 
+def get_curricular_unit_students(UC_code):
+    i = 1
+    htmlTables = []
+    while True:
+        url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + str(i) +"&pv_ocorrencia_id=" + str(UC_code)
+
+        html = get_html_logged(url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            break
+        
+        k = 0
+        for row in soup.find_all('table', {"class" : "dadossz"})[0].find_all('tr'):
+            if k == 0:
+                k += 1
+                continue
+
+            htmlTables.append(row.text)
+
+        i += 1
+
+    return htmlTables
+
 # TEACHER FUNCTIONS -------------------------------------------------------------------------
 
 def get_links_schedules(teacher_id, year):
@@ -168,23 +192,6 @@ def get_teacher_schedule_html(teacher_id, year, url=None):
 
     return htmlTable, week_range
 
-def get_curricular_unit_students(UC_code):
-    i = 1
-    htmlTables = []
-    while True:
-        url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + i +"&pv_ocorrencia_id=" + UC_code
-
-        html = get_html_logged(url)
-        soup = bs(html)
-
-        if soup.find(id="erro"):
-            break
-
-        htmlTables.append(soup.find('table', {"class" : "dadossz"}).find_all('td', {"class" : "k"}))
-
-        i += 1
-
-    return htmlTables
 
 
 # TODO: redo this 

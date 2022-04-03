@@ -8,14 +8,24 @@ let toast = new ToastComponent();
 
 // TODO Validate Input
 
-document.querySelector("button[type=submit]").addEventListener("click", (event) => handleQuery(event));
+document.querySelector("button[type=submit]").addEventListener("click", (event) => makeQuery(event));
 
-function handleQuery(event) {
+function makeQuery(event) {
     event.preventDefault();
     
     UCCodes = splitInput(document.querySelector("#code").value);
 
-    console.log(UCCodes);
+    pyCall("check_student_conflicts", "handleResponse", [UCCodes]);
+}
 
-    pyCall("check_student_conflicts", "FN_NAME", [UCCodes]);
+function handleResponse(data) {
+    table = document.createElement('table');
+
+    for(let i = 0; i < data['tables'].length; i++) {
+        temp = document.createElement('tr')
+        temp.innerHTML = data['tables'][i]
+        table.appendChild(temp)
+    }
+
+    document.body.appendChild(table);
 }
