@@ -15,9 +15,10 @@ codes = get_UC_codes()
 
 response =  {'name':'UCConflict'}
 
-pool = mp.Pool(len(codes))
+studentSets = []
 
-studentSets = pool.map(get_UC_students_set, codes)
+with mp.Pool(processes=len(codes)) as pool:
+    studentSets = pool.map(get_UC_students_set, codes)
 
 commonStudent = reduce(lambda x,y : x & y, studentSets)
 
