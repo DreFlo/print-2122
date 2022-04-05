@@ -1,6 +1,7 @@
 import Core
 from handle_json import BuildJson
 import sys
+from functools import reduce
 
 def get_UC_codes():
     codes_string =  sys.argv[1]
@@ -8,11 +9,18 @@ def get_UC_codes():
 
 codes = get_UC_codes()
 
-tables =  {'name':'smth'}
+response =  {'name':'UCConflict'}
 
-tables['tables'] = Core.get_curricular_unit_students(codes[0])
+studentSets = []
 
-jsonObject = BuildJson(tables)
+for code in codes:
+    studentSets.append(set(Core.get_curricular_unit_students(code)))
+
+commonStudent = reduce(lambda x,y : x & y, studentSets)
+
+response['conflict'] = list(commonStudent)
+
+jsonObject = BuildJson(response)
 
 json = jsonObject.getJson()
 

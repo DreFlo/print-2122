@@ -19,11 +19,13 @@ function makeQuery(event) {
 }
 
 function handleResponse(data) {
+    document.querySelector("#studentTables").remove()
     table = document.createElement('table');
+    table.id = "studentTables"
 
-    for(let i = 0; i < data['tables'].length; i++) {
+    for(let i = 0; i < data['conflict'].length; i++) {
         temp = document.createElement('tr')
-        temp.innerHTML = data['tables'][i]
+        temp.innerHTML = data['conflict'][i]
         table.appendChild(temp)
     }
 
