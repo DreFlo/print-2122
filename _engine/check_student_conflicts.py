@@ -11,23 +11,28 @@ def get_UC_codes():
 def get_UC_students_set(code):
     return set(Core.get_curricular_unit_students(code))
 
-codes = get_UC_codes()
 
-response =  {'name':'UCConflict'}
+def main():
+    codes = get_UC_codes()
 
-studentSets = []
+    response =  {'name':'UCConflict'}
 
-with mp.Pool(processes=len(codes)) as pool:
-    studentSets = pool.map(get_UC_students_set, codes)
+    studentSets = []
 
-commonStudent = reduce(lambda x,y : x & y, studentSets)
+    with mp.Pool(processes=len(codes)) as pool:
+        studentSets = pool.map(get_UC_students_set, codes)
 
-response['conflict'] = list(commonStudent)
+    commonStudent = reduce(lambda x,y : x & y, studentSets)
 
-jsonObject = BuildJson(response)
+    response['conflict'] = list(commonStudent)
 
-json = jsonObject.getJson()
+    jsonObject = BuildJson(response)
 
-print(json)
+    json = jsonObject.getJson()
 
-sys.stdout.flush()
+    print(json)
+
+    sys.stdout.flush()
+
+if __name__ == "__main__":
+    main()

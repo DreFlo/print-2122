@@ -14,7 +14,6 @@ function makeQuery(event) {
     event.preventDefault();
     
     UCCodes = splitInput(document.querySelector("#code").value);
-
     pyCall("check_student_conflicts", "handleResponse", [UCCodes]);
 }
 
