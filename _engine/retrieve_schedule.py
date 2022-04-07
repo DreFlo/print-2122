@@ -198,10 +198,10 @@ def convert_time(index):
     return 8 + index * 0.5
     
 def main():  
-    try: 
+    try:
         docents = get_teachers_id().split(";")
         for docent_id in docents:
-            update_schedule(docent_id)  
+            update_schedule(docent_id)
 
         # Return json setting no error. 
         json = BuildJson({})

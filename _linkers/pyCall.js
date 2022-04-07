@@ -14,5 +14,4 @@ async function pyCall(pythonFile, handler, argv){
     return caller;
 }
 
-
 module.exports = {pyCall};
