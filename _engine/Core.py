@@ -179,18 +179,6 @@ def get_teacher_info(teacher_id):
     sigla = soup.find_all('table', {"class": "tabelasz"})[0].findAll('tr')[1].findAll('td')[1].findAll('b')[0].text
     return name, sigla
 
-# Not working because it's a query result - NEED TO DO THE QUERY AND GET RESULTS
-def get_dei_workers():
-    url = "https://sigarra.up.pt/feup/pt/func_geral.QueryList"
-
-    html = get_html_logged(url)
-    soup = bs(html)
-
-    workers_list = soup.find('h1').find_next('ul').findAll('li').text
-
-    return workers_list
-
-
 # TODO: redo this 
 def HTMLtable2Sched(trs_list):
     """
