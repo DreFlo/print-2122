@@ -24,26 +24,63 @@
     
     <section class="container text-center">
         <form class="needs-validation">
-            <div class="form-input-label">
-                <label for="ucCode">Códigos de Unidades Curriculares:</label>
+            <div>
+                <label for="code"><strong>Pesquisar Unidades Curriculares</strong></label>
                 <div class="form-flex-row">
                     <div class="input-group mb-3"> 
                         <input class="form-control me-3" type="text" name="code" id="code"
-                            placeholder="ex: 484443" required>   
+                            placeholder="ex: L.EIC017" required>   
                         <div class="invalid-tooltip"></div> 
+                    </div>
+                    <div class="input-group mb-3"> 
+                        <input class="form-control me-3" type="number" min="2004" max="2300" name="academic-year" id="academic-year"
+                            placeholder="ex: 2021">   
+                        <div class="invalid-tooltip"></div> 
+                    </div>
+                    <div class="flex-d justify-content-center mb-5">
+                        <button type="submit" id="UC-code-search-button" class="btn btn-success">Pesquisar</button>
                     </div>
                 </div> 
             </div>
-    
-    
+        </form>
+        
+        <div hidden>
+            <strong>Resultados de Pesquisa</strong>
+            <table id="searchResultsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Período</th>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div hidden>
+            <strong>Unidades Curriculares Selecionadas</strong>
+            <table id="selectedUCsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Período</th>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <form id="UCConflictsForm" hidden>
             <div class="flex-d justify-content-center mb-5">
-                <button type="submit" class="btn btn-success">Submeter</button>
+                <button type="button" id="UC-analise-conflicts-button" class="btn btn-success">Analisar Conflitos</button>
             </div>
         </form>
+
+        <div id="conflictAnalysisResults"></div>
     
     </section>
-    </div>
-    </div>
-    <table id="studentTables"></table>
     </body>
     

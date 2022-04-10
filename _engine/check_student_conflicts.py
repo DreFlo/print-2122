@@ -6,7 +6,7 @@ import multiprocessing as mp
 
 def get_UC_codes():
     codes_string =  sys.argv[1]
-    return codes_string.split(sep=";")
+    return codes_string.split(sep=",")
 
 def get_UC_students_set(code):
     return set(Core.get_curricular_unit_students(code))
@@ -25,6 +25,8 @@ def main():
     commonStudent = reduce(lambda x,y : x & y, studentSets)
 
     response['conflict'] = list(commonStudent)
+
+    response['codes'] = codes
 
     jsonObject = BuildJson(response)
 

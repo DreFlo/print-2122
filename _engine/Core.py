@@ -113,7 +113,7 @@ def get_media(soup):
 
 def get_curricular_unit_students(UC_code):
     i = 1
-    student_numbers = []
+    students = []
     while True:
         url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + str(i) +"&pv_ocorrencia_id=" + str(UC_code)
 
@@ -124,11 +124,11 @@ def get_curricular_unit_students(UC_code):
             break
         
         for student_number in soup.find_all('td', {"class" : "k"}):
-            student_numbers.append(student_number.text)
+            students.append((student_number.text, student_number.next_sibling.next_sibling.text))
 
         i += 1
 
-    return student_numbers
+    return students
 
 # TEACHER FUNCTIONS -------------------------------------------------------------------------
 
@@ -223,3 +223,36 @@ def handleSpecification(spec):
         output['professores'].append(spec[i])
 
     return output
+
+# UC FUNCTIONS
+
+def get_numeric_code_from_link(link):
+    return link.replace('ucurr_geral.ficha_uc_view?pv_ocorrencia_id=', '')
+
+def get_UC_from_query(UCCode, year):
+    results = []
+    page_number = 1
+
+    while True:
+        url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_uc_codigo=' + str(UCCode)
+
+        html = get_html(mc.Browser(),url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            break
+
+        for row in soup.find_all('tr', {'class' : 'd'}):
+            elems = row.find_all('td')
+            result = [  
+                    elems[0].text,
+                    elems[1].text,
+                    elems[2].text,
+                    get_numeric_code_from_link(elems[2].find('a')['href'])
+                    ]
+            results.append(result)
+
+        page_number += 1
+
+    return results
+        

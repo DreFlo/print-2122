@@ -14,6 +14,14 @@ function buildTableHead(head){
     return theadElement; 
 }
 
+function clearTable(table) {
+    let bodies = table.querySelectorAll('tbody');
+
+    for (let body of bodies) {
+        body.parentNode.removeChild(body);
+    }
+}
+
 
 // TABLE FOR SCHEDULES  ----------------------------------------------------------------------------------
 function buildTable(data) {
@@ -208,4 +216,4 @@ function setValidInput(inputElement) {
     inputElement.classList.add("is-valid");
 }
 
-module.exports = {buildTable, readFavorites, jsonToArray, objectToArray, stringToDate_ddmmyyyy, stringToDate_yyyymmdd, buildTableHead, splitInput, setInvalidInput, setValidInput};
+module.exports = {buildTable, clearTable, readFavorites, jsonToArray, objectToArray, stringToDate_ddmmyyyy, stringToDate_yyyymmdd, buildTableHead, splitInput, setInvalidInput, setValidInput};
