@@ -63,7 +63,7 @@ def save_sched(schedule, due_to, docent_id):
     f.truncate()
     f.close()
 
-def get_complete_schedule(docent_id):  
+def get_complete_schedule(docent_id, academic_year = 0):  
     """Scrape all the docent schedules from sigarra in a year.
 
     Args:
@@ -76,7 +76,11 @@ def get_complete_schedule(docent_id):
     # When will this schedule not be valid anymore. 
     due_to = date.today()            
     # In a year a docent has many schedules. Now we are retrieving these links. 
-    links_schedules, soup = Core.get_links_schedules(docent_id, get_academic_year()) 
+
+    if(academic_year == 0):
+        academic_year == get_academic_year()
+    
+    links_schedules, soup = Core.get_links_schedules(docent_id, academic_year)
     teacher_name = Core.get_teacher_name_schedule(soup)
 
     for link in links_schedules: 
@@ -212,5 +216,5 @@ def main():
         json_obj.setError()
         sys.stdout.flush()
 
-
-main()
+if __name__ == "__main__":
+    main()

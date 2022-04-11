@@ -57,8 +57,7 @@ function handleScheduleTime(event){
     pyCall("retrieve_schedule", "final_handleScheduleTime", [docentsCode, academicYear]);*/
     event.preventDefault(); 
     data = "asd"
-    console.log("0");
-    toast.show("AB", toastColor.BLUE, false);
+    console.log("MSC_handleShceduleTime");
     pyCall("mass_schedule_conflicts", "final_handleScheduleTime", data);
 }  
 
@@ -78,9 +77,7 @@ function final_handleScheduleTime(data){
         let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd); 
         Table.show();
     }*/
-    toast.show("CD", toastColor.BLUE, false);
-    console.log("1");
-    console.log(data);
+    console.log("MSC_finalhandleScheduleTime");
 }  
 
 // "SCHEDULE COLLISION" ------------------------------------------------------------- 

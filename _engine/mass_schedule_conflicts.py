@@ -1,40 +1,95 @@
 import Core
-import sys 
-from bs4 import BeautifulSoup as bs
-import json 
+import retrieve_schedule
 import re
-from datetime import date
-from handle_json import BuildJson
-
+import requests
+import json
 
 # Gets schedules of all DEI workers and saves them
 def get_all_dei_schedules():
-    #name, sigla = Core.get_teacher_info(231081)
-    list = get_dei_workers_list()
-    f = open('./data/test.json', "w")
-    f.write("before\n")
-    
-    n = 0
+    workers_list = get_dei_workers_list()
+
+    # FOR TESTING
+    # workers_list = [231081, 637045, 655498]
+    # workers_list = [231081, 655498]
+    # workers_list = [211625]
+    # workers_list = [637045]
+
+    # TO DO - Change file name to final one
+    f = open('./data/test.json', "w", encoding="utf-8")
     total_info = {}
-    for worker in list:
+
+    for worker in workers_list:
         name, sigla = Core.get_teacher_info(worker)
+        
+        class_schedule, due_to = retrieve_schedule.get_complete_schedule(str(worker), "2021")
+        due_to = due_to.strftime("%d-%m-%Y")
+        class_schedule_json = {'due_to': due_to, 'schedule': class_schedule}
+        
+        # TO DO - Horário de vigilâncias
+
         info = {
             "name": name,
-            "sigla": sigla
+            "sigla": sigla,
+            "class_schedule": class_schedule_json
         }
+
         total_info[worker] = info
-        if(n > 3):
-            break
-        n += 1
-    f.write(json.dumps(total_info))
-    f.write("\nafter")
+
+    f.write(json.dumps(total_info, indent=4, ensure_ascii=False))
     f.close()
+    
+    
 
+# Gets a list wtih the codes of all DEI workers from sigarra
 def get_dei_workers_list():
-    f = open('./data/workers_dei_codes.txt', 'r')
+    
+    response = requests.post('https://sigarra.up.pt/feup/pt/func_geral.QueryList', 
+                    data={
+                        'pv_unidade_nome' : 'Departamento de Engenharia InformÃ¡tica',
+                        'p_n_registos' : '1000',
+                        'p_unidade' : '151',
+                        'P_NOME' : '',
+                        'P_CODIGO' : '',
+                        'P_SIGLA' : '',
+                        'p_nivel' : '',
+                        'pn_grupo' : '',
+                        'pn_carreira' : '',
+                        'pn_area' : '',
+                        'pn_categoria': '',
+                        'pv_categoria_nome' : '',
+                        'pv_provimento' : '',
+                        'pv_orgao' : '',
+                        'pv_cargo' : '',
+                        'P_ESTADO' : '',
+                        'p_sala' : '',
+                        'pv_sala_desc' : '',
+                        'P_TELEFONE' : '',
+                        'P_EMAIL' : '',
+                        'p_area_id' : '',
+                        'p_area' : ''
+                    })
 
-    workers_list = [line.rstrip() for line in f]
+    content = str(response.content)
+    pos = content.find("<h1>")
+    new_content = content[pos:]
+    list = new_content.split("<li>")
+    workers_list = []
+
+    for i in range(1, len(list)):
+        m = re.search('(?<=CODIGO=)\d+', list[i])
+        workers_list.append(m.group(0))
+
+        ''' GET THE NAME
+        pos = list[i].find(">")
+        new_str = list[i][pos+1:]
+        end_pos = new_str.find("<")
+        fin_str = new_str[:end_pos]
+        print("WORDS: ", end=" ")
+        print(fin_str)
+        ''' 
+
     return workers_list
+    
 
 def main():
     get_all_dei_schedules()
