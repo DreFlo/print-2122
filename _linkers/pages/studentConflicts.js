@@ -1,7 +1,4 @@
 const { pyCall } = require("../_linkers/pyCall.js"); 
-const {eventSelectFavorite} = require("../_linkers/common/selectFavorite"); 
-const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
-const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
 
 let toast = new ToastComponent();
 

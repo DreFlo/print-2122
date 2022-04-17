@@ -1,3 +1,4 @@
+from numpy import double
 import mechanize as mc
 from bs4 import BeautifulSoup as bs
 import Schedule as sc
@@ -5,6 +6,7 @@ import re
 import collections
 import Login
 import pandas as pd
+import requests
 
 """
 This file contains some important and base functions used for many other files. 
@@ -256,3 +258,79 @@ def get_UC_from_query(UCCode, year):
 
     return results
         
+def get_course_UCs(course_id, year):
+    UC_links = []
+    page_number = 1
+    while True:
+        url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_curso_id=' + str(course_id)
+
+        html = get_html(mc.Browser(),url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            break
+
+        for row in soup.find_all('tr', {'class' : 'd'}):
+            elems = row.find_all('td')
+            UC_links.append('https://sigarra.up.pt/feup/pt/' + elems[2].find('a')['href'])
+
+        page_number += 1
+
+    return UC_links
+
+def extract_teacher_code(link):
+    return int(link.replace('func_geral.formview?p_codigo=', ''))
+
+def string_to_float(str):
+    halves = str.split(',')
+    return float('.'.join(halves))
+
+def get_UC_teacher_info(url):
+    info = { 
+                'theoretical' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
+                },
+                'practical' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
+                }
+            }
+
+    html = get_html(mc.Browser(), url)
+    soup = bs(html)
+
+    name = soup.find('h1').text
+    tables = soup.find_all('table', {'class' : 'dados'})
+
+    if len(tables) < 4:
+        return info
+
+    switch = False
+
+    for row in tables[3].find_all('tr', {'class' : 'd'}):
+        if row.find('td', {'class' : 'k'}):
+            if not switch:
+                switch = True
+                info['theoretical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+            else:
+                switch = False
+                info['practical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+        else:
+            teacher = {
+                'name' : row.find('td', {'class' : 't'}).text,
+                'code' : extract_teacher_code(row.find('td', {'class' : 't'}).find('a')['href']) if row.find('td', {'class' : 't'}).find('a') else None,
+                'hours' : string_to_float(row.find('td', {'class' : 'n'}).text),
+                'underContract' : True,
+                'contractStart' : None
+            }
+            if switch:
+                info['theoretical']['fulfilled'] += teacher['hours']
+                info['theoretical']['teachers'].append(teacher)
+            else:
+                info['practical']['fulfilled'] += teacher['hours']
+                info['practical']['teachers'].append(teacher)
+
+    return {'name' : name , 'info' : info}
