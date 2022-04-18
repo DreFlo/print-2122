@@ -302,7 +302,7 @@ def get_UC_teacher_info(url):
     html = get_html(mc.Browser(), url)
     soup = bs(html)
 
-    name = soup.find('h1').text
+    name = soup.find_all('h1')[1].text
     tables = soup.find_all('table', {'class' : 'dados'})
 
     if len(tables) < 4:
