@@ -2,6 +2,8 @@ import Core
 import sys
 import multiprocessing as mp
 import json
+from handle_json import BuildJson
+
 
 tables_file_path = './data/uc_teachers_table.json'
 
@@ -30,14 +32,14 @@ def main():
     for UC in UCs:
         CourseUCsTableInfo.append(Core.get_UC_teacher_info(UC))
 
-    data.append({"name" : get_table_name(), "table" : CourseUCsTableInfo})
+    data["data"].append({"name" : get_table_name(), "table" : CourseUCsTableInfo})
 
-    json_object = json.dumps(data, indent=4)
+    json_object = BuildJson(data)
 
     with open(tables_file_path, 'w', encoding='utf-8') as file:
-        file.write(json_object)
+        file.write(json_object.getJson())
 
-    print(json_object)
+    print(json_object.getJson())
 
     sys.stdout.flush()
 

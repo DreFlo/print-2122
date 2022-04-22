@@ -12,8 +12,8 @@ function createNewTable() {
 
 function handleCreateNewTableResponse(data) {
     console.log("Done");
-    tables = JSON.parse(data);
-    console.log(tables);
+    console.log(data);
+    tables = data;
 }
 
 function getTables() {
