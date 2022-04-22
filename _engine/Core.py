@@ -121,15 +121,23 @@ def get_links_schedules(teacher_id, year):
     :return: list of links for the schedules
     """
 
-    url = "https://sigarra.up.pt/feup/pt/hor_geral.docentes_view?pv_doc_codigo=" + teacher_id + "&pv_ano_lectivo=" + year + "&pv_periodos=1"
+    url = "https://sigarra.up.pt/feup/pt/hor_geral.docentes_view?pv_doc_codigo=" + str(teacher_id) + "&pv_ano_lectivo=" + str(year) + "&pv_periodos=1"
     html = get_html_logged(url)
     soup = bs(html)
     
     #a_tags = soup.find_all('table', {'class': 'horario-semanas ecra'})[0].find_all('a', href=True)
 
     table = soup.find_all('table', {'class': 'horario-semanas ecra'})
+
+    # Either no schedule or no separation of weeks
     if(len(table) == 0):
-        links_schedule = []
+        table = soup.find_all('table', {'class': 'horario'})
+
+        if(len(table) == 0): # No schedule
+            links_schedule = []
+        else: # No separation of weeks
+            links_schedule = [url]
+        
         return links_schedule, soup
 
     a_tags = table[0].find_all('a', href=True)

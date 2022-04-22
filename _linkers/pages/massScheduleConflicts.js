@@ -2,6 +2,7 @@ const {pyCall} = require("../_linkers/pyCall.js");
 const {eventSelectFavorite} = require("../_linkers/common/selectFavorite"); 
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
+const { eventWorkerList } = require("../_linkers/utils/workerList.js");
 
 let docentsCode;
 let docentsCodeArray;
@@ -10,6 +11,7 @@ let startDate;
 let endDate; 
 let toast = new ToastComponent();
 
+/*
 let favoritesDict = jsonToArray(JSON.parse(readFavorites("docents")))
 $('#table-wrapper-favorites').DataTable({
     data: favoritesDict,
@@ -27,8 +29,7 @@ $('#table-wrapper-favorites').DataTable({
         },
     ]
 });
-eventSelectFavorite(); 
-
+eventSelectFavorite();*/
 
 document.querySelector("button[type=submit]").addEventListener("click", (event) => handleScheduleTime(event));
 
@@ -40,9 +41,8 @@ document.querySelector("button[type=submit]").addEventListener("click", (event) 
  * @returns null.
  */
 function handleScheduleTime(event){  
-    /*
     event.preventDefault(); 
-    if (!validateInput()) return;  
+    //if (!validateInput()) return;  
     document.querySelector(".scheds").innerHTML = "";   
 
     // Getting the input. 
@@ -54,11 +54,12 @@ function handleScheduleTime(event){
     toast.show("Atualizando horários...", toastColor.BLUE, false);  
 
     // Request to update teachers information. 
-    pyCall("retrieve_schedule", "final_handleScheduleTime", [docentsCode, academicYear]);*/
-    event.preventDefault(); 
+    pyCall("retrieve_schedule", "final_handleScheduleTime", [docentsCode, academicYear]);
+
+    /*event.preventDefault(); 
     data = "asd"
     console.log("MSC_handleShceduleTime");
-    pyCall("mass_schedule_conflicts", "final_handleScheduleTime", data);
+    pyCall("mass_schedule_conflicts", "final_handleScheduleTime", data);*/
 }  
 
 /**
@@ -66,7 +67,7 @@ function handleScheduleTime(event){
  * @param {JSON} data - Answer from the backend. In the context of this function it will only contains if the operations has succeeded or not. 
  */
 function final_handleScheduleTime(data){
-    /*if (data.error === "true") { 
+    if (data.error === "true") { 
         toast.show("Não foi possível processar dados.", toastColor.RED); 
     }
     else { 
@@ -76,8 +77,8 @@ function final_handleScheduleTime(data){
         let mergedScheds = mergeDates(groupedScheds);  
         let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd); 
         Table.show();
-    }*/
-    console.log("MSC_finalhandleScheduleTime");
+    }
+    
 }  
 
 // "SCHEDULE COLLISION" ------------------------------------------------------------- 
@@ -96,7 +97,7 @@ function groupByDate(){
     docentsNumber = docentsCodeArray.length;   
 
     docentsCodeArray.forEach(id => {  
-        scheduleJson[id]['schedule'].forEach(sched => {     
+        scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
             let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
             if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
                 sched['teacher'] = id; 
@@ -223,4 +224,4 @@ function buildToolTip(text, data){
     return div;
 }
 
-//module.exports = {final_handleScheduleTime};
+module.exports = {final_handleScheduleTime};

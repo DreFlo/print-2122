@@ -13,12 +13,18 @@ def get_all_dei_schedules():
     # workers_list = [231081, 655498]
     # workers_list = [211625]
     # workers_list = [637045]
+    # workers_list = [677168]
 
     # TO DO - Change file name to final one
     f = open('./data/test.json', "w", encoding="utf-8")
     total_info = {}
 
+    n = 20
     for worker in workers_list:
+        if(n == 0): break
+        n -= 1
+
+        print("worker: %s " %(worker))
         name, sigla = Core.get_teacher_info(worker)
         
         class_schedule, due_to = retrieve_schedule.get_complete_schedule(str(worker), "2021")
@@ -79,6 +85,7 @@ def get_dei_workers_list():
         m = re.search('(?<=CODIGO=)\d+', list[i])
         workers_list.append(m.group(0))
 
+        
         ''' GET THE NAME
         pos = list[i].find(">")
         new_str = list[i][pos+1:]
@@ -89,7 +96,6 @@ def get_dei_workers_list():
         ''' 
 
     return workers_list
-    
 
 def main():
     get_all_dei_schedules()

@@ -6,7 +6,8 @@ import re
 from datetime import date
 from handle_json import BuildJson
 
-docents_schedule_path = "./data/schedules.json"
+# docents_schedule_path = "./data/schedules.json"
+docents_schedule_path = "./data/temp_workers.json"
 
 def get_teachers_id():
     return sys.argv[1]
@@ -40,8 +41,11 @@ def must_scrape_sched(docent_id):
     f.close()
     if json_object.get(docent_id) == None: 
         return True 
-    else: 
-        due_to = string_to_date(json_object.get(docent_id).get("due_to"))
+    else:
+        if(docents_schedule_path == "./data/schedules.json"):
+            due_to = string_to_date(json_object.get(docent_id).get("due_to"))
+        else:
+            due_to = string_to_date(json_object.get(docent_id).get("class_schedule").get("due_to"))
         return now >= due_to  
 
 def save_sched(schedule, due_to, docent_id):   
@@ -56,7 +60,10 @@ def save_sched(schedule, due_to, docent_id):
     docent_json = {'due_to': due_to, 'schedule': schedule} 
     f = open(docents_schedule_path, "r+", encoding="utf-8")
     all_schedules = json.loads(f.read())  
-    all_schedules[docent_id] = docent_json
+    if(docents_schedule_path == "./data/schedules.json"):
+        all_schedules[docent_id] = docent_json
+    else:
+        all_schedules[docent_id]['class_schedule'] = docent_json
     json_object = json.dumps(all_schedules, indent=4, ensure_ascii=False)
     f.seek(0)
     f.write(json_object)
@@ -82,11 +89,11 @@ def get_complete_schedule(docent_id, academic_year = 0):
     
     links_schedules, soup = Core.get_links_schedules(docent_id, academic_year)
     teacher_name = Core.get_teacher_name_schedule(soup)
-
+    
     for link in links_schedules: 
         html = Core.get_html_logged(link) 
         soup = bs(html, "html.parser") 
-        start_date, end_date = extract_period_from_soup(soup)  
+        start_date, end_date = extract_period_from_soup(soup)
         sched = extract_table_schedule(soup, start_date, end_date, teacher_name)  
         schedules += sched 
         # Extracting the ending date
