@@ -194,146 +194,15 @@
         "name": "Afonso Manuel Maia Lopes Salgado de Sousa",
         "sigla": "AMMLSS",
         "class_schedule": {
-            "due_to": "22-04-2022",
-            "schedule": [
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "17-10-2021",
-                    "end_date": "23-10-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "24-10-2021",
-                    "end_date": "30-10-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "31-10-2021",
-                    "end_date": "06-11-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "07-11-2021",
-                    "end_date": "13-11-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "14-11-2021",
-                    "end_date": "20-11-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "21-11-2021",
-                    "end_date": "27-11-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "28-11-2021",
-                    "end_date": "04-12-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "05-12-2021",
-                    "end_date": "11-12-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "12-12-2021",
-                    "end_date": "18-12-2021",
-                    "teacher_name": "Afonso Sousa"
-                },
-                {
-                    "day": 1,
-                    "start_time": 14.0,
-                    "duration": 2.0,
-                    "name": "Fundamentos da Programação",
-                    "class_name": "FP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484382",
-                    "location": "B301",
-                    "start_date": "02-01-2022",
-                    "end_date": "22-01-2022",
-                    "teacher_name": "Afonso Sousa"
-                }
-            ]
+            "due_to": "27-04-2022",
+            "schedule": []
         }
     },
     "637045": {
         "name": "Ahmed Adel Fares Gadelrab Mohamed",
         "sigla": "AAFGM",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -341,269 +210,8 @@
         "name": "Alberto José Rajão Barbosa",
         "sigla": "AJRB",
         "class_schedule": {
-            "due_to": "22-04-2022",
-            "schedule": [
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "10-10-2021",
-                    "end_date": "16-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "10-10-2021",
-                    "end_date": "16-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "17-10-2021",
-                    "end_date": "23-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "17-10-2021",
-                    "end_date": "23-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "24-10-2021",
-                    "end_date": "30-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "24-10-2021",
-                    "end_date": "30-10-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "31-10-2021",
-                    "end_date": "06-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "31-10-2021",
-                    "end_date": "06-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "07-11-2021",
-                    "end_date": "13-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "07-11-2021",
-                    "end_date": "13-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "14-11-2021",
-                    "end_date": "20-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "14-11-2021",
-                    "end_date": "20-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "21-11-2021",
-                    "end_date": "27-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "21-11-2021",
-                    "end_date": "27-11-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "28-11-2021",
-                    "end_date": "04-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "28-11-2021",
-                    "end_date": "04-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "05-12-2021",
-                    "end_date": "11-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "05-12-2021",
-                    "end_date": "11-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "12-12-2021",
-                    "end_date": "18-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                },
-                {
-                    "day": 2,
-                    "start_time": 16.5,
-                    "duration": 1.5,
-                    "name": "Projeto UP",
-                    "class_name": "PUP",
-                    "lesson_type": "TP",
-                    "link": "ucurr_geral.ficha_uc_view?pv_ocorrencia_id=484742",
-                    "location": "B310+B314",
-                    "start_date": "12-12-2021",
-                    "end_date": "18-12-2021",
-                    "teacher_name": "Alberto Barbosa"
-                }
-            ]
+            "due_to": "27-04-2022",
+            "schedule": []
         }
     },
     "236907": {
@@ -758,7 +366,7 @@
         "name": "Alexandre Miguel Barbosa Valle de Carvalho",
         "sigla": "AVC",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -766,7 +374,7 @@
         "name": "Ana Beatriz Melo Aguiar",
         "sigla": "ABMA",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -1069,7 +677,7 @@
         "name": "Ana Filipa Campos Senra",
         "sigla": "AFCS",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -1077,7 +685,7 @@
         "name": "Ana Isabel da Silva Santos",
         "sigla": "AISS",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -1085,7 +693,7 @@
         "name": "Ana Maria Gomes Gonçalves Azevedo",
         "sigla": "AMA",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -2138,7 +1746,7 @@
         "name": "Ana Rita Dias Nogueira",
         "sigla": "ARDN",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -2146,7 +1754,7 @@
         "name": "André Costa Lima",
         "sigla": "ACL",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -2189,7 +1797,7 @@
         "name": "André Julio Moreira",
         "sigla": "AJM",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },
@@ -2197,7 +1805,7 @@
         "name": "André Macedo Pinto Grilo",
         "sigla": "AMPG",
         "class_schedule": {
-            "due_to": "22-04-2022",
+            "due_to": "27-04-2022",
             "schedule": []
         }
     },

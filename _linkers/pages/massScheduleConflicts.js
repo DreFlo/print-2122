@@ -1,8 +1,6 @@
 const {pyCall} = require("../_linkers/pyCall.js");
-const {eventSelectFavorite} = require("../_linkers/common/selectFavorite"); 
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
-const { eventWorkerList } = require("../_linkers/utils/workerList.js");
 
 let docentsCode;
 let docentsCodeArray;
@@ -10,26 +8,6 @@ let docentsNumber;
 let startDate; 
 let endDate; 
 let toast = new ToastComponent();
-
-/*
-let favoritesDict = jsonToArray(JSON.parse(readFavorites("docents")))
-$('#table-wrapper-favorites').DataTable({
-    data: favoritesDict,
-    columns: [
-        {title: 'Código'},
-        {title: 'Tipo'}, 
-        {title: 'Nome'}, 
-        {title: 'Sigla'}, 
-    ], 
-    "columnDefs": [
-        {
-            "targets": [ 1 ],
-            "visible": false,
-            "searchable": false
-        },
-    ]
-});
-eventSelectFavorite();*/
 
 document.querySelector("button[type=submit]").addEventListener("click", (event) => handleScheduleTime(event));
 
@@ -40,13 +18,14 @@ document.querySelector("button[type=submit]").addEventListener("click", (event) 
  * @param {Event} event 
  * @returns null.
  */
-function handleScheduleTime(event){  
+function handleScheduleTime(event){ 
+    console.log("Erro: Ana Cristina Ramada Paiva");
     event.preventDefault(); 
     //if (!validateInput()) return;  
     document.querySelector(".scheds").innerHTML = "";   
 
     // Getting the input. 
-    docentsCode = splitInput(document.querySelector("#code").value); 
+    docentsCode = splitInput(document.querySelector("#code").value);
     startDate = document.querySelector("#start-date").value.trim(); 
     endDate = document.querySelector("#end-date").value.trim();  
     academicYear = document.querySelector("#academic-year").value.trim(); 
@@ -55,11 +34,6 @@ function handleScheduleTime(event){
 
     // Request to update teachers information. 
     pyCall("retrieve_schedule", "final_handleScheduleTime", [docentsCode, academicYear]);
-
-    /*event.preventDefault(); 
-    data = "asd"
-    console.log("MSC_handleShceduleTime");
-    pyCall("mass_schedule_conflicts", "final_handleScheduleTime", data);*/
 }  
 
 /**
@@ -70,12 +44,12 @@ function final_handleScheduleTime(data){
     if (data.error === "true") { 
         toast.show("Não foi possível processar dados.", toastColor.RED); 
     }
-    else { 
+    else {
         console.log(data);
         toast.show("Dados atualizados!", toastColor.GREEN);
         let groupedScheds = groupByDate(); 
         let mergedScheds = mergeDates(groupedScheds);  
-        let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd); 
+        let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd);
         Table.show();
     }
     
