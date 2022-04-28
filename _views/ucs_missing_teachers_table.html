@@ -16,9 +16,33 @@
 </head>
 
 <body>
+    
     <section id="title">
-        <h1>Verificar Conflitos de Estudantes entre Unidades Curriculares </h1>
+        <h1>Tabela Professores UC's</h1>
+    </section>
+    <section class="container text-center">
+        <form id="newTableForm" class="needs-validation">
+            <label for="name"><strong>Criar Nova Tabela</strong></label>
+            <div class="form-flex-row m-3">
+                <div class="input-group mb-3" style="flex: 1;"> 
+                    <input class="form-control me-3" name="tableName" id="tableNameInput">
+                </div>
+                <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
+                    <input class="form-control me-3" name="tableCourse" id="tableCourseInput" number="0">
+                </div>
+                <div class="input-group mb-3" style="flex: 1;"> 
+                    <input class="form-control me-3" type="number" min="2001" max="2300" id="tableYearInput" placeholder="ex: 2021">
+                </div>
+                <div class="flex-d justify-content-center mb-5">
+                    <button id="newTableFormButton" type="button" class="btn btn-success">Criar</button>
+                </div>
+                <input hidden name="tableCourseCode" id="tableCourseCodeInput" number="0">
+            </div>
+        </form>
+        <div id="tableList">
+            
+        </div>
     </section>
 
-    <button id="BUTS" type="button" class="btn btn-success">Press Me!</button>
+    
 </body>
