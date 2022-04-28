@@ -18,8 +18,7 @@ document.querySelector("button[type=submit]").addEventListener("click", (event) 
  * @param {Event} event 
  * @returns null.
  */
-function handleScheduleTime(event){ 
-    console.log("Erro: Ana Cristina Ramada Paiva");
+function handleScheduleTime(event){
     event.preventDefault(); 
     //if (!validateInput()) return;  
     document.querySelector(".scheds").innerHTML = "";   
@@ -48,7 +47,9 @@ function final_handleScheduleTime(data){
         console.log(data);
         toast.show("Dados atualizados!", toastColor.GREEN);
         let groupedScheds = groupByDate(); 
-        let mergedScheds = mergeDates(groupedScheds);  
+        let mergedScheds = mergeDates(groupedScheds);
+        console.log("Merged:");
+        console.log(mergedScheds);  
         let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd);
         Table.show();
     }
@@ -70,14 +71,15 @@ function groupByDate(){
     docentsCodeArray = docentsCode.split(";").map(element => element.trim());  
     docentsNumber = docentsCodeArray.length;   
 
-    docentsCodeArray.forEach(id => {  
+    console.log(docentsCodeArray);
+    docentsCodeArray.forEach(id => {
         scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
             let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
             if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
                 sched['teacher'] = id; 
                 let key = currTimeFrame.toString(); 
                 if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
-                else groupedScheds[key] = [sched]; 
+                else groupedScheds[key] = [sched];
             }
         });   
     })      
@@ -104,16 +106,17 @@ function groupByDate(){
  */
 function mergeDates(scheds){
 
-    let chosenDates = selectDates(scheds); 
+    let chosenDates = selectDates(scheds);
     let chosenDatesDict = Object.keys(scheds).filter(key => chosenDates.includes(key)).reduce((res, key) => (res[key] = scheds[key], res), {});     // filter dictionary. 
     let nonChosenDatesDict = Object.keys(scheds).filter(key => !chosenDates.includes(key)).reduce((res, key) => (res[key] = scheds[key], res), {});
-
     Object.keys(nonChosenDatesDict).forEach(nonChosen => {  
         let nonChosenDate = nonChosen.split(" to ");  
-        let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[0]))
+        //let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[0]));
+        let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[1]));
         chosenDates.forEach(chosen => {
             let chosenDate = chosen.split(" to ");  
-            let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[0]))  
+            //let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[0]));
+            let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[1]));
             if (chosenTimeFrame.isOverlapping(nonChosenTimeFrame) || nonChosenTimeFrame.isOverlapping(chosenTimeFrame)){
                 chosenDatesDict[chosen].push(...nonChosenDatesDict[nonChosen]);
             }

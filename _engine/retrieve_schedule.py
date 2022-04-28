@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 import json 
 import re
 from datetime import date
+import datetime
 from handle_json import BuildJson
 
 # docents_schedule_path = "./data/schedules.json"
@@ -207,6 +208,64 @@ def get_class_in_td(soup_td, start_date, end_date, start_time, day, teacher_name
 # Convert the index in time.
 def convert_time(index):   
     return 8 + index * 0.5
+
+def get_vigilance_schedule(docent_code):
+    schedules = []
+
+    url = "https://sigarra.up.pt/feup/pt/vig_geral.docentes_vigilancias_list?p_func_codigo=" + str(docent_code)
+    html = Core.get_html_logged(url)
+    soup = bs(html)
+
+    name = soup.find_all('h1')[1].text[15:]
+
+    table = soup.find_all('table', {'class': 'dadossz'})[0]
+
+    #Sem vigilancias
+    if(len(table) == 0):
+        return []
+
+    trs = table.find_all('tr')
+    trs.pop(0)
+
+    for tr in trs:
+        tds = tr.find_all('td')
+
+        dates = tds[0].text.split('-')
+        date = dates[2] + '-' + dates[1] + '-' + dates[0]
+        day = datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2])).weekday()
+
+        times = tds[1].text.split('-')
+        start = times[0]
+        start_split = start.split(':')
+        end_split = times[1].split(':')
+
+        start_dt = datetime.datetime(1, 1, 1, int(start_split[0]), int(start_split[1]))
+        end_dt = datetime.datetime(1, 1, 1, int(end_split[0]), int(end_split[1]))
+        duration = ((end_dt - start_dt).total_seconds())/(60*60)
+        start_time = start_dt.hour + (start_dt.minute / 60)
+
+        class_ = tds[2].text.split('-')
+        class_name = class_[1].split('(')[0]
+        class_sigla = class_[0]
+
+        rooms = tds[3].text
+
+        vig = {
+            "day": day,
+            "start_time": start_time,
+            "duration": duration,
+            "name": class_name,
+            "class_name": class_sigla,
+            "lesson_type": "",
+            "link": "",
+            "location": rooms,
+            "start_date": date,
+            "end_date": date,
+            "teacher_name": name
+        }
+        schedules.append(vig)
+        
+    return schedules
     
 def main():  
     try:

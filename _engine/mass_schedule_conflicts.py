@@ -97,8 +97,19 @@ def get_dei_workers_list():
 
     return workers_list
 
+def get_vigilance_schedule():
+    workers_list = [211625] #Com 1 vigilancia
+    #workers_list = [353972] #Sem vigilancia
+
+    for code in workers_list:
+        schedules = retrieve_schedule.get_vigilance_schedule(code)
+
+        
+
+        
 def main():
-    get_all_dei_schedules()
+    #get_all_dei_schedules()
+    get_vigilance_schedule()
 
     '''
     try:
