@@ -6,7 +6,7 @@ function buildTableHead(head){
     let theadElement = document.createElement("thead"); 
     let trElement = document.createElement("tr"); 
     head.forEach(headText => { 
-        let tdElement = document.createElement("td");  
+        let tdElement = document.createElement("th");  
         tdElement.innerText = headText; 
         trElement.appendChild(tdElement); 
     });  

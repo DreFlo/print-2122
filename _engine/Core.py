@@ -342,11 +342,13 @@ def get_UC_teacher_info(url):
     html = get_html(mc.Browser(), url)
     soup = bs(html)
 
+    id = get_variable_from_url(url, 'pv_ocorrencia_id')
+
     name = soup.find_all('h1')[1].text
     tables = soup.find_all('table', {'class' : 'dados'})
 
     if len(tables) < 4:
-        return info
+        return {'name' : name , 'id' : id, 'info' : info}
 
     switch = False
 
@@ -373,4 +375,4 @@ def get_UC_teacher_info(url):
                 info['practical']['fulfilled'] += teacher['hours']
                 info['practical']['teachers'].append(teacher)
 
-    return {'name' : name , 'info' : info}
+    return {'name' : name , 'id' : id, 'info' : info}

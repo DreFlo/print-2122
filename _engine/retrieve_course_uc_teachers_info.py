@@ -21,25 +21,22 @@ def main():
 
     with open(tables_file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-
-    # TODO testar mp, da um erro no meu pc mas pode ser por ser velho e isto ter mts processos
-    '''
+    
     with mp.Pool(processes=len(UCs)) as pool:
         CourseUCsTableInfo = pool.map(Core.get_UC_teacher_info, UCs)
-    '''
-    CourseUCsTableInfo = []
 
-    for UC in UCs:
-        CourseUCsTableInfo.append(Core.get_UC_teacher_info(UC))
-
-    data["data"].append({"name" : get_table_name(), "table" : CourseUCsTableInfo})
+    data["data"].append({"name" : get_table_name(), "id" : get_course_id(), "table" : CourseUCsTableInfo})
 
     json_object = BuildJson(data)
 
     with open(tables_file_path, 'w', encoding='utf-8') as file:
         file.write(json_object.getJson())
 
-    print(json_object.getJson())
+    # Kinda stupid but consistently has bugs otherwise
+    with open(tables_file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    print(BuildJson(data).getJson())
 
     sys.stdout.flush()
 
