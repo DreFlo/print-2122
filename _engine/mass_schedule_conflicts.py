@@ -4,6 +4,8 @@ import re
 import requests
 import json
 
+data_file = "./data/temp_workers.json"
+
 # Gets schedules of all DEI workers and saves them
 def get_all_dei_schedules():
     workers_list = get_dei_workers_list()
@@ -16,7 +18,7 @@ def get_all_dei_schedules():
     # workers_list = [677168]
 
     # TO DO - Change file name to final one
-    f = open('./data/test.json', "w", encoding="utf-8")
+    f = open(data_file, "w", encoding="utf-8")
     total_info = {}
 
     n = 20
@@ -28,15 +30,17 @@ def get_all_dei_schedules():
         name, sigla = Core.get_teacher_info(worker)
         
         class_schedule, due_to = retrieve_schedule.get_complete_schedule(str(worker), "2021")
-        due_to = due_to.strftime("%d-%m-%Y")
-        class_schedule_json = {'due_to': due_to, 'schedule': class_schedule}
+        due_to_class = due_to.strftime("%d-%m-%Y")
+        class_schedule_json = {'due_to': due_to_class, 'schedule': class_schedule}
         
-        # TO DO - Horário de vigilâncias
+        due_to_exams, exam_schedules = retrieve_schedule.get_vigilance_schedule(worker)
+        exam_schedule_json = {'due_to': due_to_exams, 'schedule': exam_schedules}
 
         info = {
             "name": name,
             "sigla": sigla,
-            "class_schedule": class_schedule_json
+            "class_schedule": class_schedule_json,
+            "exam_schedule": exam_schedule_json
         }
 
         total_info[worker] = info
@@ -101,15 +105,34 @@ def get_vigilance_schedule():
     workers_list = [211625] #Com 1 vigilancia
     #workers_list = [353972] #Sem vigilancia
 
+    f = open(data_file, "r+", encoding="utf-8")
+    workers_info = json.loads(f.read())
+    #json_object = json.load(f)
+    #print(json_object)
+
     for code in workers_list:
-        schedules = retrieve_schedule.get_vigilance_schedule(code)
+        due_to, schedules = retrieve_schedule.get_vigilance_schedule(code)
+        #print(schedules)
+        info = {
+            "due_to": due_to,
+            "schedule": schedules
+        }
+        workers_info[str(code)]['exam_schedule'] = info
+        #print(workers_info)
+    
+    json_object = json.dumps(workers_info, indent=4, ensure_ascii=False)
+    f.seek(0)
+    f.write(json_object)
+    f.truncate()
+    f.close()
 
         
 
         
 def main():
-    #get_all_dei_schedules()
-    get_vigilance_schedule()
+    get_all_dei_schedules()
+    
+    #get_vigilance_schedule()
 
     '''
     try:

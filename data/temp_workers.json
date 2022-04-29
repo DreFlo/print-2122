@@ -188,13 +188,35 @@
                     "teacher_name": "Ademar Aguiar"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "30-04-2022",
+            "schedule": [
+                {
+                    "day": 5,
+                    "start_time": 11.5,
+                    "duration": 2.0,
+                    "name": " Arquitetura de Sistemas de Software ",
+                    "class_name": "ASSO ",
+                    "lesson_type": "",
+                    "link": "",
+                    "location": "B104",
+                    "start_date": "30-04-2022",
+                    "end_date": "30-04-2022",
+                    "teacher_name": "Ademar Aguiar"
+                }
+            ]
         }
     },
     "655498": {
         "name": "Afonso Manuel Maia Lopes Salgado de Sousa",
         "sigla": "AMMLSS",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -202,7 +224,11 @@
         "name": "Ahmed Adel Fares Gadelrab Mohamed",
         "sigla": "AAFGM",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -210,7 +236,11 @@
         "name": "Alberto José Rajão Barbosa",
         "sigla": "AJRB",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -312,6 +342,10 @@
                     "teacher_name": "Alexandra Lopes"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "",
+            "schedule": []
         }
     },
     "677168": {
@@ -360,13 +394,21 @@
                     "teacher_name": "Alexandra Mendes"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "",
+            "schedule": []
         }
     },
     "248510": {
         "name": "Alexandre Miguel Barbosa Valle de Carvalho",
         "sigla": "AVC",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -374,7 +416,11 @@
         "name": "Ana Beatriz Melo Aguiar",
         "sigla": "ABMA",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -671,13 +717,21 @@
                     "teacher_name": "Ana Cristina Ramada Paiva"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "",
+            "schedule": []
         }
     },
     "651001": {
         "name": "Ana Filipa Campos Senra",
         "sigla": "AFCS",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -685,7 +739,11 @@
         "name": "Ana Isabel da Silva Santos",
         "sigla": "AISS",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -693,7 +751,11 @@
         "name": "Ana Maria Gomes Gonçalves Azevedo",
         "sigla": "AMA",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -1705,6 +1767,24 @@
                     "teacher_name": "Ana Paula Rocha"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "17-06-2022",
+            "schedule": [
+                {
+                    "day": 4,
+                    "start_time": 11.5,
+                    "duration": 2.0,
+                    "name": " Inteligência Artificial ",
+                    "class_name": "IA ",
+                    "lesson_type": "",
+                    "link": "",
+                    "location": "",
+                    "start_date": "17-06-2022",
+                    "end_date": "17-06-2022",
+                    "teacher_name": "Ana Paula Rocha"
+                }
+            ]
         }
     },
     "202844": {
@@ -1740,13 +1820,21 @@
                     "teacher_name": "Ana Paula Tomás"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "",
+            "schedule": []
         }
     },
     "678282": {
         "name": "Ana Rita Dias Nogueira",
         "sigla": "ARDN",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -1754,7 +1842,11 @@
         "name": "André Costa Lima",
         "sigla": "ACL",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -1791,13 +1883,48 @@
                     "teacher_name": "André Meira"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "15-06-2022",
+            "schedule": [
+                {
+                    "day": 2,
+                    "start_time": 8.5,
+                    "duration": 2.0,
+                    "name": " Programação ",
+                    "class_name": "P ",
+                    "lesson_type": "",
+                    "link": "",
+                    "location": "",
+                    "start_date": "15-06-2022",
+                    "end_date": "15-06-2022",
+                    "teacher_name": "André Meira"
+                },
+                {
+                    "day": 2,
+                    "start_time": 11.5,
+                    "duration": 2.0,
+                    "name": " Programação ",
+                    "class_name": "P ",
+                    "lesson_type": "",
+                    "link": "",
+                    "location": "",
+                    "start_date": "15-06-2022",
+                    "end_date": "15-06-2022",
+                    "teacher_name": "André Meira"
+                }
+            ]
         }
     },
     "678691": {
         "name": "André Julio Moreira",
         "sigla": "AJM",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -1805,7 +1932,11 @@
         "name": "André Macedo Pinto Grilo",
         "sigla": "AMPG",
         "class_schedule": {
-            "due_to": "28-04-2022",
+            "due_to": "29-04-2022",
+            "schedule": []
+        },
+        "exam_schedule": {
+            "due_to": "",
             "schedule": []
         }
     },
@@ -2336,6 +2467,10 @@
                     "teacher_name": "André Restivo"
                 }
             ]
+        },
+        "exam_schedule": {
+            "due_to": "",
+            "schedule": []
         }
     }
 }

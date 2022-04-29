@@ -218,21 +218,25 @@ def get_vigilance_schedule(docent_code):
 
     name = soup.find_all('h1')[1].text[15:]
 
-    table = soup.find_all('table', {'class': 'dadossz'})[0]
+    table = soup.find_all('table', {'class': 'dadossz'})
 
     #Sem vigilancias
     if(len(table) == 0):
-        return []
+        return "", schedules
 
-    trs = table.find_all('tr')
+    trs = table[0].find_all('tr')
     trs.pop(0)
+
+    all_dates = []
 
     for tr in trs:
         tds = tr.find_all('td')
 
         dates = tds[0].text.split('-')
         date = dates[2] + '-' + dates[1] + '-' + dates[0]
-        day = datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2])).weekday()
+        day_dt = datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2]))
+        all_dates.append(day_dt)
+        day = day_dt.weekday()
 
         times = tds[1].text.split('-')
         start = times[0]
@@ -263,9 +267,13 @@ def get_vigilance_schedule(docent_code):
             "end_date": date,
             "teacher_name": name
         }
+
         schedules.append(vig)
-        
-    return schedules
+    
+    max_date_dt = max(all_dates)
+    max_date = max_date_dt.strftime("%d-%m-%Y")
+    
+    return max_date, schedules
     
 def main():  
     try:
