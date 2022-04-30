@@ -6,9 +6,12 @@ let tables;
 let courses;
 let courseNames;
 let selectedTableIndex = undefined;
+let modal = document.querySelector('#UCDetailDialog');
+let ucIndex = undefined;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
+document.querySelector('#closeUCDetailDialog').addEventListener('click', closeUCDialog);
 
 function autocompleteCourses() {
     closeAutocompleteSugestions();
@@ -66,12 +69,15 @@ function createNewTable() {
     let name = document.querySelector('#tableNameInput').value;
     let year = document.querySelector('#tableYearInput').value;
     let course = document.querySelector('#tableCourseCodeInput').value;
+    
+    toast.show("A criar...", toastColor.BLUE, false);
     pyCall("retrieve_course_uc_teachers_info", "handleCreateNewTableResponse", [name, course, year]);
 }
 
 function handleCreateNewTableResponse(data) {
     tables = data['data'];
     listTables();
+    toast.show("Criada", toastColor.GREEN);
 }
 
 function listTables() {
@@ -157,11 +163,17 @@ function buildTable() {
     table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
 
     let thead = buildTableHead([
-        'Unidade Curricular', 
-        'Total Teóricas', 
+        'Unidade Curricular',
+        'Código',
+        'Período',
+        'Teóricas', 
         'Teóricas Atribuídas', 
-        'Total Práticas', 
-        'Práticas Atribuídas'
+        'Práticas', 
+        'Práticas Atribuídas',
+        'Laboratoriais',
+        'Laboratoriais Atribuídas',
+        'Outras',
+        'Outras Atribuídas'
     ]);
     
     table.appendChild(thead);
@@ -182,49 +194,21 @@ function buildTable() {
 
         tr.appendChild(td);
 
-        // Theoretical Total
+        // UC Code
         td = document.createElement('td');
 
-        if (uc.info.theoretical.total == null) {
-            td.textContent = "N/A"
-        } else {
-            td.textContent = uc.info.theoretical.total;
-        }
+        td.textContent = uc.code;
 
         tr.appendChild(td);
 
-        // Theoretical Fulfilled
+        // UC Period
         td = document.createElement('td');
 
-        td.textContent = uc.info.theoretical.fulfilled;
-
-        if (uc.info.theoretical.total != uc.info.theoretical.fulfilled) {
-            td.style = "background-color: #dc3545; color: #ffffff";
-        }
+        td.textContent = uc.period;
 
         tr.appendChild(td);
 
-        // Practical Total
-        td = document.createElement('td');
-
-        if (uc.info.practical.total == null) {
-            td.textContent = "N/A"
-        } else {
-            td.textContent = uc.info.practical.total;
-        }
-
-        tr.appendChild(td);
-
-        // Practical Fulfilled
-        td = document.createElement('td');
-
-        td.textContent = uc.info.practical.fulfilled;
-
-        if (uc.info.practical.total != uc.info.practical.fulfilled) {
-            td.style = "background-color: #dc3545; color: #ffffff";
-        }
-
-        tr.appendChild(td);
+        Object.keys(uc.info).forEach((key) => (addClassTypeToTableRow(tr, uc.info[key])));
 
         tbody.appendChild(tr);
     }
@@ -234,17 +218,58 @@ function buildTable() {
     div.appendChild(table);
 }
 
-function editUC() {
-    uc = getUC(this.getAttribute('uc-id'));
-    console.log(uc);
+function addClassTypeToTableRow(tr, _class) {
+    let td = document.createElement('td');
+
+    if (_class.total == null) {
+        td.textContent = "N/A"
+        td.style = "background-color: #848884; color: #ffffff"
+    } else {
+        td.textContent = _class.total;
+    }
+
+    tr.appendChild(td);
+
+    td = document.createElement('td');
+
+    td.textContent = _class.fulfilled;
+
+    if (_class.total == null) {
+        td.textContent = "N/A"
+        td.style = "background-color: #848884; color: #ffffff"
+    } else if (_class.total != _class.fulfilled) {
+        td.style = "background-color: #dc3545; color: #ffffff";
+    }
+
+    tr.appendChild(td);
 }
 
-function getUC(id) {
+function editUC() {
+    ucIndex = getUCIndex(this.getAttribute('uc-id'));
+
+    let uc = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
+
+    let title = modal.querySelector(".modal-title");
+    title.textContent = uc.name;
+
+    let body = modal.querySelector('.modal-body');
+    body.textContent = JSON.stringify(uc);
+    
+    modal.classList.add('show');
+    modal.style = "display: block;";
+}
+
+function closeUCDialog() {
+    modal.classList.remove('show');
+    modal.style = '';
+}
+
+function getUCIndex(id) {
     table = tables[selectedTableIndex];
 
     for (let i = 0; i < table.table.length; i++) {
         if (table.table[i].id == id) {
-            return table.table[i];
+            return i;
         }
     }
 }

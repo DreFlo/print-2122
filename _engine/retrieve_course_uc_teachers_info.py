@@ -22,8 +22,15 @@ def main():
     with open(tables_file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     
+    '''
     with mp.Pool(processes=len(UCs)) as pool:
         CourseUCsTableInfo = pool.map(Core.get_UC_teacher_info, UCs)
+    '''
+
+    CourseUCsTableInfo = []
+
+    for UC in UCs:
+        CourseUCsTableInfo.append(Core.get_UC_teacher_info(UC))
 
     data["data"].append({"name" : get_table_name(), "id" : get_course_id(), "table" : CourseUCsTableInfo})
 
