@@ -398,6 +398,3 @@ def get_UC_teacher_info(UC):
             info[type]['teachers'].append(teacher)
 
     return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}
-
-def get_rooms():
-    u

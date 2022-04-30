@@ -8,10 +8,12 @@ let courseNames;
 let selectedTableIndex = undefined;
 let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
+let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
 document.querySelector('#closeUCDetailDialog').addEventListener('click', closeUCDialog);
+document.querySelector('#saveUCDetailDialog').addEventListener('click', saveUCDialog);
 
 function autocompleteCourses() {
     closeAutocompleteSugestions();
@@ -247,13 +249,33 @@ function addClassTypeToTableRow(tr, _class) {
 function editUC() {
     ucIndex = getUCIndex(this.getAttribute('uc-id'));
 
-    let uc = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
+    editedUC = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
 
     let title = modal.querySelector(".modal-title");
-    title.textContent = uc.name;
+    title.textContent = editedUC.name;
 
     let body = modal.querySelector('.modal-body');
-    body.textContent = JSON.stringify(uc);
+    body.textContent = '';
+
+    let h6 = document.createElement('h6');
+    h6.textContent = editedUC.code;
+    body.appendChild(h6);
+    h6 = document.createElement('h6');
+    h6.textContent = editedUC.period;
+    body.appendChild(h6);
+    
+    Object.keys(editedUC.info).forEach((key) => {
+        let object = editedUC.info[key];
+        let h4 = document.createElement('h4');
+        h4.textContent = classTypeTitles[key];
+        body.appendChild(h4);
+
+        let input = document.createElement('input');
+        input.value = object.total;
+        input.addEventListener('input', () => {object.total = input.value});
+
+        body.appendChild(input);
+    })
     
     modal.classList.add('show');
     modal.style = "display: block;";
@@ -262,6 +284,13 @@ function editUC() {
 function closeUCDialog() {
     modal.classList.remove('show');
     modal.style = '';
+}
+
+function saveUCDialog() {
+    console.log(editedUC);
+    tables[selectedTableIndex].table[ucIndex] = editedUC;
+    buildTable();
+    closeUCDialog();
 }
 
 function getUCIndex(id) {
