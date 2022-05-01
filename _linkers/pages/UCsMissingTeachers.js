@@ -1,5 +1,6 @@
 const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
+const fs = require('fs');
 
 let toast = new ToastComponent();
 let tables;
@@ -14,6 +15,7 @@ document.querySelector('#newTableFormButton').addEventListener('click', createNe
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
 document.querySelector('#closeUCDetailDialog').addEventListener('click', closeUCDialog);
 document.querySelector('#saveUCDetailDialog').addEventListener('click', saveUCDialog);
+document.querySelector("#tableYearInput").value = new Date().getFullYear();
 
 function autocompleteCourses() {
     closeAutocompleteSugestions();
@@ -149,75 +151,91 @@ function handleCoursesResponse(data) {
 }
 
 function buildTable() {
-    tableInfo = tables[selectedTableIndex];
-
     let div = document.querySelector('#table');
 
     // Clear table
     div.textContent = '';
 
-    let h1 = document.createElement('h1');
-    h1.textContent = tableInfo.name;
+    if (selectedTableIndex != undefined) {
+        tableInfo = tables[selectedTableIndex];
 
-    div.appendChild(h1);
+        let h1 = document.createElement('h1');
+        h1.textContent = tableInfo.name;
 
-    let table = document.createElement('table');
-    table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
+        div.appendChild(h1);
 
-    let thead = buildTableHead([
-        'Unidade Curricular',
-        'Código',
-        'Período',
-        'Teóricas', 
-        'Teóricas Atribuídas', 
-        'Práticas', 
-        'Práticas Atribuídas',
-        'Laboratoriais',
-        'Laboratoriais Atribuídas',
-        'Outras',
-        'Outras Atribuídas'
-    ]);
-    
-    table.appendChild(thead);
+        let table = document.createElement('table');
+        table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
 
-    let tbody = document.createElement('tbody');
+        let thead = buildTableHead([
+            'Unidade Curricular',
+            'Código',
+            'Período',
+            'Teóricas', 
+            'Teóricas Atribuídas', 
+            'Práticas', 
+            'Práticas Atribuídas',
+            'Laboratoriais',
+            'Laboratoriais Atribuídas',
+            'Outras',
+            'Outras Atribuídas'
+        ]);
+        
+        table.appendChild(thead);
 
-    for (let i = 0; i < tableInfo.table.length; i++) {
-        let uc = tableInfo.table[i];
+        let tbody = document.createElement('tbody');
 
-        let tr = document.createElement('tr');
-        tr.setAttribute('uc-id', uc.id);
-        tr.addEventListener('click', editUC);
+        for (let i = 0; i < tableInfo.table.length; i++) {
+            let uc = tableInfo.table[i];
 
-        // UC Name
-        let td = document.createElement('td');
+            let tr = document.createElement('tr');
+            tr.setAttribute('uc-id', uc.id);
+            tr.addEventListener('click', editUC);
 
-        td.textContent = uc.name;
+            // UC Name
+            let td = document.createElement('td');
 
-        tr.appendChild(td);
+            td.textContent = uc.name;
 
-        // UC Code
-        td = document.createElement('td');
+            tr.appendChild(td);
 
-        td.textContent = uc.code;
+            // UC Code
+            td = document.createElement('td');
 
-        tr.appendChild(td);
+            td.textContent = uc.code;
 
-        // UC Period
-        td = document.createElement('td');
+            tr.appendChild(td);
 
-        td.textContent = uc.period;
+            // UC Period
+            td = document.createElement('td');
 
-        tr.appendChild(td);
+            td.textContent = uc.period;
 
-        Object.keys(uc.info).forEach((key) => (addClassTypeToTableRow(tr, uc.info[key])));
+            tr.appendChild(td);
 
-        tbody.appendChild(tr);
+            Object.keys(uc.info).forEach((key) => (addClassTypeToTableRow(tr, uc.info[key])));
+
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(tbody);
+
+        let deleteButton = document.createElement('button');
+        deleteButton.addEventListener('click', deleteSelectedTable);
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.textContent = 'Delete'
+
+        div.appendChild(table);
+        div.appendChild(deleteButton);
     }
+}
 
-    table.appendChild(tbody);
-
-    div.appendChild(table);
+function deleteSelectedTable() {
+    removeTable(selectedTableIndex);
+    selectedTableIndex = undefined;
+    buildTable();
+    listTables();
+    saveTables();
 }
 
 function addClassTypeToTableRow(tr, _class) {
@@ -266,15 +284,41 @@ function editUC() {
     
     Object.keys(editedUC.info).forEach((key) => {
         let object = editedUC.info[key];
+
+        // Title
+
         let h4 = document.createElement('h4');
         h4.textContent = classTypeTitles[key];
         body.appendChild(h4);
 
-        let input = document.createElement('input');
-        input.value = object.total;
-        input.addEventListener('input', () => {object.total = input.value});
+        // Total Time
 
-        body.appendChild(input);
+        let divInputGroup = document.createElement('div');
+        divInputGroup.classList.add('input-group', 'mb-2', 'mr-sm-2');
+
+        divInputGroup.innerHTML = '<div class="input-group-prepend"><div class="input-group-text">Tempo de aulas total</div></div>'
+        let input = document.createElement('input');
+        input.classList.add('form-control');
+        input.value = object.total;
+        input.addEventListener('input', () => {object.total = input.value == '' ? null : input.value});
+
+        divInputGroup.appendChild(input);
+
+        body.appendChild(divInputGroup);
+
+        // Teachers
+
+        if (object.teachers.length != 0) {
+            let h5 = document.createElement('h5');
+            h5.textContent = 'Professores';
+            body.appendChild(h5);
+
+            object.teachers.forEach((teacher) => {
+                let div = document.createElement('div');
+                div.textContent = teacher.name;
+                body.appendChild(div);
+            });
+        }
     })
     
     modal.classList.add('show');
@@ -287,9 +331,9 @@ function closeUCDialog() {
 }
 
 function saveUCDialog() {
-    console.log(editedUC);
     tables[selectedTableIndex].table[ucIndex] = editedUC;
     buildTable();
+    saveTables();
     closeUCDialog();
 }
 
@@ -301,6 +345,21 @@ function getUCIndex(id) {
             return i;
         }
     }
+}
+
+function saveTables() {
+    fs.writeFileSync('./data/uc_teachers_table.json', JSON.stringify({"data" : tables, "error" : false}));
+}
+
+function removeTable(index) {
+    let newTables = [];
+    for (let i = 0; i < tables.length; i++) {
+        if (i == index) {
+            continue;
+        }
+        newTables.push(tables[i]);
+    }
+    tables = newTables;
 }
 
 window.onload = function() {
