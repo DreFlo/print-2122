@@ -315,7 +315,30 @@ function editUC() {
 
             object.teachers.forEach((teacher) => {
                 let div = document.createElement('div');
-                div.textContent = teacher.name;
+                div.classList.add('row');
+
+                // Teacher Name
+
+                let child = document.createElement('div');
+                child.classList.add('col-md-3');
+                child.textContent = teacher.name;
+                div.appendChild(child);
+
+                // Teacher Hours
+
+                child = document.createElement('div');
+                child.classList.add('col-md-3');
+                child.innerHTML = 'Tempo de aulas'
+                let input = document.createElement('input');
+                input.classList.add('form-control');
+                input.value = teacher.hours;
+                input.addEventListener('input', () => {
+                    object.fulfilled = object.fulfilled - teacher.hours + (input.value == '' ? 0 : input.value);
+                    teacher.hours = input.value == '' ? 0 : input.value;
+                });
+                child.appendChild(input);
+                div.appendChild(child);
+
                 body.appendChild(div);
             });
         }
