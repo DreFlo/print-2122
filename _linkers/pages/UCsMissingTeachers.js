@@ -10,6 +10,7 @@ let selectedTableIndex = undefined;
 let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
 let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
+let unregisteredTeachers = JSON.parse(fs.readFileSync('./data/unregistered_teachers.json'))['unregisteredTeachers'];
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
@@ -23,8 +24,7 @@ function autocompleteCourses() {
     let names = autocomplete(this.value, courseNames);
 
     let div = document.createElement('div');
-    div.classList.add('dropdown-menu', 'show');
-    div.setAttribute('id', 'autocompleteList');
+    div.classList.add('dropdown-menu', 'show', 'autocompleteList');
     div.style = 'max-height: 300px; overflow-y: auto;';
 
     let list = document.createElement("ul");
@@ -63,10 +63,7 @@ function setCourseInput() {
 }
 
 function closeAutocompleteSugestions() {
-    let list = document.querySelector("#autocompleteList");
-    if (list != null) {
-        list.remove();
-    }
+    document.querySelectorAll(".autocompleteList").forEach((elem) => {elem.remove()});    
 }
 
 function createNewTable() {
@@ -190,7 +187,11 @@ function buildTable() {
 
             let tr = document.createElement('tr');
             tr.setAttribute('uc-id', uc.id);
-            tr.addEventListener('click', editUC);
+            tr.addEventListener('click', () => {
+                ucIndex = getUCIndex(uc.id);
+                editedUC = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
+                editUC();
+            });
 
             // UC Name
             let td = document.createElement('td');
@@ -265,9 +266,6 @@ function addClassTypeToTableRow(tr, _class) {
 }
 
 function editUC() {
-    ucIndex = getUCIndex(this.getAttribute('uc-id'));
-
-    editedUC = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
 
     let title = modal.querySelector(".modal-title");
     title.textContent = editedUC.name;
@@ -283,69 +281,221 @@ function editUC() {
     body.appendChild(h6);
     
     Object.keys(editedUC.info).forEach((key) => {
-        let object = editedUC.info[key];
-
-        // Title
-
-        let h4 = document.createElement('h4');
-        h4.textContent = classTypeTitles[key];
-        body.appendChild(h4);
-
-        // Total Time
-
-        let divInputGroup = document.createElement('div');
-        divInputGroup.classList.add('input-group', 'mb-2', 'mr-sm-2');
-
-        divInputGroup.innerHTML = '<div class="input-group-prepend"><div class="input-group-text">Tempo de aulas total</div></div>'
-        let input = document.createElement('input');
-        input.classList.add('form-control');
-        input.value = object.total;
-        input.addEventListener('input', () => {object.total = input.value == '' ? null : input.value});
-
-        divInputGroup.appendChild(input);
-
-        body.appendChild(divInputGroup);
-
-        // Teachers
-
-        if (object.teachers.length != 0) {
-            let h5 = document.createElement('h5');
-            h5.textContent = 'Professores';
-            body.appendChild(h5);
-
-            object.teachers.forEach((teacher) => {
-                let div = document.createElement('div');
-                div.classList.add('row');
-
-                // Teacher Name
-
-                let child = document.createElement('div');
-                child.classList.add('col-md-3');
-                child.textContent = teacher.name;
-                div.appendChild(child);
-
-                // Teacher Hours
-
-                child = document.createElement('div');
-                child.classList.add('col-md-3');
-                child.innerHTML = 'Tempo de aulas'
-                let input = document.createElement('input');
-                input.classList.add('form-control');
-                input.value = teacher.hours;
-                input.addEventListener('input', () => {
-                    object.fulfilled = object.fulfilled - teacher.hours + (input.value == '' ? 0 : input.value);
-                    teacher.hours = input.value == '' ? 0 : input.value;
-                });
-                child.appendChild(input);
-                div.appendChild(child);
-
-                body.appendChild(div);
-            });
-        }
-    })
+        buildClassTypeArea(body, key);
+    });
     
     modal.classList.add('show');
     modal.style = "display: block;";
+}
+
+function buildClassTypeArea(body, type) {
+    // Title
+
+    let h4 = document.createElement('h4');
+    h4.textContent = classTypeTitles[type];
+    body.appendChild(h4);
+
+    // Total Time
+
+    let divInputGroup = document.createElement('div');
+    divInputGroup.classList.add('input-group', 'mb-2', 'mr-sm-2');
+
+    divInputGroup.innerHTML = '<div class="input-group-prepend"><div class="input-group-text">Tempo de aulas total</div></div>'
+    let input = document.createElement('input');
+    input.classList.add('form-control');
+    input.value = editedUC.info[type].total;
+    input.addEventListener('input', () => {editedUC.info[type].total = input.value == '' ? null : input.value});
+
+    divInputGroup.appendChild(input);
+
+    body.appendChild(divInputGroup);
+
+    // Teachers
+
+    if (editedUC.info[type].teachers.length != 0) {
+        buildTeachersClassTypeArea(body, type);
+    }
+}
+
+function buildTeachersClassTypeArea(body, type) {
+    let h5 = document.createElement('h5');
+    h5.textContent = 'Professores';
+    body.appendChild(h5);
+
+    
+    let table = document.createElement('table');
+    table.classList.add('table', 'table-striped', 'table-bordered');
+
+    let thead = buildTableHead([
+        'Nome',
+        'Horas lecionadas',
+        'Ação'
+    ]);
+    
+    table.appendChild(thead);
+
+    let tbody = document.createElement('tbody');
+
+    editedUC.info[type].teachers.forEach((teacher) => {
+        let tr = document.createElement('tr');
+
+        // Teacher Name
+
+        let td = document.createElement('td');
+        td.textContent = teacher.name;
+        tr.appendChild(td);
+
+        // Teacher Hours
+
+        td = document.createElement('td');
+        let input = document.createElement('input');
+        input.classList.add('form-control');
+        input.value = teacher.hours;
+        input.addEventListener('input', () => {
+            let newHours = (input.value == '' ? 0 : parseInt(input.value))
+            editedUC.info[type].fulfilled = editedUC.info[type].fulfilled - teacher.hours + newHours;
+            teacher.hours = newHours;
+        });
+        td.appendChild(input);
+        tr.appendChild(td);
+
+        // Remove Teacher
+
+        td = document.createElement('td');
+        let button = document.createElement('button');
+        button.classList.add('btn', 'btn-danger');
+        button.textContent = 'Remover';
+        button.addEventListener('click', () => {
+            editedUC.info[type] = removeTeacherFromClassType(type, teacher);
+            editUC();
+        });
+        td.appendChild(button);
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    body.appendChild(table);
+
+    addNewTeacherArea(body, type);
+}
+
+function removeTeacherFromClassType(classType, teacher) {
+    let newClassType = JSON.parse(JSON.stringify(editedUC.info[classType]));
+    newClassType.fulfilled -= teacher.hours;
+    newClassType.teachers = [];
+    editedUC.info[classType].teachers.forEach((oldTeacher) => {
+        if (oldTeacher.code == teacher.code) {
+            return;
+        }
+        newClassType.teachers.push(oldTeacher);
+    })
+    return newClassType;
+}
+
+function addNewTeacherArea(body, classType) {
+    let div = document.createElement('div');
+    div.classList.add("form-flex-row", "m-3");
+
+    let childDiv = document.createElement('div');
+    childDiv.style = 'flex: 1;'
+    childDiv.innerHTML = 'Adicionar professor não registado';
+    div.appendChild(childDiv);
+
+    childDiv = document.createElement('div');
+    childDiv.classList.add("input-group", "mb-3", "add-unregistered-teacher-input-div-" + classType);
+    childDiv.style = 'flex: 3;';
+    let input = document.createElement('input');
+    input.classList.add('form-control', 'me-3');
+    input.placeholder = 'Nome';
+    input.id = 'teacher-name-input-' + classType;
+    input.addEventListener('input', () => {autocompleteTeacher(input, classType)});
+    childDiv.appendChild(input);
+    div.appendChild(childDiv);
+
+    childDiv = document.createElement('div');
+    childDiv.classList.add("input-group", "mb-3");
+    childDiv.style = 'flex: 1;';
+    let input2 = document.createElement('input');
+    input2.classList.add('form-control', 'me-3');
+    input2.id = 'teacher-hours-input-' + classType;
+    input2.placeholder = 'Horas';
+    childDiv.appendChild(input2);
+    div.appendChild(childDiv);
+
+    childDiv = document.createElement('div');
+    childDiv.classList.add("mb-3");
+    childDiv.style = 'flex: 1;';
+    let button = document.createElement('button');
+    button.classList.add('btn', 'btn-success');
+    button.textContent = 'Adicionar';
+    button.addEventListener('click', () => {addUnregisteredTeacher(classType)});
+    childDiv.appendChild(button);
+    div.appendChild(childDiv);
+
+    input2 = document.createElement('input');
+    input2.id = 'teacher-code-input-' + classType;
+    input2.setAttribute('hidden', 'true');
+    div.appendChild(input2);
+
+    body.appendChild(div);
+}
+
+function findUnregisterTeacherByCode(code) {
+    for (let i = 0; i < unregisteredTeachers.length; i++) {
+        if (unregisteredTeachers[i].code == code) {
+            return unregisteredTeachers[i];
+        }
+    }
+}
+
+function addUnregisteredTeacher(classType) {
+    let unregisteredTeacher = findUnregisterTeacherByCode(parseInt(document.querySelector('#teacher-code-input-' + classType).value));
+    let hoursInput = document.querySelector('#teacher-hours-input-' + classType).value;
+    let hours = hoursInput == '' ? 0 : parseInt(hoursInput);
+    let newTeacher = {"name" : unregisteredTeacher.name, "code" : unregisteredTeacher.code, "hours" : hours, "underContract" : false, "contractStart" : unregisteredTeacher.contractStart};
+    editedUC.info[classType].teachers.push(newTeacher);
+    editedUC.info[classType].fulfilled += hours;
+    editUC();
+}
+
+function autocompleteTeacher(input, classType) {
+    closeAutocompleteSugestions();
+
+    let unregisteredTeacherNames = unregisteredTeachers.map((teacher) => {return teacher.name;});
+
+    let names = autocomplete(input.value, unregisteredTeacherNames);
+
+    let div = document.createElement('div');
+    div.classList.add('dropdown-menu', 'show', 'autocompleteList');
+    div.style = 'max-height: 300px; overflow-y: auto;';
+
+    let list = document.createElement("ul");
+    list.classList.add('list-group');
+    
+    for (let i = 0; i < unregisteredTeachers.length; i++) {
+        if (names.includes(unregisteredTeachers[i]['name'])) {
+            a = document.createElement('a');
+            a.innerHTML = unregisteredTeachers[i]['name'];
+            a.setAttribute('number', courses[i]['code']);
+            a.setAttribute('href', '#');
+            a.classList.add('list-group-item', 'dropdown-item');
+            a.addEventListener('click', () => {handleAddUnregisteredTeacherClick(unregisteredTeachers[i], classType)});
+            a.addEventListener('mouseenter', listItemOnMouseEnter);
+            a.addEventListener('mouseleave', listItemOnMouseLeave);
+            div.appendChild(a);
+        }
+    }
+    
+    document.querySelector('.add-unregistered-teacher-input-div-' + classType).appendChild(div);
+}
+
+function handleAddUnregisteredTeacherClick(teacher, classType) {
+    closeAutocompleteSugestions();
+    document.querySelector('#teacher-name-input-' + classType).value = teacher.name;
+    document.querySelector('#teacher-code-input-' + classType).value = teacher.code;
 }
 
 function closeUCDialog() {
