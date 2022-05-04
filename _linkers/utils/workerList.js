@@ -1,6 +1,8 @@
 let selectedWorkers = []
 var table;
 
+let schedules_doc = './data/schedules.json'
+
 document.addEventListener("DOMContentLoaded", () => {
     setWorkerListEvent();
 });
@@ -33,6 +35,13 @@ $(document).ready(function() {
             
         }
     });
+
+    schedulesJSON = JSON.parse(readSchedule());
+    var lastUpdatedClass = document.getElementById("last-updated-class");
+    lastUpdatedClass.innerText = "Último update de horários de aula: " + schedulesJSON['updates']['class_schedules'] + "\n";
+    var lastUpdatedExams = document.getElementById("last-updated-exams");
+    lastUpdatedExams.innerText = "Último update de horários de vigilância: " + schedulesJSON['updates']['exam_schedules'];
+
 });
 
 function setWorkerListEvent(){
@@ -43,13 +52,15 @@ function setWorkerListEvent(){
 // Array with workers with each element being: [code, name, sigla]
 function getWorkers() {
     let fs = require("fs")
-    let read = fs.readFileSync("data/temp_workers.json", "utf8").trim()
+    let read = fs.readFileSync(schedules_doc, "utf8").trim()
     let array_read = Object.entries(JSON.parse(read))
     var workers = []
 
     array_read.forEach(element => {
-        let info = Object.values(element[1])
-        workers.push([element[0], info[0], info[1]]);
+        if(element[0] != "updates"){
+            let info = Object.values(element[1])
+            workers.push([element[0], info[0], info[1]]);
+        }
     });
 
     return workers

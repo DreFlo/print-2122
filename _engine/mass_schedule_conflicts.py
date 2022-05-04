@@ -3,8 +3,9 @@ import retrieve_schedule
 import re
 import requests
 import json
+import datetime
 
-data_file = "./data/temp_workers.json"
+data_file = "./data/schedules.json"
 
 # Gets schedules of all DEI workers and saves them
 def get_all_dei_schedules():
@@ -20,8 +21,12 @@ def get_all_dei_schedules():
     # TO DO - Change file name to final one
     f = open(data_file, "w", encoding="utf-8")
     total_info = {}
+    total_info['updates'] = {
+        'class_schedules': datetime.datetime.now().strftime("%d-%m-%Y"),
+        'exam_schedules': datetime.datetime.now().strftime("%d-%m-%Y")
+    }
 
-    n = 20
+    n = 40
     for worker in workers_list:
         if(n == 0): break
         n -= 1
@@ -105,9 +110,9 @@ def get_vigilance_schedule():
     workers_list = [211625] #Com 1 vigilancia
     #workers_list = [353972] #Sem vigilancia
 
-    f = open(data_file, "r+", encoding="utf-8")
-    workers_info = json.loads(f.read())
-    #json_object = json.load(f)
+    #f = open(data_file, "r+", encoding="utf-8")
+    #workers_info = json.loads(f.read())
+    
     #print(json_object)
 
     for code in workers_list:
@@ -117,14 +122,14 @@ def get_vigilance_schedule():
             "due_to": due_to,
             "schedule": schedules
         }
-        workers_info[str(code)]['exam_schedule'] = info
-        #print(workers_info)
+        #workers_info[str(code)]['exam_schedule'] = info
+        print(info)
     
-    json_object = json.dumps(workers_info, indent=4, ensure_ascii=False)
+    '''json_object = json.dumps(workers_info, indent=4, ensure_ascii=False)
     f.seek(0)
     f.write(json_object)
     f.truncate()
-    f.close()
+    f.close()'''
 
         
 

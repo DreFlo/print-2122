@@ -122,8 +122,7 @@ function addRowDataTable(selector, newDataArray){
 
 function readSchedule(){
     const fs = require("fs");
-    console.log("Changed schedules file in utils.js readSchedule()");
-    return fs.readFileSync("data/temp_workers.json", "utf8").trim(); 
+    return fs.readFileSync("./data/schedules.json", "utf8").trim(); 
 }
 /**
  * Reads the favorites file depending on the type. 

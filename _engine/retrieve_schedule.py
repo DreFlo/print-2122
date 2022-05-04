@@ -3,12 +3,11 @@ import sys
 from bs4 import BeautifulSoup as bs
 import json 
 import re
-from datetime import date
+from datetime import date, timedelta
 import datetime
 from handle_json import BuildJson
 
-# docents_schedule_path = "./data/schedules.json"
-docents_schedule_path = "./data/temp_workers.json"
+docents_schedule_path = "./data/schedules.json"
 
 def get_teachers_id():
     return sys.argv[1]
@@ -43,10 +42,7 @@ def must_scrape_sched(docent_id):
     if json_object.get(docent_id) == None: 
         return True 
     else:
-        if(docents_schedule_path == "./data/schedules.json"):
-            due_to = string_to_date(json_object.get(docent_id).get("due_to"))
-        else:
-            due_to = string_to_date(json_object.get(docent_id).get("class_schedule").get("due_to"))
+        due_to = string_to_date(json_object.get(docent_id).get("class_schedule").get("due_to"))
         return now >= due_to  
 
 def save_sched(schedule, due_to, docent_id):   
@@ -235,6 +231,10 @@ def get_vigilance_schedule(docent_code):
         dates = tds[0].text.split('-')
         date = dates[2] + '-' + dates[1] + '-' + dates[0]
         day_dt = datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2]))
+        start_wd = day_dt - timedelta(days=day_dt.weekday())
+        start_date = start_wd.strftime("%d-%m-%Y")
+        end_wd = start_wd + timedelta(days=5)
+        end_date = end_wd.strftime("%d-%m-%Y")
         all_dates.append(day_dt)
         day = day_dt.weekday()
 
@@ -250,7 +250,7 @@ def get_vigilance_schedule(docent_code):
 
         class_ = tds[2].text.split('-')
         class_name = class_[1].split('(')[0]
-        class_sigla = class_[0]
+        class_sigla = class_[0] + "(Exame)"
 
         rooms = tds[3].text
 
@@ -263,8 +263,8 @@ def get_vigilance_schedule(docent_code):
             "lesson_type": "",
             "link": "",
             "location": rooms,
-            "start_date": date,
-            "end_date": date,
+            "start_date": start_date,
+            "end_date": end_date,
             "teacher_name": name
         }
 
