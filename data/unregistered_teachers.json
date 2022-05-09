@@ -1,1 +1,1 @@
-{"unregisteredTeachers" : [{"name" : "Boris", "code" : 0, "contractStart" : null}, {"name" : "John", "code" : 1, "contractStart" : null}]}
+{"unregisteredTeachers":[{"name":"Tony","code":2,"contractStart":"2022-05-08T00:00:00.000Z","availableHours":10,"assignedHours":0},{"name":"Steve","code":3,"contractStart":"2022-05-15T00:00:00.000Z","availableHours":"20","assignedHours":0}],"error":false}

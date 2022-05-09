@@ -11,12 +11,16 @@ let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
 let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
 let unregisteredTeachers = JSON.parse(fs.readFileSync('./data/unregistered_teachers.json'))['unregisteredTeachers'];
+let tempUnregisteredTeachers;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
+document.querySelector('#newTeacherFormButton').addEventListener('click', createNewUnregisteredTeacher);
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
 document.querySelector('#closeUCDetailDialog').addEventListener('click', closeUCDialog);
 document.querySelector('#saveUCDetailDialog').addEventListener('click', saveUCDialog);
 document.querySelector("#tableYearInput").value = new Date().getFullYear();
+document.querySelector('#collapseTargetOptionsButton').addEventListener('click', toggleCollapseOptions);
+document.querySelector('#collapseTargetTeachersButton').addEventListener('click', toggleCollapseTeachers);
 
 function autocompleteCourses() {
     closeAutocompleteSugestions();
@@ -190,6 +194,7 @@ function buildTable() {
             tr.addEventListener('click', () => {
                 ucIndex = getUCIndex(uc.id);
                 editedUC = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
+                tempUnregisteredTeachers = JSON.parse(JSON.stringify(unregisteredTeachers));
                 editUC();
             });
 
@@ -391,8 +396,19 @@ function removeTeacherFromClassType(classType, teacher) {
             return;
         }
         newClassType.teachers.push(oldTeacher);
-    })
+    });
+    if (!teacher.underContract) {
+        removeAssignedHoursFromUnregisteredTeacher(teacher);
+    }
     return newClassType;
+}
+
+function removeAssignedHoursFromUnregisteredTeacher(teacher) {
+    tempUnregisteredTeachers.forEach((uT) => {
+        if (uT.code == teacher.code) {
+            uT.assignedHours -= teacher.hours;
+        }
+    });
 }
 
 function addNewTeacherArea(body, classType) {
@@ -444,9 +460,9 @@ function addNewTeacherArea(body, classType) {
 }
 
 function findUnregisterTeacherByCode(code) {
-    for (let i = 0; i < unregisteredTeachers.length; i++) {
-        if (unregisteredTeachers[i].code == code) {
-            return unregisteredTeachers[i];
+    for (let i = 0; i < tempUnregisteredTeachers.length; i++) {
+        if (tempUnregisteredTeachers[i].code == code) {
+            return tempUnregisteredTeachers[i];
         }
     }
 }
@@ -455,10 +471,18 @@ function addUnregisteredTeacher(classType) {
     let unregisteredTeacher = findUnregisterTeacherByCode(parseInt(document.querySelector('#teacher-code-input-' + classType).value));
     let hoursInput = document.querySelector('#teacher-hours-input-' + classType).value;
     let hours = hoursInput == '' ? 0 : parseInt(hoursInput);
-    let newTeacher = {"name" : unregisteredTeacher.name, "code" : unregisteredTeacher.code, "hours" : hours, "underContract" : false, "contractStart" : unregisteredTeacher.contractStart};
-    editedUC.info[classType].teachers.push(newTeacher);
-    editedUC.info[classType].fulfilled += hours;
-    editUC();
+    // TODO MENSAGEM DE ERRO - O TOAST N TA A APARECER, MAYBE FAZ-SE C/ UM POPOVER
+    if (unregisteredTeacher.assignedHours + hours > unregisteredTeacher.availableHours) {
+        console.log("here");
+        toast.show('Este/a professor/a apenas está disponível por ' + unregisteredTeacher.availableHours + ' semanalmente, o total seria ' + (unregisteredTeacher.assignedHours + hours), toastColor.RED);
+    }
+    else {
+        let newTeacher = {"name" : unregisteredTeacher.name, "code" : unregisteredTeacher.code, "hours" : hours, "underContract" : false, "contractStart" : unregisteredTeacher.contractStart};
+        editedUC.info[classType].teachers.push(newTeacher);
+        editedUC.info[classType].fulfilled += hours;
+        unregisteredTeacher.assignedHours += hours;
+        editUC();
+    }
 }
 
 function autocompleteTeacher(input, classType) {
@@ -507,6 +531,7 @@ function saveUCDialog() {
     tables[selectedTableIndex].table[ucIndex] = editedUC;
     buildTable();
     saveTables();
+    saveUnregisteredTeachers();
     closeUCDialog();
 }
 
@@ -533,6 +558,146 @@ function removeTable(index) {
         newTables.push(tables[i]);
     }
     tables = newTables;
+}
+
+function createNewUnregisteredTeacher() {
+    let name = document.querySelector('#newTeacherNameInput').value;
+    let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
+    let date = new Date(document.querySelector('#newTeacherContractStartInput').value);
+    
+    toast.show("A criar...", toastColor.BLUE, false);
+    pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString()]);
+}
+
+function handleAddUnregisteredTeacher(data) {
+    if (data.error == "true") {
+        toast.show("Erro ao criar", toastColor.RED);
+    }
+    else {
+        unregisteredTeachers = data['unregisteredTeachers'];
+        toast.show("Criado", toastColor.GREEN);
+    }
+}
+
+function saveUnregisteredTeachers() {
+    unregisteredTeachers = JSON.parse(JSON.stringify(tempUnregisteredTeachers));
+    fs.writeFileSync('./data/unregistered_teachers.json', JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
+}
+
+function toggleCollapseOptions() {
+    let target = document.querySelector("#collapseTargetOptions");
+    if (target.classList.contains("collapse")) {
+        target.classList.remove("collapse");
+        this.classList.add("btn-danger");
+        this.classList.remove("btn-primary");
+        this.textContent = "Esconder Opções";
+    }
+    else {
+        target.classList.add("collapse");
+        this.classList.remove("btn-danger");
+        this.classList.add("btn-primary");
+        this.textContent = "Mostar Opções";
+    }
+}
+
+function toggleCollapseTeachers() {
+    let target = document.querySelector("#collapseTargetTeachers");
+    if (target.classList.contains("collapse")) {
+        target.classList.remove("collapse");
+        this.classList.add("btn-danger");
+        this.classList.remove("btn-primary");
+        this.textContent = "Esconder Professores";
+        target.textContent = '';
+        buildUnregisteredTeachersTable();
+    }
+    else {
+        target.classList.add("collapse");
+        this.classList.remove("btn-danger");
+        this.classList.add("btn-primary");
+        this.textContent = "Mostar Professores Não Registados";
+    }
+}
+
+function buildUnregisteredTeachersTable() {
+    let div = document.querySelector("#collapseTargetTeachers");
+    let table = document.createElement('table');
+    table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
+
+    let thead = buildTableHead([
+        'Nome',
+        'Horas Disponíveis',
+        'Horas Atribuídas',
+        'Início de Contrato'
+    ]);
+    
+    table.appendChild(thead);
+
+    let tbody = document.createElement('tbody');
+
+    tempUnregisteredTeachers = JSON.parse(JSON.stringify(unregisteredTeachers))
+
+    for (let i = 0; i < tempUnregisteredTeachers.length; i++) {
+        let teacher = tempUnregisteredTeachers[i];
+
+        let tr = document.createElement('tr');
+
+        // Teacher Name
+        let td = document.createElement('td');
+
+        td.textContent = teacher.name;
+
+        tr.appendChild(td);
+
+        // Available Hours
+        td = document.createElement('td');
+
+        let input = document.createElement('input');
+        input.classList.add('form-control');
+        input.value = teacher.availableHours;
+        input.addEventListener('input', () => {
+            let newHours = (input.value == '' ? 0 : parseInt(input.value))
+            // TODO Error msg
+            if (newHours < teacher.assignedHours) {
+                console.log("Error");
+            }
+            else {
+                teacher.availableHours = newHours;
+            }
+        });
+        td.appendChild(input);
+
+        tr.appendChild(td);
+
+        // Assigned Hours
+        td = document.createElement('td');
+
+        td.textContent = teacher.assignedHours;
+
+        tr.appendChild(td);
+
+        // Contract Start
+        td = document.createElement('td');
+
+        let date = new Date(teacher.contractStart)
+
+        td.textContent = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+
+        tr.appendChild(td);
+
+
+        tbody.appendChild(tr);
+    }
+
+    table.appendChild(tbody);
+
+    
+    let save = document.createElement('button');
+    save.addEventListener('click', saveUnregisteredTeachers);
+    save.classList.add('btn', 'btn-success');
+    save.textContent = 'Guardar Alterações'
+
+    div.appendChild(table);
+    div.appendChild(save);
 }
 
 window.onload = function() {
