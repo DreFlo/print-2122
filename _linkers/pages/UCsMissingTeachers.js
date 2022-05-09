@@ -564,9 +564,11 @@ function createNewUnregisteredTeacher() {
     let name = document.querySelector('#newTeacherNameInput').value;
     let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
     let date = new Date(document.querySelector('#newTeacherContractStartInput').value);
+    let reminder = document.querySelector('#newTeacherReminderCheckbox').checked;
+    console.log(reminder);
     
     toast.show("A criar...", toastColor.BLUE, false);
-    pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString()]);
+    pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString(), reminder]);
 }
 
 function handleAddUnregisteredTeacher(data) {
