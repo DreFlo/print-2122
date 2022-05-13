@@ -1,3 +1,4 @@
+from numpy import double
 import mechanize as mc
 from bs4 import BeautifulSoup as bs
 import Schedule as sc
@@ -5,6 +6,10 @@ import re
 import collections
 import Login
 import pandas as pd
+import requests
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
+
 
 """
 This file contains some important and base functions used for many other files. 
@@ -226,8 +231,19 @@ def handleSpecification(spec):
 
 # UC FUNCTIONS
 
-def get_numeric_code_from_link(link):
-    return link.replace('ucurr_geral.ficha_uc_view?pv_ocorrencia_id=', '')
+def get_variable_from_url(url, requestField):
+    """
+    Get a request from a url and return the value
+    :type url: str
+    :param url: Url with a request
+
+    :type requestField: str
+    :param requestField: Request with a value
+
+    :return: Value form request
+    """
+    parsed_url = urlparse(url)
+    return parse_qs(parsed_url.query)[requestField][0]
 
 def get_UC_from_query(UCCode, year):
     results = []
@@ -248,11 +264,115 @@ def get_UC_from_query(UCCode, year):
                     elems[0].text,
                     elems[1].text,
                     elems[2].text,
-                    get_numeric_code_from_link(elems[2].find('a')['href'])
+                    get_variable_from_url(elems[2].find('a')['href'], 'pv_ocorrencia_id')
                     ]
             results.append(result)
 
         page_number += 1
 
     return results
+
+def get_courses():
+    """
+    Get all courses from Feup
+    :return: Dictionary with name and code of every course to update json
+    """
+    url = 'https://sigarra.up.pt/feup/pt/cur_geral.cur_inicio'
+
+    html = get_html(mc.Browser(),url)
+    soup = bs(html)
+
+    if soup.find(id="erro"):
+        return None
+
+    results = {"courses" : []}
+
+    ulT = [soup.find("ul", {"id": "L_a"}), soup.find("ul", {"id": "M_a"}), soup.find("ul", {"id": "D_a"})]
+
+    for ul in ulT:
+        liT = ul.find_all('li')
+        for li in liT:
+            aT = li.find('a')
+            results["courses"].append({"name" : aT.text, "code": get_variable_from_url(aT['href'], 'pv_curso_id')})
+
+    return results
+
         
+def get_course_UCs(course_id, year):
+    UC_links = []
+    page_number = 1
+    while True:
+        url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_curso_id=' + str(course_id)
+
+        html = get_html(mc.Browser(),url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            break
+
+        for row in soup.find_all('tr', {'class' : 'd'}):
+            elems = row.find_all('td')
+            UC_links.append('https://sigarra.up.pt/feup/pt/' + elems[2].find('a')['href'])
+
+        page_number += 1
+
+    return UC_links
+
+def extract_teacher_code(link):
+    return int(link.replace('func_geral.formview?p_codigo=', ''))
+
+def string_to_float(str):
+    halves = str.split(',')
+    return float('.'.join(halves))
+
+def get_UC_teacher_info(url):
+    info = { 
+                'theoretical' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
+                },
+                'practical' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
+                }
+            }
+
+    html = get_html(mc.Browser(), url)
+    soup = bs(html)
+
+    id = get_variable_from_url(url, 'pv_ocorrencia_id')
+
+    name = soup.find_all('h1')[1].text
+    tables = soup.find_all('table', {'class' : 'dados'})
+
+    if len(tables) < 4:
+        return {'name' : name , 'id' : id, 'info' : info}
+
+    switch = False
+
+    for row in tables[3].find_all('tr', {'class' : 'd'}):
+        if row.find('td', {'class' : 'k'}):
+            if not switch:
+                switch = True
+                info['theoretical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+            else:
+                switch = False
+                info['practical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+        else:
+            teacher = {
+                'name' : row.find('td', {'class' : 't'}).text,
+                'code' : extract_teacher_code(row.find('td', {'class' : 't'}).find('a')['href']) if row.find('td', {'class' : 't'}).find('a') else None,
+                'hours' : string_to_float(row.find('td', {'class' : 'n'}).text),
+                'underContract' : True,
+                'contractStart' : None
+            }
+            if switch:
+                info['theoretical']['fulfilled'] += teacher['hours']
+                info['theoretical']['teachers'].append(teacher)
+            else:
+                info['practical']['fulfilled'] += teacher['hours']
+                info['practical']['teachers'].append(teacher)
+
+    return {'name' : name , 'id' : id, 'info' : info}

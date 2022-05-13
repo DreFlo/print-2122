@@ -34,6 +34,12 @@ let header = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white
     '        <li class="nav-item">\n' +
     '          <a class="nav-link" href="../_views/student_uc_conflicts.html">Conflito de Alunos</a>\n' +
     '        </li>\n' +
+    '        <li class="nav-item">\n' +
+    '          <a class="nav-link" href="../_views/ucs_missing_teachers_table.html">Tabela Professores UCs</a>\n' +
+    '        </li>\n' +
+    '        <li class="nav-item">\n' +
+    '          <a class="nav-link" href="../_views/settings.html">Configurações</a>\n' +
+    '        </li>\n' +
     '      </ul>\n';
 
 

@@ -11,3 +11,5 @@ class BuildJson:
 
     def getJson(self):
         return json.dumps(self.dictionary)
+
+
