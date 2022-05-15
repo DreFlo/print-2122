@@ -118,14 +118,19 @@ def get_media(soup):
 
 
 def get_curricular_unit_students(UC_code):
+    '''
+    Get all students in a curricular unit
+    '''
     i = 1
     students = []
+    # Go through all results pages
     while True:
         url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + str(i) +"&pv_ocorrencia_id=" + str(UC_code)
 
         html = get_html_logged(url)
         soup = bs(html)
 
+        # When has gone through all results pages
         if soup.find(id="erro"):
             break
         
@@ -247,15 +252,21 @@ def get_variable_from_url(url, requestField):
     return parse_qs(parsed_url.query)[requestField][0]
 
 def get_UC_from_query(UCCode, year):
+    '''
+    Get UC from code and year
+    :returns: List of lists with UC name, code, year and id
+    '''
     results = []
     page_number = 1
 
+    # Iterate through results pages
     while True:
         url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_uc_codigo=' + str(UCCode)
 
         html = get_html(mc.Browser(),url)
         soup = bs(html)
 
+        # When has gone through all results pages
         if soup.find(id="erro"):
             break
 
@@ -300,6 +311,10 @@ def get_courses():
 
         
 def get_course_UCs(course_id, year):
+    '''
+    Get all UCs for a course
+    :returns: List of tuple-3's with UC period, code, and link
+    '''
     UCs = []
     page_number = 1
     while True:
@@ -327,6 +342,11 @@ def string_to_float(str):
     return float('.'.join(halves))
 
 def get_UC_teacher_info(UC):
+    '''
+    Get all techer information for UC
+    :returns: Dictionary with UC name, period, code, id and teacher info where teacher info is a dictionary with diferent class types (theoretical, practical, lab, and other)
+    with total time, fulfulled time and an array with the attributed teachers 
+    '''
     period = UC[0]
     code = UC[1]
     url = UC[2]
@@ -374,7 +394,9 @@ def get_UC_teacher_info(UC):
 
     type = None
 
+    # For each row in teacher information table
     for row in table.find_all('tr', {'class': 'd'}):
+        # Switch current class type
         if row.find('td', {'class' : 'k'}):
             title = row.find_all('td', {'class': 'k'})[0].find('a').text
             if  title == 'Teóricas' or title == 'Teórica':
@@ -386,6 +408,7 @@ def get_UC_teacher_info(UC):
             else:
                 type = 'other'
             info[type]['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+        #Add new teacher
         else:
             teacher = {
                 'name' : row.find('td', {'class' : 't'}).text,

@@ -17,6 +17,7 @@ def get_available_hours():
 def get_reminder():
     return sys.argv[4]
 
+# Create .ics file where user chooses with reminder to add teacher to sigarra
 def create_reminder():
     contractStart = parser.parse(get_contract_start())
 
