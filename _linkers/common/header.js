@@ -28,14 +28,14 @@ let header = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white
     '          <a class="nav-link" href="../_views/favorite.html">Favoritos</a>\n' +
     '        </li>\n' +
     '        </li>\n' +
+    '        <li class="nav-item dropdown">\n' +
+    '          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Conflitos</a>\n' +
+    '          <div class="dropdown-menu">\n' +
+    '            <a class="dropdown-item" href="../_views/mass_schedule_conflicts.html">Conflito de Horários de Docentes</a>\n' +
+    '            <a class="dropdown-item" href="../_views/student_uc_conflicts.html">Sobreposição de Alunos entre Unidades Curriculares</a>\n' +
+    '          </div>\n' +
     '        <li class="nav-item">\n' +
-    '          <a class="nav-link" href="../_views/mass_schedule_conflicts.html">Conflito de horários</a>\n' +
-    '        </li>\n' +
-    '        <li class="nav-item">\n' +
-    '          <a class="nav-link" href="../_views/student_uc_conflicts.html">Conflito de Alunos</a>\n' +
-    '        </li>\n' +
-    '        <li class="nav-item">\n' +
-    '          <a class="nav-link" href="../_views/ucs_missing_teachers_table.html">Tabela Professores UCs</a>\n' +
+    '          <a class="nav-link" href="../_views/ucs_missing_teachers_table.html">Atribuição de Docentes a Unidades Curriculares</a>\n' +
     '        </li>\n' +
     '        <li class="nav-item">\n' +
     '          <a class="nav-link" href="../_views/settings.html">Configurações</a>\n' +

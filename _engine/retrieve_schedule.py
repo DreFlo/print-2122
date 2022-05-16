@@ -205,6 +205,7 @@ def get_class_in_td(soup_td, start_date, end_date, start_time, day, teacher_name
 def convert_time(index):   
     return 8 + index * 0.5
 
+# Retrieves a given teachers vigilance schedule
 def get_vigilance_schedule(docent_code):
     schedules = []
 
