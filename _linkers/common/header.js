@@ -66,4 +66,3 @@ const logoutButton = '<button class="btn text-white" id="logout" aria-expanded="
 if (getLogged() === "true") header += logoutButton;
 else header += loginForm;
 body.innerHTML = header + body.innerHTML;
-

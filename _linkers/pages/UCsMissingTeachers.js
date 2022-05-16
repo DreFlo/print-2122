@@ -2,6 +2,8 @@ const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
 const fs = require('fs');
 
+console.log(__dirname);
+
 let toast = new ToastComponent();
 let tables;
 let courses;

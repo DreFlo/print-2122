@@ -12,11 +12,8 @@
   },
   "build": {
     "appId": "com.Sigtools.app",
-    "asar": true,
-    "asarUnpack": [
-      "_engine/askInfo.py",
-      "_engine/Core.py",
-      "webdev/"
+    "files" : [
+      "**/*"
     ]
   },
   "repository": {

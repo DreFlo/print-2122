@@ -4,6 +4,8 @@ import sys
 from functools import reduce
 import multiprocessing as mp
 
+console.log
+
 def get_UC_codes():
     codes_string =  sys.argv[1]
     return codes_string.split(sep=",")
