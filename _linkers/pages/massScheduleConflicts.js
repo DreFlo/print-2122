@@ -1,6 +1,7 @@
 const {pyCall} = require("../_linkers/pyCall.js");
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
+//const { setInvalidInput } = require("../utils/utils.js");
 
 let docentsCode;
 let docentsCodeArray;
@@ -8,8 +9,56 @@ let docentsNumber;
 let startDate; 
 let endDate; 
 let toast = new ToastComponent();
+let use_class_schedule;
+let use_exam_schedule;
 
 document.querySelector("button[type=submit]").addEventListener("click", (event) => handleScheduleTime(event));
+
+function validateInput(){
+    docentsCodeElement = document.querySelector("#code"); 
+    startDateElement = document.querySelector("#start-date");
+    endDateElement = document.querySelector("#end-date"); 
+    academicYearElement = document.querySelector("#academic-year"); 
+
+    let isValid = true; 
+
+    if (docentsCodeElement.value.trim() == ""){
+        setInvalidInput(docentsCodeElement, "Este campo deve ser preenchido.");   
+        isValid = false; 
+    } else setValidInput(docentsCodeElement); 
+
+    let noDate = false;
+    if (startDateElement.value.trim() == "") {
+        setInvalidInput(startDateElement, "Este campo deve ser preenchido.");   
+        isValid = false; 
+        noDate = true;
+    }
+    if (endDateElement.value.trim() == "") {
+        setInvalidInput(endDateElement, "Este campo deve ser preenchido.");   
+        isValid = false; 
+        noDate = true;
+    }
+
+    startDateDate = new Date(startDateElement.value);
+    endDateDate = new Date(endDateElement.value);
+    if (!noDate && (endDateDate < startDateDate)){
+        setInvalidInput(startDateElement, "Esta data deve ser menor que a de fim.");
+        setInvalidInput(endDateElement, "Esta data deve ser maior que a de início.");
+        isValid = false;
+    } 
+    else if (!noDate) {
+        setValidInput(startDateElement);
+        setValidInput(endDateElement);
+    }
+
+
+    if (academicYearElement.value.trim() == "") {
+        setInvalidInput(academicYearElement, "Este campo deve ser preenchido.");   
+        isValid = false; 
+    } else setValidInput(academicYearElement); 
+
+    return isValid; 
+}
 
 // REQUESTING ----------------------------------------------------------------
 
@@ -20,40 +69,41 @@ document.querySelector("button[type=submit]").addEventListener("click", (event) 
  */
 function handleScheduleTime(event){
     event.preventDefault(); 
-    //if (!validateInput()) return;  
+    if (!validateInput()) return;  
     document.querySelector(".scheds").innerHTML = "";   
 
     // Getting the input. 
     docentsCode = splitInput(document.querySelector("#code").value);
     startDate = document.querySelector("#start-date").value.trim(); 
     endDate = document.querySelector("#end-date").value.trim();  
-    academicYear = document.querySelector("#academic-year").value.trim(); 
+    academicYear = document.querySelector("#academic-year").value.trim();
+    let schedule_type = document.querySelector("#scheduleType").value;
+    use_class_schedule = false;
+    use_exam_schedule = false;
+    switch(schedule_type){
+        case "classes":
+            use_class_schedule = true;
+            break;
+        case "exams":
+            use_exam_schedule = true;
+            break;
+        case "both":
+            use_class_schedule = true;
+            use_exam_schedule = true;
+            break;
+    }
 
-    toast.show("Atualizando horários...", toastColor.BLUE, false);  
-
-    // Request to update teachers information. 
-    pyCall("retrieve_schedule", "final_handleScheduleTime", [docentsCode, academicYear]);
+    final_handleScheduleTime();
 }  
 
 /**
- * Function that will be called after the server request.  
- * @param {JSON} data - Answer from the backend. In the context of this function it will only contains if the operations has succeeded or not. 
+ * Function that will be called after the server request. 
  */
-function final_handleScheduleTime(data){
-    if (data.error === "true") { 
-        toast.show("Não foi possível processar dados.", toastColor.RED); 
-    }
-    else {
-        console.log(data);
-        toast.show("Dados atualizados!", toastColor.GREEN);
-        let groupedScheds = groupByDate(); 
-        let mergedScheds = mergeDates(groupedScheds);
-        console.log("Merged:");
-        console.log(mergedScheds);  
-        let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd);
-        Table.show();
-    }
-    
+function final_handleScheduleTime(){ 
+    let groupedScheds = groupByDate(); 
+    let mergedScheds = mergeDates(groupedScheds);
+    let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd);
+    Table.show();
 }  
 
 // "SCHEDULE COLLISION" ------------------------------------------------------------- 
@@ -64,27 +114,36 @@ function final_handleScheduleTime(data){
  * @returns {JSON} in the format {date: [shedules...], date2: [schedules...]}
  */
 function groupByDate(){ 
-    
     let groupedScheds = {}
     let inputTimeFrame = new TimeFrame(stringToDate_yyyymmdd(startDate), stringToDate_yyyymmdd(endDate)); 
     let scheduleJson = JSON.parse(readSchedule());     
     docentsCodeArray = docentsCode.split(";").map(element => element.trim());  
     docentsNumber = docentsCodeArray.length;   
 
-    console.log(docentsCodeArray);
     docentsCodeArray.forEach(id => {
-        scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
-            let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
-            if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
-                sched['teacher'] = id; 
-                let key = currTimeFrame.toString(); 
-                if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
-                else groupedScheds[key] = [sched];
-            }
-        });   
-    })      
-
-
+        if(use_class_schedule){
+            scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
+                let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
+                if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
+                    sched['teacher'] = id; 
+                    let key = currTimeFrame.toString(); 
+                    if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
+                    else groupedScheds[key] = [sched];
+                }
+            });
+        }
+        if(use_exam_schedule){
+            scheduleJson[id]['exam_schedule']['schedule'].forEach(sched => {     
+                let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
+                if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
+                    sched['teacher'] = id; 
+                    let key = currTimeFrame.toString(); 
+                    if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
+                    else groupedScheds[key] = [sched];
+                }
+            });
+        } 
+    })
     return groupedScheds;
 }
  
