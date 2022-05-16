@@ -68,32 +68,37 @@ function validateInput(){
  * @returns null.
  */
 function handleScheduleTime(event){
-    event.preventDefault(); 
-    if (!validateInput()) return;  
-    document.querySelector(".scheds").innerHTML = "";   
-
-    // Getting the input. 
-    docentsCode = splitInput(document.querySelector("#code").value);
-    startDate = document.querySelector("#start-date").value.trim(); 
-    endDate = document.querySelector("#end-date").value.trim();  
-    academicYear = document.querySelector("#academic-year").value.trim();
-    let schedule_type = document.querySelector("#scheduleType").value;
-    use_class_schedule = false;
-    use_exam_schedule = false;
-    switch(schedule_type){
-        case "classes":
-            use_class_schedule = true;
-            break;
-        case "exams":
-            use_exam_schedule = true;
-            break;
-        case "both":
-            use_class_schedule = true;
-            use_exam_schedule = true;
-            break;
+    event.preventDefault();
+    if (getLogged() != "true") {
+        toast.show("Não está autenticado", toastColor.RED);
     }
+    else {
+        if (!validateInput()) return;  
+        document.querySelector(".scheds").innerHTML = "";   
 
-    final_handleScheduleTime();
+        // Getting the input. 
+        docentsCode = splitInput(document.querySelector("#code").value);
+        startDate = document.querySelector("#start-date").value.trim(); 
+        endDate = document.querySelector("#end-date").value.trim();  
+        academicYear = document.querySelector("#academic-year").value.trim();
+        let schedule_type = document.querySelector("#scheduleType").value;
+        use_class_schedule = false;
+        use_exam_schedule = false;
+        switch(schedule_type){
+            case "classes":
+                use_class_schedule = true;
+                break;
+            case "exams":
+                use_exam_schedule = true;
+                break;
+            case "both":
+                use_class_schedule = true;
+                use_exam_schedule = true;
+                break;
+        }
+
+        final_handleScheduleTime();
+    }
 }  
 
 /**

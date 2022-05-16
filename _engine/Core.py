@@ -421,29 +421,30 @@ def get_UC_teacher_info(UC):
     type = None
 
     # For each row in teacher information table
-    for row in table.find_all('tr', {'class': 'd'}):
-        # Switch current class type
-        if row.find('td', {'class' : 'k'}):
-            title = row.find_all('td', {'class': 'k'})[0].find('a').text
-            if  title == 'Teóricas' or title == 'Teórica':
-                type = 'theoretical'
-            elif title == 'Teórico-Práticas' or title == 'Teórico-Prática':
-                type = 'practical'
-            elif title == 'Práticas Laboratoriais':
-                type = 'laboratorial'
+    if table != None:
+        for row in table.find_all('tr', {'class': 'd'}):
+            # Switch current class type
+            if row.find('td', {'class' : 'k'}):
+                title = row.find_all('td', {'class': 'k'})[0].find('a').text
+                if  title == 'Teóricas' or title == 'Teórica':
+                    type = 'theoretical'
+                elif title == 'Teórico-Práticas' or title == 'Teórico-Prática':
+                    type = 'practical'
+                elif title == 'Práticas Laboratoriais':
+                    type = 'laboratorial'
+                else:
+                    type = 'other'
+                info[type]['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+            #Add new teacher
             else:
-                type = 'other'
-            info[type]['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
-        #Add new teacher
-        else:
-            teacher = {
-                'name' : row.find('td', {'class' : 't'}).text,
-                'code' : extract_teacher_code(row.find('td', {'class' : 't'}).find('a')['href']) if row.find('td', {'class' : 't'}).find('a') else None,
-                'hours' : string_to_float(row.find('td', {'class' : 'n'}).text),
-                'underContract' : True,
-                'contractStart' : None
-            }
-            info[type]['fulfilled'] += teacher['hours']
-            info[type]['teachers'].append(teacher)
+                teacher = {
+                    'name' : row.find('td', {'class' : 't'}).text,
+                    'code' : extract_teacher_code(row.find('td', {'class' : 't'}).find('a')['href']) if row.find('td', {'class' : 't'}).find('a') else None,
+                    'hours' : string_to_float(row.find('td', {'class' : 'n'}).text),
+                    'underContract' : True,
+                    'contractStart' : None
+                }
+                info[type]['fulfilled'] += teacher['hours']
+                info[type]['teachers'].append(teacher)
 
     return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}

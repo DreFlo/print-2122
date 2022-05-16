@@ -353,6 +353,8 @@ function buildClassTypeArea(body, type) {
     if (editedUC.info[type].teachers.length != 0) {
         buildTeachersClassTypeArea(body, type);
     }
+
+    addNewTeacherArea(body, type);
 }
 
 // List and edit teachers for a given class type
@@ -420,7 +422,6 @@ function buildTeachersClassTypeArea(body, type) {
 
     body.appendChild(table);
 
-    addNewTeacherArea(body, type);
 }
 
 // Handle removing teacher from a UC class type
