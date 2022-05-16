@@ -42,6 +42,7 @@
     "clipboard": "^2.0.6",
     "lodash.deburr": "^4.1.0",
     "node-sass": "^6.0.1",
+    "normalizer": "^1.2.7",
     "python": "^0.0.4",
     "python-shell": "^1.0.8",
     "require": "^2.4.20",

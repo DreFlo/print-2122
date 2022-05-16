@@ -1,11 +1,4 @@
-/**
- * @file This file is responsible for generating the conflicting table for timers. 
- * @author Juliane Marubayashi 
- * 
- */
-
 const {pyCall} = require("../_linkers/pyCall.js");
-const {eventSelectFavorite} = require("../_linkers/common/selectFavorite"); 
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
 
@@ -16,64 +9,7 @@ let startDate;
 let endDate; 
 let toast = new ToastComponent();
 
-let favoritesDict = jsonToArray(JSON.parse(readFavorites("docents")))
-$('#table-wrapper-favorites').DataTable({
-    data: favoritesDict,
-    columns: [
-        {title: 'Código'},
-        {title: 'Tipo'}, 
-        {title: 'Nome'}, 
-        {title: 'Sigla'}, 
-    ], 
-    "columnDefs": [
-        {
-            "targets": [ 1 ],
-            "visible": false,
-            "searchable": false
-        },
-    ]
-});
-eventSelectFavorite(); 
-
-
 document.querySelector("button[type=submit]").addEventListener("click", (event) => handleScheduleTime(event));
-
-/**
- * Checks if the input given by the user is valid. 
- * @returns True if the input is valid. False otherwise. 
- */
-function validateInput(){
-    docentsCodeElement = document.querySelector("#code"); 
-    startDateElement = document.querySelector("#start-date");
-    endDateElement = document.querySelector("#end-date"); 
-    academicYearElement = document.querySelector("#academic-year"); 
-
-    let isValid = true; 
-
-    if (docentsCodeElement.value.trim() == ""){
-        setInvalidInput(docentsCodeElement, "Este campo deve ser preenchido.");   
-        isValid = false; 
-    } else setValidInput(docentsCodeElement); 
-
-    if (startDateElement.value.trim() == "") {
-        setInvalidInput(startDateElement, "Este campo deve ser preenchido.");   
-        isValid = false; 
-    } else setValidInput(startDateElement); 
-
-    if (endDateElement.value.trim() == "") {
-        setInvalidInput(endDateElement, "Este campo deve ser preenchido.");   
-        isValid = false; 
-    } else setValidInput(endDateElement);  
-
-    if (academicYearElement.value.trim() == "") {
-        setInvalidInput(academicYearElement, "Este campo deve ser preenchido.");   
-        isValid = false; 
-    } else setValidInput(academicYearElement); 
-
-
-
-    return isValid; 
-}  
 
 // REQUESTING ----------------------------------------------------------------
 
@@ -82,13 +18,13 @@ function validateInput(){
  * @param {Event} event 
  * @returns null.
  */
-function handleScheduleTime(event){  
+function handleScheduleTime(event){
     event.preventDefault(); 
-    if (!validateInput()) return;  
+    //if (!validateInput()) return;  
     document.querySelector(".scheds").innerHTML = "";   
 
     // Getting the input. 
-    docentsCode = splitInput(document.querySelector("#code").value); 
+    docentsCode = splitInput(document.querySelector("#code").value);
     startDate = document.querySelector("#start-date").value.trim(); 
     endDate = document.querySelector("#end-date").value.trim();  
     academicYear = document.querySelector("#academic-year").value.trim(); 
@@ -107,14 +43,17 @@ function final_handleScheduleTime(data){
     if (data.error === "true") { 
         toast.show("Não foi possível processar dados.", toastColor.RED); 
     }
-    else { 
+    else {
         console.log(data);
         toast.show("Dados atualizados!", toastColor.GREEN);
         let groupedScheds = groupByDate(); 
-        let mergedScheds = mergeDates(groupedScheds);  
-        let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd); 
+        let mergedScheds = mergeDates(groupedScheds);
+        console.log("Merged:");
+        console.log(mergedScheds);  
+        let Table = new ScheduleTable(mergedScheds, matrixValue, buildTd);
         Table.show();
     }
+    
 }  
 
 // "SCHEDULE COLLISION" ------------------------------------------------------------- 
@@ -132,14 +71,15 @@ function groupByDate(){
     docentsCodeArray = docentsCode.split(";").map(element => element.trim());  
     docentsNumber = docentsCodeArray.length;   
 
+    console.log(docentsCodeArray);
     docentsCodeArray.forEach(id => {
-        scheduleJson[id]['schedule'].forEach(sched => {     
+        scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
             let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
             if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
                 sched['teacher'] = id; 
                 let key = currTimeFrame.toString(); 
                 if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
-                else groupedScheds[key] = [sched]; 
+                else groupedScheds[key] = [sched];
             }
         });   
     })      
@@ -166,16 +106,17 @@ function groupByDate(){
  */
 function mergeDates(scheds){
 
-    let chosenDates = selectDates(scheds); 
+    let chosenDates = selectDates(scheds);
     let chosenDatesDict = Object.keys(scheds).filter(key => chosenDates.includes(key)).reduce((res, key) => (res[key] = scheds[key], res), {});     // filter dictionary. 
     let nonChosenDatesDict = Object.keys(scheds).filter(key => !chosenDates.includes(key)).reduce((res, key) => (res[key] = scheds[key], res), {});
-
     Object.keys(nonChosenDatesDict).forEach(nonChosen => {  
         let nonChosenDate = nonChosen.split(" to ");  
-        let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[0]))
+        //let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[0]));
+        let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[1]));
         chosenDates.forEach(chosen => {
             let chosenDate = chosen.split(" to ");  
-            let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[0]))  
+            //let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[0]));
+            let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[1]));
             if (chosenTimeFrame.isOverlapping(nonChosenTimeFrame) || nonChosenTimeFrame.isOverlapping(chosenTimeFrame)){
                 chosenDatesDict[chosen].push(...nonChosenDatesDict[nonChosen]);
             }

@@ -4,9 +4,11 @@ from bs4 import BeautifulSoup as bs
 import json 
 import re
 from datetime import date
+import datetime
 from handle_json import BuildJson
 
-docents_schedule_path = "./data/schedules.json"
+# docents_schedule_path = "./data/schedules.json"
+docents_schedule_path = "./data/temp_workers.json"
 
 def get_teachers_id():
     return sys.argv[1]
@@ -40,8 +42,11 @@ def must_scrape_sched(docent_id):
     f.close()
     if json_object.get(docent_id) == None: 
         return True 
-    else: 
-        due_to = string_to_date(json_object.get(docent_id).get("due_to"))
+    else:
+        if(docents_schedule_path == "./data/schedules.json"):
+            due_to = string_to_date(json_object.get(docent_id).get("due_to"))
+        else:
+            due_to = string_to_date(json_object.get(docent_id).get("class_schedule").get("due_to"))
         return now >= due_to  
 
 def save_sched(schedule, due_to, docent_id):   
@@ -56,14 +61,17 @@ def save_sched(schedule, due_to, docent_id):
     docent_json = {'due_to': due_to, 'schedule': schedule} 
     f = open(docents_schedule_path, "r+", encoding="utf-8")
     all_schedules = json.loads(f.read())  
-    all_schedules[docent_id] = docent_json
+    if(docents_schedule_path == "./data/schedules.json"):
+        all_schedules[docent_id] = docent_json
+    else:
+        all_schedules[docent_id]['class_schedule'] = docent_json
     json_object = json.dumps(all_schedules, indent=4, ensure_ascii=False)
     f.seek(0)
     f.write(json_object)
     f.truncate()
     f.close()
 
-def get_complete_schedule(docent_id):  
+def get_complete_schedule(docent_id, academic_year = 0):  
     """Scrape all the docent schedules from sigarra in a year.
 
     Args:
@@ -76,13 +84,17 @@ def get_complete_schedule(docent_id):
     # When will this schedule not be valid anymore. 
     due_to = date.today()            
     # In a year a docent has many schedules. Now we are retrieving these links. 
-    links_schedules, soup = Core.get_links_schedules(docent_id, get_academic_year()) 
-    teacher_name = Core.get_teacher_name_schedule(soup)
 
+    if(academic_year == 0):
+        academic_year == get_academic_year()
+    
+    links_schedules, soup = Core.get_links_schedules(docent_id, academic_year)
+    teacher_name = Core.get_teacher_name_schedule(soup)
+    
     for link in links_schedules: 
         html = Core.get_html_logged(link) 
         soup = bs(html, "html.parser") 
-        start_date, end_date = extract_period_from_soup(soup)  
+        start_date, end_date = extract_period_from_soup(soup)
         sched = extract_table_schedule(soup, start_date, end_date, teacher_name)  
         schedules += sched 
         # Extracting the ending date
@@ -196,12 +208,70 @@ def get_class_in_td(soup_td, start_date, end_date, start_time, day, teacher_name
 # Convert the index in time.
 def convert_time(index):   
     return 8 + index * 0.5
+
+def get_vigilance_schedule(docent_code):
+    schedules = []
+
+    url = "https://sigarra.up.pt/feup/pt/vig_geral.docentes_vigilancias_list?p_func_codigo=" + str(docent_code)
+    html = Core.get_html_logged(url)
+    soup = bs(html)
+
+    name = soup.find_all('h1')[1].text[15:]
+
+    table = soup.find_all('table', {'class': 'dadossz'})[0]
+
+    #Sem vigilancias
+    if(len(table) == 0):
+        return []
+
+    trs = table.find_all('tr')
+    trs.pop(0)
+
+    for tr in trs:
+        tds = tr.find_all('td')
+
+        dates = tds[0].text.split('-')
+        date = dates[2] + '-' + dates[1] + '-' + dates[0]
+        day = datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2])).weekday()
+
+        times = tds[1].text.split('-')
+        start = times[0]
+        start_split = start.split(':')
+        end_split = times[1].split(':')
+
+        start_dt = datetime.datetime(1, 1, 1, int(start_split[0]), int(start_split[1]))
+        end_dt = datetime.datetime(1, 1, 1, int(end_split[0]), int(end_split[1]))
+        duration = ((end_dt - start_dt).total_seconds())/(60*60)
+        start_time = start_dt.hour + (start_dt.minute / 60)
+
+        class_ = tds[2].text.split('-')
+        class_name = class_[1].split('(')[0]
+        class_sigla = class_[0]
+
+        rooms = tds[3].text
+
+        vig = {
+            "day": day,
+            "start_time": start_time,
+            "duration": duration,
+            "name": class_name,
+            "class_name": class_sigla,
+            "lesson_type": "",
+            "link": "",
+            "location": rooms,
+            "start_date": date,
+            "end_date": date,
+            "teacher_name": name
+        }
+        schedules.append(vig)
+        
+    return schedules
     
 def main():  
-    try: 
+    try:
         docents = get_teachers_id().split(";")
         for docent_id in docents:
-            update_schedule(docent_id)  
+            update_schedule(docent_id)
 
         # Return json setting no error. 
         json = BuildJson({})
@@ -212,5 +282,5 @@ def main():
         json_obj.setError()
         sys.stdout.flush()
 
-
-main()
+if __name__ == "__main__":
+    main()
