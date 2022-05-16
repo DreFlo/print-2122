@@ -7,18 +7,9 @@ import datetime
 
 data_file = "./data/schedules.json"
 
-# Gets schedules of all DEI workers and saves them
 def get_all_dei_schedules():
     workers_list = get_dei_workers_list()
 
-    # FOR TESTING
-    # workers_list = [231081, 637045, 655498]
-    # workers_list = [231081, 655498]
-    # workers_list = [211625]
-    # workers_list = [637045]
-    # workers_list = [677168]
-
-    # TO DO - Change file name to final one
     f = open(data_file, "w", encoding="utf-8")
     total_info = {}
     total_info['updates'] = {
@@ -57,7 +48,6 @@ def get_all_dei_schedules():
 
 # Gets a list wtih the codes of all DEI workers from sigarra
 def get_dei_workers_list():
-    
     response = requests.post('https://sigarra.up.pt/feup/pt/func_geral.QueryList', 
                     data={
                         'pv_unidade_nome' : 'Departamento de Engenharia InformÃ¡tica',
@@ -93,16 +83,6 @@ def get_dei_workers_list():
     for i in range(1, len(list)):
         m = re.search('(?<=CODIGO=)\d+', list[i])
         workers_list.append(m.group(0))
-
-        
-        ''' GET THE NAME
-        pos = list[i].find(">")
-        new_str = list[i][pos+1:]
-        end_pos = new_str.find("<")
-        fin_str = new_str[:end_pos]
-        print("WORDS: ", end=" ")
-        print(fin_str)
-        ''' 
 
     return workers_list
 

@@ -7,7 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setWorkerListEvent();
 });
 
-
+/**
+ * Adds certain information or event at load time:
+ *  - What happens when selecting or deselecting a worker in the table
+ *  - What happens when clicking the save button
+ *  - What happens when clicking the select all checkbox
+ *  - Adding at the end of the table the last time the schedules were updated
+ */
 $(document).ready(function() {
     $('#table-wrapper-workers tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
@@ -44,12 +50,18 @@ $(document).ready(function() {
 
 });
 
+/**
+ * Gets the workers info and uses it to create the table
+ */
 function setWorkerListEvent(){
     var workers_list = getWorkers();
     createTable(workers_list);
 }
 
-// Array with workers with each element being: [code, name, sigla]
+/**
+ * Reads the file where the workers info is stored and creates an array
+ * @returns Array with the info, each element being: [code, name, sigla]
+ */
 function getWorkers() {
     let fs = require("fs")
     let read = fs.readFileSync(schedules_doc, "utf8").trim()
@@ -66,7 +78,10 @@ function getWorkers() {
     return workers
 }
 
-// Creates table with information
+/**
+ * Creates the data table that displays the workers
+ * @param {*} workersArray Arrawy with the workers and their information
+ */
 function createTable(workersArray) {
     
     table = $("#table-wrapper-workers").DataTable({

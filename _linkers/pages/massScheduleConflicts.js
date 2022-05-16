@@ -14,7 +14,6 @@ let use_exam_schedule;
 
 document.querySelector("button[type=submit]").addEventListener("click", (event) => handleScheduleTime(event));
 
-
 function validateInput(){
     docentsCodeElement = document.querySelector("#code"); 
     startDateElement = document.querySelector("#start-date");
