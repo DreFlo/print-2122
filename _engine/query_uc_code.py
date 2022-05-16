@@ -10,7 +10,7 @@ def main():
     for uc_code in ucs_codes:
         ucs += Core.get_UC_from_query(uc_code, sys.argv[2])
         
-    results = {'ucs' : ucs}
+    results = {'ucs' : list(set(ucs))}
 
     jsonObject = BuildJson(results)
 
