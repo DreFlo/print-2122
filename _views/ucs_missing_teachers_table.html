@@ -21,29 +21,82 @@
         <h1>Tabela Professores UC's</h1>
     </section>
     <section class="container text-center">
-        <form id="newTableForm" class="needs-validation">
-            <label for="name"><strong>Criar Nova Tabela</strong></label>
-            <div class="form-flex-row m-3">
-                <div class="input-group mb-3" style="flex: 1;"> 
-                    <input class="form-control me-3" name="tableName" id="tableNameInput">
+        <p>
+            <button class="btn btn-primary" type="button" aria-expanded="false" aria-controls="collapseTarget" id="collapseTargetOptionsButton">
+              Mostrar Opções
+            </button>
+            <button class="btn btn-primary" type="button" aria-expanded="false" aria-controls="collapseTarget" id="collapseTargetTeachersButton">
+                Mostrar Professores Não Registados
+              </button>
+        </p>
+        <div class="collapse" id="collapseTargetOptions">
+            <form id="newTableForm" class="needs-validation">
+                <label for="name"><strong>Criar Nova Tabela</strong></label>
+                <div class="form-flex-row m-3">
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-control me-3" name="tableName" id="tableNameInput">
+                    </div>
+                    <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
+                        <input class="form-control me-3" name="tableCourse" id="tableCourseInput" number="0">
+                    </div>
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-control me-3" type="number" min="2001" max="2300" id="tableYearInput" placeholder="ex: 2021">
+                    </div>
+                    <div class="flex-d justify-content-center mb-5">
+                        <button id="newTableFormButton" type="button" class="btn btn-success">Criar</button>
+                    </div>
+                    <input hidden name="tableCourseCode" id="tableCourseCodeInput">
                 </div>
-                <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
-                    <input class="form-control me-3" name="tableCourse" id="tableCourseInput" number="0">
+            </form>
+            <form id="newTeacherForm" class="needs-validation">
+                <label for="name"><strong>Adicionar Novo Professor</strong></label>
+                <div class="form-flex-row m-3">
+                    <div class="input-group mb-3" style="flex: 2;"> 
+                        <input class="form-control me-3" id="newTeacherNameInput" placeholder="Nome">
+                    </div>
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-control me-3" type="number" id="newTeacherAvailableHoursInput" placeholder="Horas Disponíveis">
+                    </div>
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-control me-3" type="date" id="newTeacherContractStartInput" placeholder="Início de Contrato">
+                    </div>
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-check-input me-3" type="checkbox" value="" id="newTeacherReminderCheckbox">
+                        <label class="form-check-label" for="newTeacherReminderCheckbox">
+                            Criar lembrete para início de contrato
+                        </label>
+                    </div>
+                    <div class="flex-d justify-content-center mb-5">
+                        <button id="newTeacherFormButton" type="button" class="btn btn-success">Criar</button>
+                    </div>
                 </div>
-                <div class="input-group mb-3" style="flex: 1;"> 
-                    <input class="form-control me-3" type="number" min="2001" max="2300" id="tableYearInput" placeholder="ex: 2021">
-                </div>
-                <div class="flex-d justify-content-center mb-5">
-                    <button id="newTableFormButton" type="button" class="btn btn-success">Criar</button>
-                </div>
-                <input hidden name="tableCourseCode" id="tableCourseCodeInput">
-            </div>
-        </form>
+            </form>
+        </div>
+        <div class="collapse" id="collapseTargetTeachers"></div>
         <div id="tableList" class="overflow-auto d-flex justify-content-center">
         </div>
         <div id="table">
         </div>
     </section>
-
-    
+    <div class="modal fade" tabindex="-1" role="dialog" id="UCDetailDialog" aria-hidden="true">
+        <div class="modal-fullscreen modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        Title
+                    </h3>
+                </div>
+                <div class="modal-body vertical-scrollable">
+                </div>
+                <div class="modal-footer" style="justify-content: center;">
+                        <button type="button" class="btn btn-secondary" id="closeUCDetailDialog" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveUCDetailDialog" data-bs-dismiss="modal">
+                            Guardar
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>

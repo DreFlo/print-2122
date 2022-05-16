@@ -1,3 +1,4 @@
+from msilib.schema import tables
 from numpy import double
 import mechanize as mc
 from bs4 import BeautifulSoup as bs
@@ -117,14 +118,19 @@ def get_media(soup):
 
 
 def get_curricular_unit_students(UC_code):
+    '''
+    Get all students in a curricular unit
+    '''
     i = 1
     students = []
+    # Go through all results pages
     while True:
         url = "https://sigarra.up.pt/feup/pt/fest_geral.estudantes_inscritos_list?pv_num_pag=" + str(i) +"&pv_ocorrencia_id=" + str(UC_code)
 
         html = get_html_logged(url)
         soup = bs(html)
 
+        # When has gone through all results pages
         if soup.find(id="erro"):
             break
         
@@ -272,15 +278,21 @@ def get_variable_from_url(url, requestField):
     return parse_qs(parsed_url.query)[requestField][0]
 
 def get_UC_from_query(UCCode, year):
+    '''
+    Get UC from code and year
+    :returns: List of lists with UC name, code, year and id
+    '''
     results = []
     page_number = 1
 
+    # Iterate through results pages
     while True:
         url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_uc_codigo=' + str(UCCode)
 
         html = get_html(mc.Browser(),url)
         soup = bs(html)
 
+        # When has gone through all results pages
         if soup.find(id="erro"):
             break
 
@@ -325,24 +337,28 @@ def get_courses():
 
         
 def get_course_UCs(course_id, year):
-    UC_links = []
+    '''
+    Get all UCs for a course
+    :returns: List of tuple-3's with UC period, code, and link
+    '''
+    UCs = []
     page_number = 1
     while True:
         url = 'https://sigarra.up.pt/feup/pt/UCURR_GERAL.PESQUISA_OCORR_UCS_LIST?pv_num_pag=' + str(page_number) + '&pv_ano_lectivo=' + str(year) + '&pv_curso_id=' + str(course_id)
 
         html = get_html(mc.Browser(),url)
-        soup = bs(html)
+        soup = bs(html, features="html5lib")
 
         if soup.find(id="erro"):
             break
 
         for row in soup.find_all('tr', {'class' : 'd'}):
             elems = row.find_all('td')
-            UC_links.append('https://sigarra.up.pt/feup/pt/' + elems[2].find('a')['href'])
+            UCs.append((elems[0].text, elems[1].text, 'https://sigarra.up.pt/feup/pt/' + elems[2].find('a')['href']))
 
         page_number += 1
 
-    return UC_links
+    return UCs
 
 def extract_teacher_code(link):
     return int(link.replace('func_geral.formview?p_codigo=', ''))
@@ -351,7 +367,16 @@ def string_to_float(str):
     halves = str.split(',')
     return float('.'.join(halves))
 
-def get_UC_teacher_info(url):
+def get_UC_teacher_info(UC):
+    '''
+    Get all techer information for UC
+    :returns: Dictionary with UC name, period, code, id and teacher info where teacher info is a dictionary with diferent class types (theoretical, practical, lab, and other)
+    with total time, fulfulled time and an array with the attributed teachers 
+    '''
+    period = UC[0]
+    code = UC[1]
+    url = UC[2]
+
     info = { 
                 'theoretical' : {
                     'total' : None,
@@ -362,30 +387,54 @@ def get_UC_teacher_info(url):
                     'total' : None,
                     'fulfilled' : 0,
                     'teachers' : []
+                },
+                'laboratorial' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
+                },
+                'other' : {
+                    'total' : None,
+                    'fulfilled' : 0,
+                    'teachers' : []
                 }
             }
 
     html = get_html(mc.Browser(), url)
-    soup = bs(html)
+    soup = bs(html, features="html5lib")
 
     id = get_variable_from_url(url, 'pv_ocorrencia_id')
 
     name = soup.find_all('h1')[1].text
-    tables = soup.find_all('table', {'class' : 'dados'})
 
-    if len(tables) < 4:
-        return {'name' : name , 'id' : id, 'info' : info}
+    div = soup.find('div', {'class': 'horas'})
 
-    switch = False
+    if div == None:
+        tables = soup.find_all('table', {'class': 'dados'})
+        if len(tables) >= 3:
+            table = tables[2]
+        else:
+            return {'name' : name, 'period': period, 'code': code,  'id' : id, 'info' : info}
+    else:
+        table = div.find('table', {'class' : 'dados'})
 
-    for row in tables[3].find_all('tr', {'class' : 'd'}):
+    type = None
+
+    # For each row in teacher information table
+    for row in table.find_all('tr', {'class': 'd'}):
+        # Switch current class type
         if row.find('td', {'class' : 'k'}):
-            if not switch:
-                switch = True
-                info['theoretical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+            title = row.find_all('td', {'class': 'k'})[0].find('a').text
+            if  title == 'Teóricas' or title == 'Teórica':
+                type = 'theoretical'
+            elif title == 'Teórico-Práticas' or title == 'Teórico-Prática':
+                type = 'practical'
+            elif title == 'Práticas Laboratoriais':
+                type = 'laboratorial'
             else:
-                switch = False
-                info['practical']['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+                type = 'other'
+            info[type]['total'] = string_to_float(row.find_all('td', {'class' : 'n'})[-1].text)
+        #Add new teacher
         else:
             teacher = {
                 'name' : row.find('td', {'class' : 't'}).text,
@@ -394,11 +443,7 @@ def get_UC_teacher_info(url):
                 'underContract' : True,
                 'contractStart' : None
             }
-            if switch:
-                info['theoretical']['fulfilled'] += teacher['hours']
-                info['theoretical']['teachers'].append(teacher)
-            else:
-                info['practical']['fulfilled'] += teacher['hours']
-                info['practical']['teachers'].append(teacher)
+            info[type]['fulfilled'] += teacher['hours']
+            info[type]['teachers'].append(teacher)
 
-    return {'name' : name , 'id' : id, 'info' : info}
+    return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}

@@ -1,23 +1,35 @@
 const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
+const fs = require('fs');
 
 let toast = new ToastComponent();
 let tables;
 let courses;
 let courseNames;
 let selectedTableIndex = undefined;
+let modal = document.querySelector('#UCDetailDialog');
+let ucIndex = undefined;
+let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
+let unregisteredTeachers = JSON.parse(fs.readFileSync('./data/unregistered_teachers.json'))['unregisteredTeachers'];
+let tempUnregisteredTeachers;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
+document.querySelector('#newTeacherFormButton').addEventListener('click', createNewUnregisteredTeacher);
 document.querySelector('#tableCourseInput').addEventListener('input', autocompleteCourses);
+document.querySelector('#closeUCDetailDialog').addEventListener('click', closeUCDialog);
+document.querySelector('#saveUCDetailDialog').addEventListener('click', saveUCDialog);
+document.querySelector("#tableYearInput").value = new Date().getFullYear();
+document.querySelector('#collapseTargetOptionsButton').addEventListener('click', toggleCollapseOptions);
+document.querySelector('#collapseTargetTeachersButton').addEventListener('click', toggleCollapseTeachers);
 
+// Get autocomplete results and create HTML and CSS element with results underneath searchbox
 function autocompleteCourses() {
     closeAutocompleteSugestions();
 
     let names = autocomplete(this.value, courseNames);
 
     let div = document.createElement('div');
-    div.classList.add('dropdown-menu', 'show');
-    div.setAttribute('id', 'autocompleteList');
+    div.classList.add('dropdown-menu', 'show', 'autocompleteList');
     div.style = 'max-height: 300px; overflow-y: auto;';
 
     let list = document.createElement("ul");
@@ -40,14 +52,17 @@ function autocompleteCourses() {
     document.querySelector('#courseInputDiv').appendChild(div);
 }
 
+// Set element to active on mouse enter
 function listItemOnMouseEnter() {
     this.classList.add('active');
 }
 
+// Remove active from element on mouse leave
 function listItemOnMouseLeave() {
     this.classList.remove('active');
 }
 
+// Set values for course inputs (words and  course id) and close autocomplete suggestions
 function setCourseInput() {
     let input = document.querySelector('#tableCourseCodeInput');
     document.querySelector('#tableCourseInput').value = this.innerHTML;
@@ -56,24 +71,32 @@ function setCourseInput() {
 }
 
 function closeAutocompleteSugestions() {
-    let list = document.querySelector("#autocompleteList");
-    if (list != null) {
-        list.remove();
+    document.querySelectorAll(".autocompleteList").forEach((elem) => {elem.remove()});    
+}
+
+// Retrieves all curricular unit, teacher and time info for input course
+function createNewTable() {
+    if (getLogged() != "true") {
+        toast.show("Não está autenticado", toastColor.RED);
+    }
+        else {
+        let name = document.querySelector('#tableNameInput').value;
+        let year = document.querySelector('#tableYearInput').value;
+        let course = document.querySelector('#tableCourseCodeInput').value;
+        
+        toast.show("A criar...", toastColor.BLUE, false);
+        pyCall("retrieve_course_uc_teachers_info", "handleCreateNewTableResponse", [name, course, year]);
     }
 }
 
-function createNewTable() {
-    let name = document.querySelector('#tableNameInput').value;
-    let year = document.querySelector('#tableYearInput').value;
-    let course = document.querySelector('#tableCourseCodeInput').value;
-    pyCall("retrieve_course_uc_teachers_info", "handleCreateNewTableResponse", [name, course, year]);
-}
-
+// Updates tables and redraw table list
 function handleCreateNewTableResponse(data) {
     tables = data['data'];
     listTables();
+    toast.show("Criada", toastColor.GREEN);
 }
 
+// List tables in a user friendly list
 function listTables() {
     let ul = document.querySelector('#tableListL');
 
@@ -84,6 +107,8 @@ function listTables() {
     ul = document.createElement('ul');
     ul.classList.add("list-group", "list-group-horizontal-md");
     ul.setAttribute('id', 'tableListL');
+
+    // For each table create list element
     for (let i = 0; i < tables.length; i++) {
         let li = document.createElement('li');
         li.classList.add("list-group-item");
@@ -97,6 +122,7 @@ function listTables() {
     document.querySelector('#tableList').appendChild(ul);
 }
 
+// Set table list item to active and draw table on screen
 function selectTable() {
     selectedTableIndex = this.getAttribute('tableIndex');
 
@@ -118,19 +144,23 @@ function selectTable() {
     buildTable();
 }
 
+// Get tables from file
 function getTables() {
     pyCall("get_uc_teacher_tables", "handleGetTablesResponse", []);
 }
 
+// Update tables and list them in a user friendly way
 function handleGetTablesResponse(data) {
     tables = data['data'];
     listTables();
 }
 
+// Get all cached course info
 function getCourses() {
     pyCall("get_courses", "handleCoursesResponse", []);
 }
 
+// Update course array and courseNames array for autocomplete
 function handleCoursesResponse(data) {
     courses = data['courses'];
     courseNames = [];
@@ -140,113 +170,603 @@ function handleCoursesResponse(data) {
     }
 }
 
+// Draw course table on screen
 function buildTable() {
-    tableInfo = tables[selectedTableIndex];
-
     let div = document.querySelector('#table');
 
     // Clear table
     div.textContent = '';
 
-    let h1 = document.createElement('h1');
-    h1.textContent = tableInfo.name;
+    if (selectedTableIndex != undefined) {
+        tableInfo = tables[selectedTableIndex];
 
-    div.appendChild(h1);
+        let h1 = document.createElement('h1');
+        h1.textContent = tableInfo.name;
 
+        div.appendChild(h1);
+
+        let table = document.createElement('table');
+        table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
+
+        let thead = buildTableHead([
+            'Unidade Curricular',
+            'Código',
+            'Período',
+            'Teóricas', 
+            'Teóricas Atribuídas', 
+            'Práticas', 
+            'Práticas Atribuídas',
+            'Laboratoriais',
+            'Laboratoriais Atribuídas',
+            'Outras',
+            'Outras Atribuídas'
+        ]);
+        
+        table.appendChild(thead);
+
+        let tbody = document.createElement('tbody');
+
+        // For each UC in table
+        for (let i = 0; i < tableInfo.table.length; i++) {
+            let uc = tableInfo.table[i];
+
+            let tr = document.createElement('tr');
+
+            // When row is clicked open edit screen for UC
+            tr.setAttribute('uc-id', uc.id);
+            tr.addEventListener('click', () => {
+                ucIndex = getUCIndex(uc.id);
+                editedUC = JSON.parse(JSON.stringify((tables[selectedTableIndex].table[ucIndex])));
+                tempUnregisteredTeachers = JSON.parse(JSON.stringify(unregisteredTeachers));
+                editUC();
+            });
+
+            // UC Name
+            let td = document.createElement('td');
+
+            td.textContent = uc.name;
+
+            tr.appendChild(td);
+
+            // UC Code
+            td = document.createElement('td');
+
+            td.textContent = uc.code;
+
+            tr.appendChild(td);
+
+            // UC Period
+            td = document.createElement('td');
+
+            td.textContent = uc.period;
+
+            tr.appendChild(td);
+
+            // Add each class type (theoretical, practical, ...) to row 
+            Object.keys(uc.info).forEach((key) => (addClassTypeToTableRow(tr, uc.info[key])));
+
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(tbody);
+
+        // Button to delete table
+        let deleteButton = document.createElement('button');
+        deleteButton.addEventListener('click', deleteSelectedTable);
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.textContent = 'Delete'
+
+        div.appendChild(table);
+        div.appendChild(deleteButton);
+    }
+}
+
+// Delete table and redraw UI
+function deleteSelectedTable() {
+    removeTable(selectedTableIndex);
+    selectedTableIndex = undefined;
+    buildTable();
+    listTables();
+    saveTables();
+}
+
+// Adds total and fulfilled houses for a class type to a table row 
+function addClassTypeToTableRow(tr, _class) {
+    let td = document.createElement('td');
+
+    if (_class.total == null) {
+        td.textContent = "N/A"
+        td.style = "background-color: #848884; color: #ffffff"
+    } else {
+        td.textContent = _class.total;
+    }
+
+    tr.appendChild(td);
+
+    td = document.createElement('td');
+
+    td.textContent = _class.fulfilled;
+
+    if (_class.total == null) {
+        td.textContent = "N/A"
+        td.style = "background-color: #848884; color: #ffffff"
+    } 
+    // If times don't match set backgorund to red
+    else if (_class.total != _class.fulfilled) {
+        td.style = "background-color: #dc3545; color: #ffffff";
+    }
+
+    tr.appendChild(td);
+}
+
+// Open editUC screen
+function editUC() {
+
+    let title = modal.querySelector(".modal-title");
+    title.textContent = editedUC.name;
+
+    let body = modal.querySelector('.modal-body');
+    body.textContent = '';
+
+    let h6 = document.createElement('h6');
+    h6.textContent = editedUC.code;
+    body.appendChild(h6);
+    h6 = document.createElement('h6');
+    h6.textContent = editedUC.period;
+    body.appendChild(h6);
+    
+    // For each class type add edit era
+    Object.keys(editedUC.info).forEach((key) => {
+        buildClassTypeArea(body, key);
+    });
+    
+    modal.classList.add('show');
+    modal.style = "display: block;";
+}
+
+// Draw edit area for a given class type
+function buildClassTypeArea(body, type) {
+    // Title
+
+    let h4 = document.createElement('h4');
+    h4.textContent = classTypeTitles[type];
+    body.appendChild(h4);
+
+    // Total Time
+
+    let divInputGroup = document.createElement('div');
+    divInputGroup.classList.add('input-group', 'mb-2', 'mr-sm-2');
+
+    divInputGroup.innerHTML = '<div class="input-group-prepend"><div class="input-group-text">Tempo de aulas total</div></div>'
+    let input = document.createElement('input');
+    input.classList.add('form-control');
+    input.value = editedUC.info[type].total;
+    // Change total on input
+    input.addEventListener('input', () => {editedUC.info[type].total = input.value == '' ? null : input.value});
+
+    divInputGroup.appendChild(input);
+
+    body.appendChild(divInputGroup);
+
+    // Teachers
+
+    if (editedUC.info[type].teachers.length != 0) {
+        buildTeachersClassTypeArea(body, type);
+    }
+}
+
+// List and edit teachers for a given class type
+function buildTeachersClassTypeArea(body, type) {
+    let h5 = document.createElement('h5');
+    h5.textContent = 'Professores';
+    body.appendChild(h5);
+
+    
     let table = document.createElement('table');
-    table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
+    table.classList.add('table', 'table-striped', 'table-bordered');
 
     let thead = buildTableHead([
-        'Unidade Curricular', 
-        'Total Teóricas', 
-        'Teóricas Atribuídas', 
-        'Total Práticas', 
-        'Práticas Atribuídas'
+        'Nome',
+        'Horas lecionadas',
+        'Ação'
     ]);
     
     table.appendChild(thead);
 
     let tbody = document.createElement('tbody');
 
-    for (let i = 0; i < tableInfo.table.length; i++) {
-        let uc = tableInfo.table[i];
+    editedUC.info[type].teachers.forEach((teacher) => {
+        let tr = document.createElement('tr');
+
+        // Teacher Name
+
+        let td = document.createElement('td');
+        td.textContent = teacher.name;
+        tr.appendChild(td);
+
+        // Teacher Hours
+
+        td = document.createElement('td');
+        let input = document.createElement('input');
+        input.classList.add('form-control');
+        input.value = teacher.hours;
+        // On input change teacher hours and update UC
+        input.addEventListener('input', () => {
+            let newHours = (input.value == '' ? 0 : parseInt(input.value))
+            editedUC.info[type].fulfilled = editedUC.info[type].fulfilled - teacher.hours + newHours;
+            teacher.hours = newHours;
+        });
+        td.appendChild(input);
+        tr.appendChild(td);
+
+        // Remove Teacher
+
+        td = document.createElement('td');
+        let button = document.createElement('button');
+        button.classList.add('btn', 'btn-danger');
+        button.textContent = 'Remover';
+        // Remove teacher and redraw screen
+        button.addEventListener('click', () => {
+            editedUC.info[type] = removeTeacherFromClassType(type, teacher);
+            editUC();
+        });
+        td.appendChild(button);
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    body.appendChild(table);
+
+    addNewTeacherArea(body, type);
+}
+
+// Handle removing teacher from a UC class type
+function removeTeacherFromClassType(classType, teacher) {
+    // Deepcopy
+    let newClassType = JSON.parse(JSON.stringify(editedUC.info[classType]));
+    newClassType.fulfilled -= teacher.hours;
+    newClassType.teachers = [];
+
+    // Add teachers
+    editedUC.info[classType].teachers.forEach((oldTeacher) => {
+        if (oldTeacher.code == teacher.code) {
+            return;
+        }
+        newClassType.teachers.push(oldTeacher);
+    });
+
+    // If teacher is not registered in sigarra update their assigned hours
+    if (!teacher.underContract) {
+        removeAssignedHoursFromUnregisteredTeacher(teacher);
+    }
+
+    return newClassType;
+}
+
+// Update teacher hours
+function removeAssignedHoursFromUnregisteredTeacher(teacher) {
+    tempUnregisteredTeachers.forEach((uT) => {
+        if (uT.code == teacher.code) {
+            uT.assignedHours -= teacher.hours;
+        }
+    });
+}
+
+// Draw area to add new teacher to class type in UC
+function addNewTeacherArea(body, classType) {
+    let div = document.createElement('div');
+    div.classList.add("form-flex-row", "m-3");
+
+    // Title
+    let childDiv = document.createElement('div');
+    childDiv.style = 'flex: 1;'
+    childDiv.innerHTML = 'Adicionar professor não registado';
+    div.appendChild(childDiv);
+
+    // Searchbox
+    childDiv = document.createElement('div');
+    childDiv.classList.add("input-group", "mb-3", "add-unregistered-teacher-input-div-" + classType);
+    childDiv.style = 'flex: 3;';
+    let input = document.createElement('input');
+    input.classList.add('form-control', 'me-3');
+    input.placeholder = 'Nome';
+    input.id = 'teacher-name-input-' + classType;
+    // On inputshow autocomplete suggestions
+    input.addEventListener('input', () => {autocompleteTeacher(input, classType)});
+    childDiv.appendChild(input);
+    div.appendChild(childDiv);
+
+
+    // Hours input
+    childDiv = document.createElement('div');
+    childDiv.classList.add("input-group", "mb-3");
+    childDiv.style = 'flex: 1;';
+    let input2 = document.createElement('input');
+    input2.classList.add('form-control', 'me-3');
+    input2.id = 'teacher-hours-input-' + classType;
+    input2.placeholder = 'Horas';
+    childDiv.appendChild(input2);
+    div.appendChild(childDiv);
+
+    // Button to add teacher to class type
+    childDiv = document.createElement('div');
+    childDiv.classList.add("mb-3");
+    childDiv.style = 'flex: 1;';
+    let button = document.createElement('button');
+    button.classList.add('btn', 'btn-success');
+    button.textContent = 'Adicionar';
+    button.addEventListener('click', () => {addUnregisteredTeacher(classType)});
+    childDiv.appendChild(button);
+    div.appendChild(childDiv);
+
+    // Hidden input for teacher code
+    input2 = document.createElement('input');
+    input2.id = 'teacher-code-input-' + classType;
+    input2.setAttribute('hidden', 'true');
+    div.appendChild(input2);
+
+    body.appendChild(div);
+}
+
+function findUnregisterTeacherByCode(code) {
+    for (let i = 0; i < tempUnregisteredTeachers.length; i++) {
+        if (tempUnregisteredTeachers[i].code == code) {
+            return tempUnregisteredTeachers[i];
+        }
+    }
+}
+
+// Handle adding unregisterd teacher to class type in UC
+function addUnregisteredTeacher(classType) {
+    let unregisteredTeacher = findUnregisterTeacherByCode(parseInt(document.querySelector('#teacher-code-input-' + classType).value));
+    let hoursInput = document.querySelector('#teacher-hours-input-' + classType).value;
+    let hours = hoursInput == '' ? 0 : parseInt(hoursInput);
+    // TODO MENSAGEM DE ERRO - O TOAST N TA A APARECER, MAYBE FAZ-SE C/ UM POPOVER
+    if (unregisteredTeacher.assignedHours + hours > unregisteredTeacher.availableHours) {
+        console.log("here");
+        toast.show('Este/a professor/a apenas está disponível por ' + unregisteredTeacher.availableHours + ' semanalmente, o total seria ' + (unregisteredTeacher.assignedHours + hours), toastColor.RED);
+    }
+    else {
+        let newTeacher = {"name" : unregisteredTeacher.name, "code" : unregisteredTeacher.code, "hours" : hours, "underContract" : false, "contractStart" : unregisteredTeacher.contractStart};
+        editedUC.info[classType].teachers.push(newTeacher);
+        editedUC.info[classType].fulfilled += hours;
+        unregisteredTeacher.assignedHours += hours;
+        editUC();
+    }
+}
+
+// Show autocomplete dorpdown for teacher search owhen editing UC
+function autocompleteTeacher(input, classType) {
+    closeAutocompleteSugestions();
+
+    let unregisteredTeacherNames = unregisteredTeachers.map((teacher) => {return teacher.name;});
+
+    let names = autocomplete(input.value, unregisteredTeacherNames);
+
+    let div = document.createElement('div');
+    div.classList.add('dropdown-menu', 'show', 'autocompleteList');
+    div.style = 'max-height: 300px; overflow-y: auto;';
+
+    let list = document.createElement("ul");
+    list.classList.add('list-group');
+    
+    for (let i = 0; i < unregisteredTeachers.length; i++) {
+        if (names.includes(unregisteredTeachers[i]['name'])) {
+            a = document.createElement('a');
+            a.innerHTML = unregisteredTeachers[i]['name'];
+            a.setAttribute('number', courses[i]['code']);
+            a.setAttribute('href', '#');
+            a.classList.add('list-group-item', 'dropdown-item');
+            a.addEventListener('click', () => {handleAddUnregisteredTeacherClick(unregisteredTeachers[i], classType)});
+            a.addEventListener('mouseenter', listItemOnMouseEnter);
+            a.addEventListener('mouseleave', listItemOnMouseLeave);
+            div.appendChild(a);
+        }
+    }
+    
+    document.querySelector('.add-unregistered-teacher-input-div-' + classType).appendChild(div);
+}
+
+// Close autocomplete suggesting for teachers and set inputs
+function handleAddUnregisteredTeacherClick(teacher, classType) {
+    closeAutocompleteSugestions();
+    document.querySelector('#teacher-name-input-' + classType).value = teacher.name;
+    document.querySelector('#teacher-code-input-' + classType).value = teacher.code;
+}
+
+// Close edit UC dialog
+function closeUCDialog() {
+    modal.classList.remove('show');
+    modal.style = '';
+}
+
+// Save changes to UC and close edit dialog
+function saveUCDialog() {
+    tables[selectedTableIndex].table[ucIndex] = editedUC;
+    buildTable();
+    saveTables();
+    saveUnregisteredTeachers();
+    closeUCDialog();
+}
+
+// Get index for UC in table list
+function getUCIndex(id) {
+    table = tables[selectedTableIndex];
+
+    for (let i = 0; i < table.table.length; i++) {
+        if (table.table[i].id == id) {
+            return i;
+        }
+    }
+}
+
+// Save tables to file
+function saveTables() {
+    fs.writeFileSync('./data/uc_teachers_table.json', JSON.stringify({"data" : tables, "error" : false}));
+}
+
+// Remove table from table array
+function removeTable(index) {
+    let newTables = [];
+    for (let i = 0; i < tables.length; i++) {
+        if (i == index) {
+            continue;
+        }
+        newTables.push(tables[i]);
+    }
+    tables = newTables;
+}
+
+// Create new unregistered teacher
+function createNewUnregisteredTeacher() {
+    let name = document.querySelector('#newTeacherNameInput').value;
+    let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
+    let date = new Date(document.querySelector('#newTeacherContractStartInput').value);
+    let reminder = document.querySelector('#newTeacherReminderCheckbox').checked;
+    console.log(reminder);
+    
+    toast.show("A criar...", toastColor.BLUE, false);
+    pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString(), reminder]);
+}
+
+// Update unregistered teachers
+function handleAddUnregisteredTeacher(data) {
+    if (data.error == "true") {
+        toast.show("Erro ao criar", toastColor.RED);
+    }
+    else {
+        unregisteredTeachers = data['unregisteredTeachers'];
+        toast.show("Criado", toastColor.GREEN);
+    }
+}
+
+// Save unregistered teachers to file
+function saveUnregisteredTeachers() {
+    unregisteredTeachers = JSON.parse(JSON.stringify(tempUnregisteredTeachers));
+    fs.writeFileSync('./data/unregistered_teachers.json', JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
+}
+
+// Toggle showing options for Course tables
+function toggleCollapseOptions() {
+    let target = document.querySelector("#collapseTargetOptions");
+    if (target.classList.contains("collapse")) {
+        target.classList.remove("collapse");
+        this.classList.add("btn-danger");
+        this.classList.remove("btn-primary");
+        this.textContent = "Esconder Opções";
+    }
+    else {
+        target.classList.add("collapse");
+        this.classList.remove("btn-danger");
+        this.classList.add("btn-primary");
+        this.textContent = "Mostar Opções";
+    }
+}
+
+// Toggle showing unregistered teachers list
+function toggleCollapseTeachers() {
+    let target = document.querySelector("#collapseTargetTeachers");
+    if (target.classList.contains("collapse")) {
+        target.classList.remove("collapse");
+        this.classList.add("btn-danger");
+        this.classList.remove("btn-primary");
+        this.textContent = "Esconder Professores";
+        target.textContent = '';
+        buildUnregisteredTeachersTable();
+    }
+    else {
+        target.classList.add("collapse");
+        this.classList.remove("btn-danger");
+        this.classList.add("btn-primary");
+        this.textContent = "Mostar Professores Não Registados";
+    }
+}
+
+// Draw unregisterd teachers table
+function buildUnregisteredTeachersTable() {
+    let div = document.querySelector("#collapseTargetTeachers");
+    let table = document.createElement('table');
+    table.classList.add('table', 'table-hover', 'table-striped', 'table-bordered');
+
+    let thead = buildTableHead([
+        'Nome',
+        'Horas Disponíveis',
+        'Horas Atribuídas',
+        'Início de Contrato'
+    ]);
+    
+    table.appendChild(thead);
+
+    let tbody = document.createElement('tbody');
+
+    tempUnregisteredTeachers = JSON.parse(JSON.stringify(unregisteredTeachers))
+
+    // For each teacher
+    for (let i = 0; i < tempUnregisteredTeachers.length; i++) {
+        let teacher = tempUnregisteredTeachers[i];
 
         let tr = document.createElement('tr');
-        tr.setAttribute('uc-id', uc.id);
-        tr.addEventListener('click', editUC);
 
-        // UC Name
+        // Teacher Name
         let td = document.createElement('td');
 
-        td.textContent = uc.name;
+        td.textContent = teacher.name;
 
         tr.appendChild(td);
 
-        // Theoretical Total
+        // Available Hours
         td = document.createElement('td');
 
-        if (uc.info.theoretical.total == null) {
-            td.textContent = "N/A"
-        } else {
-            td.textContent = uc.info.theoretical.total;
-        }
+        let input = document.createElement('input');
+        input.classList.add('form-control');
+        input.value = teacher.availableHours;
+        input.addEventListener('input', () => {
+            let newHours = (input.value == '' ? 0 : parseInt(input.value))
+            // TODO Error msg
+            if (newHours < teacher.assignedHours) {
+                console.log("Error");
+            }
+            else {
+                teacher.availableHours = newHours;
+            }
+        });
+        td.appendChild(input);
 
         tr.appendChild(td);
 
-        // Theoretical Fulfilled
+        // Assigned Hours
         td = document.createElement('td');
 
-        td.textContent = uc.info.theoretical.fulfilled;
-
-        if (uc.info.theoretical.total != uc.info.theoretical.fulfilled) {
-            td.style = "background-color: #dc3545; color: #ffffff";
-        }
+        td.textContent = teacher.assignedHours;
 
         tr.appendChild(td);
 
-        // Practical Total
+        // Contract Start
         td = document.createElement('td');
 
-        if (uc.info.practical.total == null) {
-            td.textContent = "N/A"
-        } else {
-            td.textContent = uc.info.practical.total;
-        }
+        let date = new Date(teacher.contractStart)
+
+        td.textContent = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
 
         tr.appendChild(td);
 
-        // Practical Fulfilled
-        td = document.createElement('td');
-
-        td.textContent = uc.info.practical.fulfilled;
-
-        if (uc.info.practical.total != uc.info.practical.fulfilled) {
-            td.style = "background-color: #dc3545; color: #ffffff";
-        }
-
-        tr.appendChild(td);
 
         tbody.appendChild(tr);
     }
 
     table.appendChild(tbody);
 
+    
+    let save = document.createElement('button');
+    save.addEventListener('click', saveUnregisteredTeachers);
+    save.classList.add('btn', 'btn-success');
+    save.textContent = 'Guardar Alterações'
+
     div.appendChild(table);
-}
-
-function editUC() {
-    uc = getUC(this.getAttribute('uc-id'));
-    console.log(uc);
-}
-
-function getUC(id) {
-    table = tables[selectedTableIndex];
-
-    for (let i = 0; i < table.table.length; i++) {
-        if (table.table[i].id == id) {
-            return table.table[i];
-        }
-    }
+    div.appendChild(save);
 }
 
 window.onload = function() {

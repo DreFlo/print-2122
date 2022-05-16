@@ -19,9 +19,11 @@ def main():
 
     studentSets = []
 
+    # For each UC get set with its students
     with mp.Pool(processes=len(codes)) as pool:
         studentSets = pool.map(get_UC_students_set, codes)
 
+    # Intersect all student sets
     commonStudent = reduce(lambda x,y : x & y, studentSets)
 
     response['conflict'] = list(commonStudent)
