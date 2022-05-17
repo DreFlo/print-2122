@@ -9,7 +9,7 @@ let toast = new ToastComponent();
 $(document).ready(function() {
     var updateButton = document.getElementById('updateWorkers');
     updateButton.addEventListener('click', function() {
-        if(confirm("Esta atualização é demorosa. Aproximadamente 3 horas para atualização dos 2 horários.\nSe tem a certeza que quer continuar, clique em 'OK'.")){
+        if(confirm("Esta atualização é demorosa.\nAproximadamente 3 horas para atualização dos 2 tipos de horários.\nSe tem a certeza que quer continuar, clique em 'OK'.")){
             let scheduleType = document.querySelector('#scheduleType').value;
             switch(scheduleType){
                 case "classes":
