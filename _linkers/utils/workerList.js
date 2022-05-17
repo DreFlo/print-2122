@@ -93,10 +93,11 @@ function createTable(workersArray) {
             {title: "Sigla"}, 
             {title: ""}
         ], 
+        order: [[1, 'asc']],
         columnDefs: [{
             "defaultContent": " ",
             "targets": 3,
-        }, 
+        },
         {
             "targets": -1, 
             "data": null, 
