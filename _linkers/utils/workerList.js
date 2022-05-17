@@ -106,6 +106,9 @@ function createTable(workersArray) {
     });
 }
 
+/**
+ * Adds the workers selected to the input line for use later
+ */
 function addToInput(){
     let inputLine = document.getElementById("code");
     inputLine.value = selectedWorkers.join(" ");

@@ -1,7 +1,5 @@
-const {pyCall} = require("../_linkers/pyCall.js");
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
-//const { setInvalidInput } = require("../utils/utils.js");
 
 let docentsCode;
 let docentsCodeArray;
