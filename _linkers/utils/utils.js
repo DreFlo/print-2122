@@ -1,3 +1,4 @@
+const path = require('path');
 let clipboard;
 
 // GENERIC TABLE ----------------------------------------------------------------------------------------
@@ -130,7 +131,7 @@ function addRowDataTable(selector, newDataArray){
 
 function readSchedule(){
     const fs = require("fs");
-    return fs.readFileSync("./data/schedules.json", "utf8").trim(); 
+    return fs.readFileSync(path.join(__dirname, "../data/schedules.json"), "utf8").trim(); 
 }
 /**
  * Reads the favorites file depending on the type. 
@@ -139,13 +140,13 @@ function readSchedule(){
  */
 function readFavorites(type) {
     const fs = require("fs");
-    return fs.readFileSync("data/favorites/" + type + ".json", "utf8").trim();
+    return fs.readFileSync(path.join(__dirname, "../data/favorites/") + type + ".json", "utf8").trim();
 }
   
 function saveFavorites(type, content){
     const fs = require("fs"); 
     let jsonContent = JSON.stringify(content); 
-    fs.writeFileSync( "data/favorites/" + type + ".json", jsonContent, "utf-8");
+    fs.writeFileSync(path.join(__dirname, "../data/favorites/") + type + ".json", jsonContent, "utf-8");
     return true;  
 } 
 

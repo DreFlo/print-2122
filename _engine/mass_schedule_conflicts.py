@@ -4,8 +4,11 @@ import re
 import requests
 import json
 import datetime
+import os
 
-data_file = "./data/schedules.json"
+cwd = os.getcwd()
+
+data_file = os.path.join(cwd, 'resources\\app\\data\\schedules.json')
 
 def get_all_dei_schedules():
     workers_list = get_dei_workers_list()

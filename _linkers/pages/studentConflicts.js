@@ -26,6 +26,7 @@ function searchUC(event) {
 
 // List search results in table
 function handleUCResponse(data) {
+    console.log(data);
     toast.show("Dados carregados!", toastColor.GREEN); 
     let resultsTable = document.querySelector('#searchResultsTable');
 

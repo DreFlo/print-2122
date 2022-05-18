@@ -2,8 +2,6 @@ const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
 const fs = require('fs');
 
-console.log(__dirname);
-
 let toast = new ToastComponent();
 let tables;
 let courses;
@@ -12,7 +10,7 @@ let selectedTableIndex = undefined;
 let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
 let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
-let unregisteredTeachers = JSON.parse(fs.readFileSync('./data/unregistered_teachers.json'))['unregisteredTeachers'];
+let unregisteredTeachers = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/unregistered_teachers.json')))['unregisteredTeachers'];
 let tempUnregisteredTeachers;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
@@ -608,7 +606,7 @@ function getUCIndex(id) {
 
 // Save tables to file
 function saveTables() {
-    fs.writeFileSync('./data/uc_teachers_table.json', JSON.stringify({"data" : tables, "error" : false}));
+    fs.writeFileSync(path.join(__dirname, '../data/uc_teachers_table.json'), JSON.stringify({"data" : tables, "error" : false}));
 }
 
 // Remove table from table array
@@ -649,7 +647,7 @@ function handleAddUnregisteredTeacher(data) {
 // Save unregistered teachers to file
 function saveUnregisteredTeachers() {
     unregisteredTeachers = JSON.parse(JSON.stringify(tempUnregisteredTeachers));
-    fs.writeFileSync('./data/unregistered_teachers.json', JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
+    fs.writeFileSync(oath.join(__dirname, '../data/unregistered_teachers.json'), JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
 }
 
 // Toggle showing options for Course tables

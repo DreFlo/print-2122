@@ -1,8 +1,11 @@
 import sys
 import json
 from handle_json import BuildJson
+import os
 
-tables_file_path = './data/uc_teachers_table.json'
+cwd = os.getcwd()
+
+tables_file_path = os.path.join(cwd, 'resources\\app\\data\\uc_teachers_table.json')
 
 def main():
     tables = json.loads(sys.argv[1])

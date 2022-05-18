@@ -1,3 +1,6 @@
+const path = require('path');
+console.log(path.join(__dirname, '../../logged'));
+
 /**
  * @file This file is responsible for managing the authentication state of the user in the app. 
  */
@@ -8,7 +11,7 @@
  */
 function getLogged(){
     const fs = require('fs');
-    return fs.readFileSync('logged', 'utf-8');
+    return fs.readFileSync(path.join(__dirname, '../../logged'), 'utf-8');
 }
 
 /** 
@@ -17,7 +20,7 @@ function getLogged(){
  */
 function setLogged(logged){
     const fs = require('fs');
-    fs.writeFileSync('logged', logged);
+    fs.writeFileSync(path.join(__dirname, '../../logged'), logged);
 }
 
 module.exports = {getLogged, setLogged};

@@ -6,8 +6,11 @@ import re
 from datetime import date, timedelta
 import datetime
 from handle_json import BuildJson
+import os
 
-docents_schedule_path = "./data/schedules.json"
+cwd = os.getcwd()
+
+docents_schedule_path = os.path.join(cwd, 'resources\\app\\data\\schedules.json')
 
 def get_teachers_id():
     return sys.argv[1]

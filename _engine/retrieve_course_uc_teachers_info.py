@@ -3,9 +3,11 @@ import sys
 import multiprocessing as mp
 import json
 from handle_json import BuildJson
+import os
 
+cwd = os.getcwd()
 
-tables_file_path = './data/uc_teachers_table.json'
+tables_file_path = os.path.join(cwd, 'resources\\app\\data\\uc_teachers_table.json')
 
 def get_table_name():
     return sys.argv[1]

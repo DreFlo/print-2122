@@ -12,6 +12,7 @@
   },
   "build": {
     "appId": "com.Sigtools.app",
+    "asar" : false,
     "files" : [
       "**/*"
     ]
