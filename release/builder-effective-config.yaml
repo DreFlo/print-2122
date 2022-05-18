@@ -1,0 +1,9 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.Sigtools.app
+asar: false
+files:
+  - filter:
+      - '**/*'
+electronVersion: 8.0.3

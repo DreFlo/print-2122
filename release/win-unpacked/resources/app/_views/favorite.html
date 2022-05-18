@@ -1,0 +1,104 @@
+<!DOCTYPE html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de favoritos</title>
+    <link rel="stylesheet" type="text/css" href="../_views/css/style.css">
+    <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/datatables.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/rowsGroup.js" defer></script> 
+ 
+    <script src="../_linkers/common/init.js" defer></script>
+    <script src="../_linkers/common/header.js" defer></script>
+    <script src="../_linkers/common/saveTable.js" defer></script>
+    <script src="../_linkers/utils/utils.js" defer></script>
+    <script src="../_linkers/common/login.js" defer></script> 
+    <script src="../_linkers/pages/favorites.js" defer></script>
+
+</head>
+
+
+<body>
+
+<!--interface content-->
+<div id="menuBar"></div>
+<div id="menuSearch"></div>
+
+<div class="container text-center">
+
+    <div class="row" id="title">
+        <h1>Lista de favoritos</h1>
+        <p>Gerencie a lista de favoritos para armazenar informações frequentemente usadas</p>
+   </div> 
+<!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-favorite-modal">
+    Adicionar favorito
+  </button>
+  
+  
+    <table id="table-wrapper-favorites"> </table>
+</div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="add-favorite-modal" tabindex="-1"  aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Adicionar favoritos</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">    
+
+            <label for="id">ID*: </label>
+            <div class="input-group mb-4">
+                <input type="text" placeholder="466668" class="form-control me-3" id="id" required>    
+                <div class="invalid-tooltip"></div> 
+            </div>  
+
+            <label for="name">Nome*: </label>
+            <div class="input-group">
+                <input type="text" placeholder="Rui Rodrigues" class="form-control me-3" id="name" required>       
+                <div class="invalid-tooltip"></div> 
+            </div>  
+            <label for="acronym">Sigla* (não obrigatório para estudante): </label>
+            <div class="input-group"> 
+                <input type="text" placeholder="RPR" class="form-control me-3" id="acronym">    
+                <div class="invalid-tooltip"></div> 
+            </div>   
+
+            <p>Tipo*:</p>  
+            <div class="input-group">
+                <div class="form-check me-5">
+                    <input class="form-check-input" type="radio" name="type" id="docent" value="docents" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Professor
+                    </label>
+                </div>
+                <div class="form-check me-5">
+                    <input class="form-check-input" type="radio" name="type" id="student" value="students">
+                    <label class="form-check-label" for="student"> 
+                        Estudante
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="uc" value="ucs">
+                    <label class="form-check-label" for="uc"> 
+                        UC
+                    </label>
+                </div>  
+                <div class="invalid-tooltip"></div> 
+            </div>
+        </div> 
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="add-favorite">Adicionar</button>
+        </div> 
+      </div>
+    </div>
+</div>
+  
+</body>
+

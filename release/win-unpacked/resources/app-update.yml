@@ -1,0 +1,4 @@
+owner: Jumaruba
+repo: guiSigtools
+provider: github
+updaterCacheDirName: sigtools-updater

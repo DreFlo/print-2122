@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pesquisar estudante</title>
+    <link rel="stylesheet" type="text/css" href="../_views/css/style.css">
+    <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/datatables.min.js" defer></script>
+    <script type="text/javascript" src="../lib/DataTables/rowsGroup.js" defer></script>
+    <script src="../_linkers/common/init.js" defer></script>
+    <script src="../_linkers/utils/utils.js" defer></script>
+    <script src="../_linkers/common/header.js" defer></script>
+    <script src="../_linkers/common/saveTable.js" defer></script>
+    <script src="../_linkers/pages/searchStudent.js" defer></script>
+    <script src="../_linkers/common/login.js" defer></script>
+
+</head>
+
+<body>
+
+<div class="container text-center">
+    <div class="row" id="title">
+        <h1>Pesquisa de estudante </h1>
+        <p>Pesquisa personalizada de estudantes na FEUP</p>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Percurso acadêmico</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="search_student_year.html">Pesquisa por curso/ano</a>
+        </li>
+    </ul>
+    <form id="searchStudent">
+        <div class="row">
+            <label class="form-label mt-5 text-start" for="code">Números up*:</label>
+            <div class="d-flex p-0"> 
+                <div class="input-group">
+                    <input class="form-control me-3" type="text" name="upNumber" id="code"
+                        placeholder="Ex: 201800123"> 
+                    <div class="invalid-tooltip"></div>
+                </div>
+                <button type="button" class="btn btn-outline-primary w-25 h-75" data-bs-toggle="modal"
+                        data-bs-target="#insertFavorite" id="insertFavoriteButton">
+                    <span>Inserir favorito</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-5 m-0 px-0">
+                <label class="form-label text-start float-start" for="ucs">Unidades curriculares:</label>
+                <input class="form-control" type="text" id="ucs"
+                       placeholder="Ex: EIC0020">
+                <div class="form-check text-start">
+                    <input type="checkbox" class="form-check-input" id="media">
+                    <label class="form-check-label" for="media">Mostrar média</label>
+                </div>
+                <div class="form-check text-start">
+                    <input type="checkbox" class="form-check-input" id="atrasadas">
+                    <label class="form-check-label" for="media">Apenas UCS atrasadas</label>
+                </div>
+            </div>
+
+            <div class="col-7 m-0 px-0">
+                <span> Filtragem de período:</span>
+                <div class="d-flex flex-row justify-content-center my-1">
+                    <label class="form-label text-start mx-3">1S:</label>
+                    <div class="btn-group-sm" role="group" aria-label="Ano curricular" id="checkbox-1s">
+                        <input type="checkbox" class="btn-check" id="1S-1" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="1S-1">1º Ano</label>
+                        <input type="checkbox" class="btn-check" id="1S-2" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="1S-2">2º Ano</label>
+                        <input type="checkbox" class="btn-check" id="1S-3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="1S-3">3º Ano</label>
+                        <input type="checkbox" class="btn-check" id="1S-4" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="1S-4">4º Ano</label>
+                        <input type="checkbox" class="btn-check" id="1S-5" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="1S-5">5º Ano</label>
+                    </div>
+                </div>
+                <div class="d-flex flex-row justify-content-center my-1">
+                    <label class="form-label text-start mx-3">2S:</label>
+                    <div class="btn-group-sm" role="group" aria-label="Ano curricular" id="checkbox-2s">
+                        <input type="checkbox" class="btn-check" id="2S-1" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="2S-1">1º Ano</label>
+                        <input type="checkbox" class="btn-check" id="2S-2" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="2S-2">2º Ano</label>
+                        <input type="checkbox" class="btn-check" id="2S-3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="2S-3">3º Ano</label>
+                        <input type="checkbox" class="btn-check" id="2S-4" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="2S-4">4º Ano</label>
+                        <input type="checkbox" class="btn-check" id="2S-5" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="2S-5">5º Ano</label>
+                    </div>
+                </div>
+                <div class="d-flex flex-row justify-content-center my-1">
+                    <label class="form-label text-start mx-3">A :</label>
+                    <div class="btn-group-sm" role="group" aria-label="Ano curricular">
+                        <input type="checkbox" class="btn-check" id="A-1" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="A-1">1º Ano</label>
+                        <input type="checkbox" class="btn-check" id="A-2" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="A-2">2º Ano</label>
+                        <input type="checkbox" class="btn-check" id="A-3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="A-3">3º Ano</label>
+                        <input type="checkbox" class="btn-check" id="A-4" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="A-4">4º Ano</label>
+                        <input type="checkbox" class="btn-check" id="A-5" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="A-5">5º Ano</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="flex-d justify-content-center my-5">
+            <button type="button" class="btn btn-primary px-5" id="search">Submeter</button>
+        </div>
+    </form>
+
+
+    <div id="table-wrapper" class="mt-5">
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="insertFavorite">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Favorito</h5>
+            </div>
+
+            <div class="modal-body">
+                <table id="table-wrapper-favorites" class="table table-striped w-100">
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeFavorite" data-bs-dismiss="modal">Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="saveFavorite" data-bs-dismiss="modal">Selecionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
