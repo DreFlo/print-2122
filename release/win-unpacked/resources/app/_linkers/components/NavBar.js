@@ -1,9 +1,0 @@
-class NavBar {
-    constructor(){
-
-    }  
-
-    draw(){
-
-    }
-}
