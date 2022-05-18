@@ -93,10 +93,11 @@ function createTable(workersArray) {
             {title: "Sigla"}, 
             {title: ""}
         ], 
+        order: [[1, 'asc']],
         columnDefs: [{
             "defaultContent": " ",
             "targets": 3,
-        }, 
+        },
         {
             "targets": -1, 
             "data": null, 
@@ -106,6 +107,9 @@ function createTable(workersArray) {
     });
 }
 
+/**
+ * Adds the workers selected to the input line for use later
+ */
 function addToInput(){
     let inputLine = document.getElementById("code");
     inputLine.value = selectedWorkers.join(" ");
