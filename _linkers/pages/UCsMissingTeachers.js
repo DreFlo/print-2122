@@ -1,5 +1,6 @@
 const { pyCall } = require("../_linkers/pyCall.js");
-const { autocomplete } = require("../_linkers/utils/autocomplete.js")
+const { autocomplete } = require("../_linkers/utils/autocomplete.js");
+const { items } = require("../_linkers/utils/items.js");
 
 let toast = new ToastComponent();
 let tables;
@@ -127,9 +128,6 @@ function handleGetTablesResponse(data) {
     listTables();
 }
 
-function getCourses() {
-    pyCall("get_courses", "handleCoursesResponse", []);
-}
 
 function handleCoursesResponse(data) {
     courses = data['courses'];
@@ -251,5 +249,5 @@ function getUC(id) {
 
 window.onload = function() {
     getTables();
-    getCourses();
+    items.getCourses();
 }

@@ -7,6 +7,7 @@ import collections
 import Login
 import pandas as pd
 import requests
+import json
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
@@ -376,3 +377,76 @@ def get_UC_teacher_info(url):
                 info['practical']['teachers'].append(teacher)
 
     return {'name' : name , 'id' : id, 'info' : info}
+
+
+def get_exams(courses):
+    ''' 
+    results: [
+        {
+            course: {name(string), code(string)}
+            type: (string)
+            uc: {name(string), code(string)}
+            date: (string)
+            
+        }
+    ]
+    '''
+    exams = []
+
+    for course in courses:
+        url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course["code"]
+
+        html = get_html(mc.Browser(),url)
+        soup = bs(html)
+
+        if soup.find(id="erro"):
+            continue
+
+        conteudo_inner = soup.find("div", {"id": "conteudoinner"})
+        
+        h3_soup = conteudo_inner.find_all("h3")
+        table_soup = conteudo_inner.find_all("table", recursive=False)
+
+        for i in range(len(h3_soup)):
+
+            # Get all relevant tables in table
+
+            child = table_soup[i].findChild().findChild().findChild()
+
+            tables_soup = child.find_all("table", recursive=False)
+
+            for table_day in tables_soup:
+                
+                days_tr = table_day.find_all("th")
+                exams_tr = table_day.find_all("td", {"class": "l k", "valign": "top"})
+                
+                for index in range(len(days_tr)):
+                    child = exams_tr[index].findChild()
+                    if child.name == "p":
+                        continue
+                    
+                    exam_td = child.find_all("td")
+                    for td in exam_td:
+                        exam = {}
+                        exam["type"] = h3_soup[i].text
+                        exam["course"] = course
+                        exam["uc"] = td.find("a").get("title")
+                        exam["date"] = days_tr[index].find("span").text
+                        
+                        hour = td.text
+                        for h in range(len(hour)):
+                            if hour[h].isdigit() and hour[h+2]==":":
+                                hour = hour[h:h+11]
+                                break
+                        exam["hour"] = hour
+
+                        rooms = []
+                        td_span_rooms = td.find("span")
+                        for span_room in td_span_rooms:
+                            if(span_room.text != ", "):
+                                rooms.append(span_room.text)
+                        exam["rooms"] = rooms
+
+                        exams.append(exam)
+    
+    return exams

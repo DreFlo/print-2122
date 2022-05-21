@@ -9,7 +9,6 @@ def main():
         data = json.load(file)
 
     print(BuildJson(data).getJson())
-
     sys.stdout.flush()
 
 if __name__ == '__main__':
