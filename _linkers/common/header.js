@@ -1,3 +1,5 @@
+//const { getLogged } = require("./checkLogin");
+
 let body = document.querySelector("body");
 
 
@@ -61,8 +63,8 @@ const logoutButton = '<button class="btn text-white" id="logout" aria-expanded="
                     <span>Logout</span>\
                 </button></li></ul></nav>';
 
+let username_div = "<div>" + getLogged() + "</div>";
 
-
-if (getLogged() === "true") header += logoutButton;
+if (getLogged() !== "false") header += username_div + logoutButton;
 else header += loginForm;
 body.innerHTML = header + body.innerHTML;

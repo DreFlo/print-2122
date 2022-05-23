@@ -5,7 +5,7 @@ import os
 
 cwd = os.getcwd()
 
-tables_file_path = os.path.join(cwd, 'resources\\app\\data\\uc_teachers_table.json')
+tables_file_path = os.path.join(cwd, 'data\\uc_teachers_table.json')
 
 def main():
     tables = json.loads(sys.argv[1])

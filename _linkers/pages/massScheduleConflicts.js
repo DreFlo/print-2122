@@ -67,7 +67,7 @@ function validateInput(){
  */
 function handleScheduleTime(event){
     event.preventDefault();
-    if (getLogged() != "true") {
+    if (getLogged() === "false") {
         toast.show("Não está autenticado", toastColor.RED);
     }
     else {

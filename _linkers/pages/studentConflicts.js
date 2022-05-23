@@ -123,7 +123,7 @@ function removeUC() {
 
 // Analise conflicts between selected UCs
 function analiseConflicts() {
-    if (getLogged() != "true") {
+    if (getLogged() === "false") {
         toast.show("Não está autenticado", toastColor.RED);
     }
     else {

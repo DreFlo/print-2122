@@ -5,6 +5,9 @@ const {eventSelectFavorite} = require("../_linkers/common/selectFavorite");
 let favoritesDict = jsonToArray(JSON.parse(readFavorites("ucs")));
 let toast = new ToastComponent();   
 
+let course;
+let year;
+
 $('#table-wrapper-favorites').DataTable({
     data: favoritesDict,
     columns: [
@@ -27,7 +30,7 @@ eventSelectFavorite();
 
 function validateInput(){
     const courseElement = document.querySelector("#code");
-    const year = getYear();   
+    year = getYear();   
     const radioElement = document.querySelector("input[type=radio]")
     let isValid = true;  
 
@@ -41,8 +44,8 @@ function validateInput(){
 
 function handleSearch() { 
     if (!validateInput()) return;
-    const course = document.querySelector("#code").value; 
-    const year = getYear();  
+    course = document.querySelector("#code").value; 
+    year = getYear();  
 
     toast.show("Carregando...", toastColor.BLUE, false); 
     pyCall("search_student_year", "finalHandleSearch", [course, year]);
@@ -81,7 +84,7 @@ function buildTableSearch(responseTable){
 
     listenCopyColButton('N.º Estudante');
     listenCopy();
-    listenCSV();
+    listenCSV(course + "_" + year + "_students");
 }
 
 
@@ -104,6 +107,11 @@ function setTableAttr(table){
 function addTableToHtml(table){
     let tableWrapper = document.querySelector("#table-wrapper");
     tableWrapper.appendChild(table);
+    let hiddenTable = document.createElement("table");
+    hiddenTable.innerHTML = table.innerHTML;
+    hiddenTable.id = "hidden_table_id";
+    hiddenTable.setAttribute("hidden", "true");
+    tableWrapper.appendChild(hiddenTable);
 
     $('#table_id').DataTable();
 }

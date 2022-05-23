@@ -133,7 +133,7 @@ function groupByDate(){
     docentsNumber = docentsCodeArray.length;   
 
     docentsCodeArray.forEach(id => {
-        scheduleJson[id]['schedule'].forEach(sched => {     
+        scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
             let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
             if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
                 sched['teacher'] = id; 

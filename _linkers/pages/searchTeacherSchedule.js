@@ -125,9 +125,11 @@ function final_handleTeacherSched(data){
 function groupByDate(){ 
     
     let groupedScheds = {}
-    let scheduleJson = JSON.parse(readSchedule());      
+    let scheduleJson = JSON.parse(readSchedule());   
+    
+    console.log(scheduleJson);
 
-    scheduleJson[docentCode]['schedule'].forEach(sched => {      
+    scheduleJson[docentCode]['class_schedule']['schedule'].forEach(sched => {      
       let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
       sched['teacher'] = docentCode; 
       let key = currTimeFrame.toString(); 

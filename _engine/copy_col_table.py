@@ -1,6 +1,7 @@
 import sys
 from handle_json import BuildJson
 import pandas as pd
+import os
 
 """
 Script responsible for copying a column in the table
@@ -8,7 +9,10 @@ Script responsible for copying a column in the table
 
 
 def get_table_html():
-    return sys.argv[1]
+    with open(sys.argv[1], "r", encoding="utf-8") as file:
+        html = file.read()
+    os.remove(sys.argv[1])
+    return html
 
 
 def get_column_name():

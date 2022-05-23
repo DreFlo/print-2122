@@ -5,7 +5,7 @@ import os
 
 cwd = os.getcwd()
 
-courses_file_path = os.path.join(cwd, 'resources\\app\\data\\courses.json')
+courses_file_path = os.path.join(cwd, 'data\\courses.json')
 
 def main():
     with open(courses_file_path, 'r', encoding='utf-8') as file:

@@ -55,22 +55,22 @@ function final_handleThesesStd(response) {
         document.getElementById("professor-name").innerHTML =
             "<h1 class='display-6'>Professor " + response["Name"] + "</h1>";
         delete response["name"];
-        buildTableDocent(response.html);
+        buildTableDocent(response);
         window.location.href = "#table-wrapper";
    }
 }
 
-function buildTableDocent(responseTable) {
+function buildTableDocent(response) {
     const parser = new DOMParser();
 
-    let htmlWithTable = parser.parseFromString(responseTable, 'text/html');
+    let htmlWithTable = parser.parseFromString(response.html, 'text/html');
     let table = htmlWithTable.querySelector("table");
     setTableAttr(table);
     createTableButtons(table);
     addTableToHtml(table);
 
     listenCopy();
-    listenCSV();
+    listenCSV(response.Name + " Teses");
 }
 
 /**
@@ -88,6 +88,29 @@ function setTableAttr(table){
 function addTableToHtml(table){
     let tableWrapper = document.querySelector("#table-wrapper");
     tableWrapper.appendChild(table);
+
+    let hiddenTable = document.createElement("table");
+    hiddenTable.innerHTML = table.querySelector("thead").innerHTML;
+    let hiddenTableBody = document.createElement("tbody");
+    table.querySelector("tbody").querySelectorAll("tr").forEach((tr) => {
+        let newTr = document.createElement("tr");
+        tr.querySelectorAll("td").forEach((td) => {
+            let a;
+            let newTd = document.createElement("td");
+            if ((a = td.querySelector("a")) != null) {
+                newTd.innerHTML = a.href;
+            }
+            else {
+                newTd.innerHTML = td.innerHTML;
+            }
+            newTr.appendChild(newTd);
+        });
+        hiddenTableBody.appendChild(newTr)
+    });
+    hiddenTable.appendChild(hiddenTableBody);
+    hiddenTable.id = "hidden_table_id";
+    hiddenTable.setAttribute("hidden", "true");
+    tableWrapper.appendChild(hiddenTable);
 
     $('#table_id').DataTable();
 }

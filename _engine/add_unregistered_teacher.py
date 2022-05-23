@@ -23,6 +23,8 @@ def create_reminder():
 
     filepath = filedialog.asksaveasfilename(defaultextension='.ics', title='Choose filename', initialfile=get_name() + ".ics")
 
+    if (filepath == ""): return
+
     cal = Calendar()
     event = Event()
     event.add('summary', 'Registar ' + get_name() + ' no sigarra')

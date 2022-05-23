@@ -29,7 +29,7 @@ function final_handleLogin(data) {
         document.getElementById('password').value = "";
         toast.show('Não possível realizar login', toastColor.GREEN);
     } else {
-        setLogged('true');
+        setLogged(data["Name"]);
         checkLogin();
     }
 
@@ -42,7 +42,7 @@ function checkLogin() {
 
 function updateFileLogin(data) {
     if (data['Name'] === "NONE") setLogged('false');      //case the login input is wrong
-    else setLogged('true');
+    else setLogged(data['Name']);
     location.reload();
 }
 

@@ -76,7 +76,7 @@ function closeAutocompleteSugestions() {
 
 // Retrieves all curricular unit, teacher and time info for input course
 function createNewTable() {
-    if (getLogged() != "true") {
+    if (getLogged() === "false") {
         toast.show("Não está autenticado", toastColor.RED);
     }
         else {

@@ -76,6 +76,7 @@ function getCheckBoxAtrasadas(){
  * @param data - Python response
  */
 function final_handleSearchStd(data) {
+    console.log(data);
     if (data.error === "true") toast.show("Não foi possível processar dados", toastColor.RED);
     else { 
         toast.show("Tabela carregada", toastColor.GREEN);
@@ -100,7 +101,7 @@ function buildTableStudent(responseTable) {
     addTableToHtml(table);
 
     listenCopy();
-    listenCSV();
+    listenCSV("Resultado de Pesquisa de Estudante");
 }
 
 /**
@@ -130,6 +131,11 @@ function setHeaderFields(table){
 function addTableToHtml(table){
     let tableWrapper = document.querySelector("#table-wrapper");
     tableWrapper.appendChild(table);
+    let hiddenTable = document.createElement("table");
+    hiddenTable.innerHTML = table.innerHTML;
+    hiddenTable.id = "hidden_table_id";
+    hiddenTable.setAttribute("hidden", "true");
+    tableWrapper.appendChild(hiddenTable);
 
     $('#table_id').DataTable({
         'rowsGroup': [0,1],   // allows rowspan.
