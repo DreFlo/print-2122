@@ -1,32 +1,15 @@
-workflow:
-  rules:
-    # # For merge requests, create a pipeline.
-    # - if: '$CI_MERGE_REQUEST_IID'
-    # # For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    - if: '$CI_COMMIT_TAG'
-
 stages:
-  # - test
-  # - build
-  # - deploy
-  # - prepare
-  - release
+    - realese
 
-include:
-  # - local: .gitlab/ci/test-build-deploy.yml
-  # - local: .gitlab/ci/auto-release.yml
-  - local: .gitlab/ci/release-from-tag.yml
-  # - local: .gitlab/ci/release-from-tag-cli-only.yml
-  # - local: .gitlab/ci/release-with-assets-in-keyword.yml
-
-# print-variables:
-#   stage: test
-#   image: registry.gitlab.com/gitlab-org/release-cli:v0.9.0
-#   before_script:
-#     - env
-#     - echo $ADDITIONAL_CA_CERT_BUNDLE
-#   script:
-#     - env
-#     - echo $ADDITIONAL_CA_CERT_BUNDLE
-#     - release-cli help
+ release-project:
+   stage: release
+   image: registry.gitlab.com/gitlab-org/realese-cli:latest
+   rules:
+     - if: $CI_COMMIT_TAG                                            # Run this job when a tag is created manually
+   script:
+     - echo "running release from $CI_COMMIT_TAG"
+   release:
+     name: "Release $CI_COMMIT_TAG"
+     description: 'Release $CI_COMMIT_TAG'
+     tag_name: '$CI_COMMIT_TAG'
+     ref: '$CI_COMMIT_TAG'

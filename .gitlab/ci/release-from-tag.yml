@@ -1,28 +1,36 @@
- generate_description:
-   stage: prepare
-   rules:
-     - if: $CI_COMMIT_TAG
-   script:
-      - echo "EXTRA_DESCRIPTION=\"generated some extra description first\"" > description.env
-      # - >
-      # echo "EXTRA_DESCRIPTION="$(git tag --format="%(contents:subject)%0a%0a%(contents:body)" --list ${CI_COMMIT_TAG:?} | sed 's|\r |\n|g')" > description.env
-   artifacts:
-     reports:
-       dotenv: description.env
+#  generate_description:
+#    stage: prepare
+#    rules:
+#      - if: $CI_COMMIT_TAG
+#    script:
+#       - echo "EXTRA_DESCRIPTION=\"generated some extra description first\"" > description.env
+#    artifacts:
+#      reports:
+#        dotenv: description.env
 
- release-from-tag:
-   image: registry.gitlab.com/jaime/release-cli:edge
-   stage: release
-   needs:
-     - job: generate_description
-       artifacts: true
-   rules:
-     - if: $CI_COMMIT_TAG                                            # Run this job when a tag is created manually
-   script:
-     - echo "running release from $CI_COMMIT_TAG"
-   release:
-     name: "Release $CI_COMMIT_TAG"
-     description: 'CHANGELOG.md'
-     tag_name: '$CI_COMMIT_TAG'                                      # elsewhere in the pipeline
-     ref: '$CI_COMMIT_TAG'
+
+
+
+
+#   stages:
+#     - realese
+
+#  release-project:
+#    stage: release
+#    image: registry.gitlab.com/gitlab-org/realese-cli:latest
+#    rules:
+#      - if: $CI_COMMIT_TAG                                            # Run this job when a tag is created manually
+#    script:
+#      - echo "running release from $CI_COMMIT_TAG"
+#    release:
+#      name: "Release $CI_COMMIT_TAG"
+#      description: 'CHANGELOG.md'
+#      tag_name: '$CI_COMMIT_TAG'
+#      ref: '$CI_COMMIT_TAG'
+
+
+
+
+
+
 #     released_at: '2020-09-12T16:10:00+11:00'
