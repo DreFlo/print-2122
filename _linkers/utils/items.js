@@ -1,36 +1,32 @@
-const { getS3LikeProviderBaseUrl } = require("builder-util-runtime");
 const { pyCall } = require("../_linkers/pyCall.js");
 
 document.querySelector('#updateCourses').addEventListener('click', updateCourses);
-document.querySelector('#getExams').addEventListener('click', updateExams);
+document.querySelector('#updateExams').addEventListener('click', updateExams);
 
+let toast = new ToastComponent();
 let courses_json = require('../data/courses.json');
 let exams_json = require('../data/exams.json');
-let courses;
-let exams;
 
 /* Update items */
 function updateCourses() {
-    pyCall("update_courses", "handleUpdateCourses", [])
+    pyCall("update_courses", "do_nothing", [])
 }
-
-function handleUpdateCourses() {}
 
 function updateExams() {
-    pyCall("get_exams", "handleUpdateExams", [courses]);
+    pyCall("update_exams", "do_nothing", []);
 }
 
-function handleUpdateExams() {}
+function do_nothing() {}
 
 
 /* Get items */
 
 function getCourses() {
-    courses = courses_json["courses"];
+    return courses_json["courses"];
 }
 
 function getExams() {
-    exams = exams_json["exams"];
+    return exams_json["exams"];
 }
 
 module.exports(getCourses, getExams)

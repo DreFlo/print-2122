@@ -380,19 +380,8 @@ def get_UC_teacher_info(url):
 
 
 def get_exams(courses):
-    ''' 
-    results: [
-        {
-            course: {name(string), code(string)}
-            type: (string)
-            uc: {name(string), code(string)}
-            date: (string)
-            
-        }
-    ]
-    '''
-    exams = []
 
+    exams = []
     for course in courses:
         url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course["code"]
 
@@ -408,17 +397,13 @@ def get_exams(courses):
         table_soup = conteudo_inner.find_all("table", recursive=False)
 
         for i in range(len(h3_soup)):
-
+            
             # Get all relevant tables in table
 
-            child = table_soup[i].findChild().findChild().findChild()
-
-            tables_soup = child.find_all("table", recursive=False)
-
-            for table_day in tables_soup:
-                
-                days_tr = table_day.find_all("th")
-                exams_tr = table_day.find_all("td", {"class": "l k", "valign": "top"})
+            child = table_soup[i].findChild().findChild()
+            for table_week in child.find_all("table", recursive=False):
+                days_tr = table_week.find_all("th")
+                exams_tr = table_week.find_all("td", {"class": "l k", "valign": "top"})
                 
                 for index in range(len(days_tr)):
                     child = exams_tr[index].findChild()
@@ -443,10 +428,11 @@ def get_exams(courses):
                         rooms = []
                         td_span_rooms = td.find("span")
                         for span_room in td_span_rooms:
-                            if(span_room.text != ", "):
-                                rooms.append(span_room.text)
+                            if(span_room.string != ", "):
+                                rooms.append(span_room.string)
+
                         exam["rooms"] = rooms
 
                         exams.append(exam)
-    
-    return exams
+
+    return {"exams": exams}
