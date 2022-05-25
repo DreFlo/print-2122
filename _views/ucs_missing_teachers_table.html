@@ -18,7 +18,7 @@
 <body>
     
     <section id="title">
-        <h1>Tabela Professores UC's</h1>
+        <h1>Atribuição de Docentes a Unidades Curriculares</h1>
     </section>
     <section class="container text-center">
         <p>
@@ -35,12 +35,15 @@
                 <div class="form-flex-row m-3">
                     <div class="input-group mb-3" style="flex: 1;"> 
                         <input class="form-control me-3" name="tableName" id="tableNameInput">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
                         <input class="form-control me-3" name="tableCourse" id="tableCourseInput" number="0">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" style="flex: 1;"> 
                         <input class="form-control me-3" type="number" min="2001" max="2300" id="tableYearInput" placeholder="ex: 2021">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="flex-d justify-content-center mb-5">
                         <button id="newTableFormButton" type="button" class="btn btn-success">Criar</button>
@@ -53,12 +56,15 @@
                 <div class="form-flex-row m-3">
                     <div class="input-group mb-3" style="flex: 2;"> 
                         <input class="form-control me-3" id="newTeacherNameInput" placeholder="Nome">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" style="flex: 1;"> 
-                        <input class="form-control me-3" type="number" id="newTeacherAvailableHoursInput" placeholder="Horas Disponíveis">
+                        <input class="form-control me-3" type="number" id="newTeacherAvailableHoursInput" placeholder="Horas Disponíveis" min="0">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" style="flex: 1;"> 
                         <input class="form-control me-3" type="date" id="newTeacherContractStartInput" placeholder="Início de Contrato">
+                        <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" style="flex: 1;"> 
                         <input class="form-check-input me-3" type="checkbox" value="" id="newTeacherReminderCheckbox">

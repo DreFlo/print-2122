@@ -1,8 +1,8 @@
 import sys
+import tkinter
 from tkinter import filedialog
 from handle_json import BuildJson
 import pandas as pd
-import datetime
 import os
 
 """
@@ -21,6 +21,7 @@ def get_table_html():
 def main():
     table_html = get_table_html()
     df = pd.read_html(table_html)[0]
+    tkinter.Tk().withdraw()
     filepath = filedialog.asksaveasfilename(defaultextension='.csv', filetypes=[('CSV', '*.csv')], title='Choose filename', initialfile=sys.argv[2] + ".csv")
     if (filepath != ""):
         df.to_csv(filepath, index=False)

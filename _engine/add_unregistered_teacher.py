@@ -1,6 +1,7 @@
 import sys
 import json
 from handle_json import BuildJson
+import tkinter
 from tkinter import filedialog
 from icalendar import Calendar, Event
 from dateutil import parser
@@ -21,6 +22,7 @@ def get_reminder():
 def create_reminder():
     contractStart = parser.parse(get_contract_start())
 
+    tkinter.Tk().withdraw()
     filepath = filedialog.asksaveasfilename(defaultextension='.ics', title='Choose filename', initialfile=get_name() + ".ics")
 
     if (filepath == ""): return

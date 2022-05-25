@@ -21,6 +21,90 @@ document.querySelector('#saveUCDetailDialog').addEventListener('click', saveUCDi
 document.querySelector("#tableYearInput").value = new Date().getFullYear();
 document.querySelector('#collapseTargetOptionsButton').addEventListener('click', toggleCollapseOptions);
 document.querySelector('#collapseTargetTeachersButton').addEventListener('click', toggleCollapseTeachers);
+document.querySelector('#tableCourseInput').addEventListener('input', () => {document.querySelector('#tableCourseCodeInput').value = ""});
+
+function validateCreateNewTableInput() {
+    let nameInput = document.querySelector('#tableNameInput');
+    let yearInput = document.querySelector('#tableYearInput');
+    let courseInput = document.querySelector('#tableCourseInput');
+    let courseIdInput = document.querySelector('#tableCourseCodeInput');
+    let ret = true;
+
+    if (nameInput.value == "") {
+        setInvalidInput(nameInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else {
+        setValidInput(nameInput);
+    }
+    
+    if (yearInput.value == "") {
+        setInvalidInput(yearInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else {
+        setValidInput(yearInput);
+    }
+
+    if (courseIdInput.value == "") {
+        if (courseInput.value == "") {
+            setInvalidInput(courseInput, "Este campo não pode estar vazio");
+        }
+        else {
+            setInvalidInput(courseInput, "Este campo apenas pode ser preenchindo selecionando uma das opções sugeridas")
+        }
+        ret = false;
+    }
+    else {
+        setValidInput(courseInput);
+    }
+
+    return ret;
+}
+
+function validateNewTeacherInput() {
+    let nameInput = document.querySelector('#newTeacherNameInput');
+    let hoursInput = document.querySelector('#newTeacherAvailableHoursInput');
+    let dateInput = document.querySelector('#newTeacherContractStartInput');
+
+    let ret = true;
+
+    if (nameInput.value == "") {
+        setInvalidInput(nameInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else {
+        setValidInput(nameInput);
+    }
+
+    if (hoursInput.value == "") {
+        setInvalidInput(hoursInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else if (parseInt(hoursInput.value) <= 0) {
+        setInvalidInput(hoursInput, "O valor deste campo tem de ser maior que zero");
+        ret = false;
+    }
+    else {
+        setValidInput(hoursInput);
+    }
+
+    
+    if (document.querySelector('#newTeacherReminderCheckbox').checked) {
+        if (dateInput.value == "") {
+            setInvalidInput(dateInput, "Para criar um lembrete de início de contrato tem de especificar uma data");
+            ret = false;
+        }
+        else {
+            setValidInput(dateInput)
+        }
+    }
+    else {
+        setValidInput(dateInput)
+    }
+
+    return ret
+}
 
 // Get autocomplete results and create HTML and CSS element with results underneath searchbox
 function autocompleteCourses() {
@@ -79,7 +163,8 @@ function createNewTable() {
     if (getLogged() === "false") {
         toast.show("Não está autenticado", toastColor.RED);
     }
-        else {
+    else {
+        if (!validateCreateNewTableInput()) return;
         let name = document.querySelector('#tableNameInput').value;
         let year = document.querySelector('#tableYearInput').value;
         let course = document.querySelector('#tableCourseCodeInput').value;
@@ -340,9 +425,24 @@ function buildClassTypeArea(body, type) {
     divInputGroup.innerHTML = '<div class="input-group-prepend"><div class="input-group-text">Tempo de aulas total</div></div>'
     let input = document.createElement('input');
     input.classList.add('form-control');
+    input.setAttribute("type", "number");
+    input.setAttribute("min", "0");
     input.value = editedUC.info[type].total;
     // Change total on input
-    input.addEventListener('input', () => {editedUC.info[type].total = input.value == '' ? null : input.value});
+    input.addEventListener('input', () => {
+        if (input.value == "-") return;
+        if (parseInt(input.value) < 0) {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+        
+            divInputGroup.appendChild(div);
+        }
+        else {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+            editedUC.info[type].total = input.value == '' ? null : input.value
+        }
+    });
 
     divInputGroup.appendChild(input);
 
@@ -388,18 +488,50 @@ function buildTeachersClassTypeArea(body, type) {
 
         // Teacher Hours
 
-        td = document.createElement('td');
+        let tdInput = document.createElement('td');
         let input = document.createElement('input');
         input.classList.add('form-control');
+        input.setAttribute("type", "number");
+        input.setAttribute("min", "0");
         input.value = teacher.hours;
         // On input change teacher hours and update UC
         input.addEventListener('input', () => {
             let newHours = (input.value == '' ? 0 : parseInt(input.value))
-            editedUC.info[type].fulfilled = editedUC.info[type].fulfilled - teacher.hours + newHours;
-            teacher.hours = newHours;
+            let unregisteredTeacher = getUnregisteredTeacherById(teacher.code);
+            if (newHours < 0) {
+                input.classList.remove("is-valid");
+                input.classList.add("is-invalid");
+
+                let div = tdInput.querySelector("div");
+                if (div!=null) tdInput.removeChild(div);
+                div = document.createElement("div");
+                div.classList.add("alert", "alert-danger");
+                div.textContent = "O número de horas atribuídas tem de ser maior que zero";
+                tdInput.appendChild(div);
+            }
+            // Trying to set teacher hours to a value that would exceed their available hours
+            else if (unregisteredTeacher != null && unregisteredTeacher.availableHours < unregisteredTeacher.assignedHours - teacher.hours + newHours) {
+                input.classList.remove("is-valid");
+                input.classList.add("is-invalid");
+
+                let div = tdInput.querySelector("div");
+                if (div!=null) tdInput.removeChild(div);
+                div = document.createElement("div");
+                div.classList.add("alert", "alert-danger");
+                div.textContent = "O número de horas atribuídas totais do professor seria maior do que o número de horas disponíveis";
+                tdInput.appendChild(div);
+            }
+            else {
+                let div = tdInput.querySelector("div");
+                if (div!=null) tdInput.removeChild(div);
+                input.classList.remove("is-invalid");
+                input.classList.add("is-valid");
+                editedUC.info[type].fulfilled = editedUC.info[type].fulfilled - teacher.hours + newHours;
+                teacher.hours = newHours;
+            }
         });
-        td.appendChild(input);
-        tr.appendChild(td);
+        tdInput.appendChild(input);
+        tr.appendChild(tdInput);
 
         // Remove Teacher
 
@@ -456,6 +588,47 @@ function removeAssignedHoursFromUnregisteredTeacher(teacher) {
     });
 }
 
+function validateAddNewTeacher(classType) {
+    let nameInput = document.getElementById('teacher-name-input-' + classType);
+    let hoursInput = document.getElementById('teacher-hours-input-' + classType);
+    let codeInput = document.getElementById('teacher-code-input-' + classType);
+
+    let ret = true;
+    
+    let teacher = getUnregisteredTeacherById(parseInt(codeInput.value));
+
+    if (hoursInput.value == "") {
+        setInvalidInput(hoursInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else if (teacher == null) {
+        setInvalidInput(hoursInput, "Tem de ser selecionado um professor da lista dos sugeridos");
+        ret = false;
+    }
+    else if (teacher.availableHours < teacher.assignedHours + parseInt(hoursInput.value)) {
+        setInvalidInput(hoursInput, "O número de horas atribuídas totais do professor seria maior do que o número de horas disponíveis");
+        ret = false;
+    }
+    else {
+        setValidInput(hoursInput);
+    }
+
+    /*
+    if (nameInput.value = "") {
+        setInvalidInput(nameInput, "Este campo não pode estar vazio");
+        ret = false;
+    }
+    else if (teacher == null) {
+        setInvalidInput(nameInput, "Tem de ser selecionado um professor da lista dos sugeridos");
+        ret = false;
+    }
+    else {
+        setValidInput(nameInput);
+    }*/
+
+    return ret;
+}
+
 // Draw area to add new teacher to class type in UC
 function addNewTeacherArea(body, classType) {
     let div = document.createElement('div');
@@ -476,8 +649,9 @@ function addNewTeacherArea(body, classType) {
     input.placeholder = 'Nome';
     input.id = 'teacher-name-input-' + classType;
     // On inputshow autocomplete suggestions
-    input.addEventListener('input', () => {autocompleteTeacher(input, classType)});
+    input.addEventListener('input', () => {autocompleteTeacher(input, classType); document.querySelector('#teacher-code-input-' + classType).value = "";});
     childDiv.appendChild(input);
+    childDiv.innerHTML += "<div class=\"invalid-tooltip\"></div><div id=\"teacher-autocomplete-" + classType + "\"></div>";
     div.appendChild(childDiv);
 
 
@@ -490,6 +664,7 @@ function addNewTeacherArea(body, classType) {
     input2.id = 'teacher-hours-input-' + classType;
     input2.placeholder = 'Horas';
     childDiv.appendChild(input2);
+    childDiv.innerHTML += "<div class=\"invalid-tooltip\"></div>";
     div.appendChild(childDiv);
 
     // Button to add teacher to class type
@@ -499,7 +674,11 @@ function addNewTeacherArea(body, classType) {
     let button = document.createElement('button');
     button.classList.add('btn', 'btn-success');
     button.textContent = 'Adicionar';
-    button.addEventListener('click', () => {addUnregisteredTeacher(classType)});
+    button.addEventListener('click', () => {
+        if (validateAddNewTeacher(classType)) {
+            addUnregisteredTeacher(classType);
+        }
+    });
     childDiv.appendChild(button);
     div.appendChild(childDiv);
 
@@ -542,6 +721,7 @@ function addUnregisteredTeacher(classType) {
 // Show autocomplete dorpdown for teacher search owhen editing UC
 function autocompleteTeacher(input, classType) {
     closeAutocompleteSugestions();
+    console.log(classType);
 
     let unregisteredTeacherNames = unregisteredTeachers.map((teacher) => {return teacher.name;});
 
@@ -568,7 +748,7 @@ function autocompleteTeacher(input, classType) {
         }
     }
     
-    document.querySelector('.add-unregistered-teacher-input-div-' + classType).appendChild(div);
+    document.querySelector('#teacher-autocomplete-' + classType).appendChild(div);
 }
 
 // Close autocomplete suggesting for teachers and set inputs
@@ -623,11 +803,11 @@ function removeTable(index) {
 
 // Create new unregistered teacher
 function createNewUnregisteredTeacher() {
+    if (!validateNewTeacherInput()) return;
     let name = document.querySelector('#newTeacherNameInput').value;
     let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
     let date = new Date(document.querySelector('#newTeacherContractStartInput').value);
     let reminder = document.querySelector('#newTeacherReminderCheckbox').checked;
-    console.log(reminder);
     
     toast.show("A criar...", toastColor.BLUE, false);
     pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString(), reminder]);
@@ -719,24 +899,40 @@ function buildUnregisteredTeachersTable() {
         tr.appendChild(td);
 
         // Available Hours
-        td = document.createElement('td');
+        tdInput = document.createElement('td');
 
         let input = document.createElement('input');
+        input.setAttribute("type", "number");
+        input.setAttribute("min", "0");
         input.classList.add('form-control');
         input.value = teacher.availableHours;
         input.addEventListener('input', () => {
             let newHours = (input.value == '' ? 0 : parseInt(input.value))
-            // TODO Error msg
             if (newHours < teacher.assignedHours) {
-                console.log("Error");
+                // Show error message to user
+                input.classList.remove("is-valid");
+                input.classList.add("is-invalid");
+                
+                
+                let div = tdInput.querySelector("div");
+                if (div!=null) tdInput.removeChild(div);
+                div = document.createElement("div");
+                div.classList.add("alert", "alert-danger");
+                div.textContent = "Este professor já está atribuído a mais que " + newHours + " horas";
+                tdInput.appendChild(div);
             }
             else {
+                // Show value is ok to user and store temporarily
+                let div = tdInput.querySelector("div");
+                if (div!=null) tdInput.removeChild(div);
+                input.classList.remove("is-invalid");
+                input.classList.add("is-valid");
                 teacher.availableHours = newHours;
             }
         });
-        td.appendChild(input);
+        tdInput.appendChild(input);
 
-        tr.appendChild(td);
+        tr.appendChild(tdInput);
 
         // Assigned Hours
         td = document.createElement('td');
@@ -768,6 +964,15 @@ function buildUnregisteredTeachersTable() {
 
     div.appendChild(table);
     div.appendChild(save);
+}
+
+function getUnregisteredTeacherById(id) {
+    for (let i = 0; i < unregisteredTeachers.length; i++) {
+        if (unregisteredTeachers[i].code == id) {
+            return unregisteredTeachers[i];
+        }
+    }
+    return null;
 }
 
 window.onload = function() {

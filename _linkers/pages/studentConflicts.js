@@ -6,13 +6,25 @@ document.querySelector("#UC-code-search-button").addEventListener("click", (even
 document.querySelector('#UC-analise-conflicts-button').addEventListener('click', analiseConflicts);
 
 
+
+function validateInput() {
+    let codeInput = document.querySelector('#code');
+    if (codeInput.value == "") {
+        setInvalidInput(codeInput, "Este campo não pode estar vazio");
+        return false;
+    }
+    setValidInput(codeInput);
+    return true;
+}
+
 // Seacrh for input UCs using sigarra
-function searchUC(event) {
-    if (getLogged() != "true") {
+function searchUC(event) {    
+    event.preventDefault();
+    if (getLogged() == "false") {
         toast.show("Não está autenticado", toastColor.RED);
     }
     else {
-        event.preventDefault();
+        if (!validateInput()) return;
         
         code = document.querySelector('#code').value;
 
