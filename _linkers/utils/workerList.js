@@ -91,19 +91,12 @@ function createTable(workersArray) {
             {title: "Código"},
             {title: "Nome"},  
             {title: "Sigla"}, 
-            {title: ""}
         ], 
         order: [[1, 'asc']],
         columnDefs: [{
             "defaultContent": " ",
-            "targets": 3,
-        },
-        {
-            "targets": -1, 
-            "data": null, 
-            "defaultContent": '<button type="button" class="btn btn-danger btn-remove">X</button>',
-        }
-        ]
+            "targets": 2,
+        }]
     });
 }
 

@@ -174,11 +174,9 @@ function mergeDates(scheds){
     let nonChosenDatesDict = Object.keys(scheds).filter(key => !chosenDates.includes(key)).reduce((res, key) => (res[key] = scheds[key], res), {});
     Object.keys(nonChosenDatesDict).forEach(nonChosen => {  
         let nonChosenDate = nonChosen.split(" to ");  
-        //let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[0]));
         let nonChosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(nonChosenDate[0]), stringToDate_ddmmyyyy(nonChosenDate[1]));
         chosenDates.forEach(chosen => {
             let chosenDate = chosen.split(" to ");  
-            //let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[0]));
             let chosenTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(chosenDate[0]), stringToDate_ddmmyyyy(chosenDate[1]));
             if (chosenTimeFrame.isOverlapping(nonChosenTimeFrame) || nonChosenTimeFrame.isOverlapping(chosenTimeFrame)){
                 chosenDatesDict[chosen].push(...nonChosenDatesDict[nonChosen]);
@@ -232,7 +230,7 @@ const matrixValue = (matrixCell, hourIndex, startHourIndex, schedule) => {
 }
 
 const buildTd = (data) => { 
-    let size; 
+    let size;
     let tdElement = document.createElement("td");   
 
     if (data == undefined) size = 0;  
@@ -241,7 +239,6 @@ const buildTd = (data) => {
     if (size == 0) tdElement.classList.add("green"); 
     else if (size == docentsNumber) tdElement.classList.add("red");
     else tdElement.classList.add("yellow"); 
-
 
     let divElement =  buildToolTip(docentsNumber - size + "/" + docentsNumber, data);     
     tdElement.appendChild(divElement);
