@@ -1,5 +1,6 @@
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
+const {pyCall} = require("../_linkers/pyCall.js");
 
 let docentsCode;
 let docentsCodeArray;

@@ -1,5 +1,4 @@
-
-
+const {pyCall} = require("../_linkers/pyCall.js");
 let FileTypeCorres = {"docents": "Professor", "ucs": "UC", "students": "Estudante"}  
 let TypeFileCorres = {"Professor": "docents", "UC": "ucs", "Estudante": "students"}
 let toast = new ToastComponent(); 

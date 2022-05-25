@@ -44,9 +44,9 @@ $(document).ready(function() {
 
     schedulesJSON = JSON.parse(readSchedule());
     var lastUpdatedClass = document.getElementById("last-updated-class");
-    lastUpdatedClass.innerText = "Último update de horários de aula: " + schedulesJSON['updates']['class_schedules'] + "\n";
+    lastUpdatedClass.innerText = "Última atualização de horários de aula: " + schedulesJSON['updates']['class_schedules'] + "\n";
     var lastUpdatedExams = document.getElementById("last-updated-exams");
-    lastUpdatedExams.innerText = "Último update de horários de vigilância: " + schedulesJSON['updates']['exam_schedules'];
+    lastUpdatedExams.innerText = "Última atualização de horários de vigilância: " + schedulesJSON['updates']['exam_schedules'];
 
 });
 
