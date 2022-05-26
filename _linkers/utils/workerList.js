@@ -1,7 +1,7 @@
 let selectedWorkers = []
 var table;
 
-let schedules_doc = path.join(__dirname, '../data/schedules.json');
+let schedules_doc = './data/schedules.json';
 
 document.addEventListener("DOMContentLoaded", () => {
     setWorkerListEvent();
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
  *  - What happens when clicking the select all checkbox
  *  - Adding at the end of the table the last time the schedules were updated
  */
-$(document).ready(function() {
+window.onload = function() {
     $('#table-wrapper-workers tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
         workerCode = $(this)[0].childNodes[0].innerText
@@ -48,7 +48,7 @@ $(document).ready(function() {
     var lastUpdatedExams = document.getElementById("last-updated-exams");
     lastUpdatedExams.innerText = "Última atualização de horários de vigilância: " + schedulesJSON['updates']['exam_schedules'];
 
-});
+};
 
 /**
  * Gets the workers info and uses it to create the table

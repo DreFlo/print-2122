@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Pesquisar Teacher</title>
     <link rel="stylesheet" type="text/css" href="../_views/css/style.css">
-    <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js" defer></script>
+    <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/datatables.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/rowsGroup.js" defer></script>
     <script src="../_linkers/common/init.js" defer></script> 
@@ -13,15 +13,89 @@
     <script src="../_linkers/common/header.js" defer></script>
     <script src="../_linkers/common/login.js" defer></script>
     <script src="../_linkers/pages/assignTeachersToExams.js"></script>
+    <script src="../_linkers/utils/workerList.js"></script>
 </head>
 
 <body>
     
     <section id="title">
-        <h1>Atribuição de Professores a Exames</h1>
+        <h1>Atribuição de Docentes a Vigilâncias de Exames</h1>
     </section>
     <section class="container text-center">
+        <div id="searchExamDiv">            
+            <form id="searchExam" class="needs-validation">
+                <div class="form-input-label">
+                    <div class="input-group mb-3"> 
+                        <input type="hidden" type="text" name="code" id="code" required>   
+                        <div class="invalid-tooltip"></div> 
+                    </div>
+                    <div class="form-flex-row">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#insertWorkers" id="insertWorkersButton">
+                            <span> Escolher Docentes </span>
+                        </button> 
+        
+                    </div> 
+                </div>
+                <label for="name"><strong>Pesquisar Exame</strong></label>
+                <div class="form-flex-row m-3">
+                    <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
+                        <input class="form-control me-3" name="examCourse" id="examCourseInput" number="0">
+                        <div class="invalid-tooltip"></div> 
+                    </div>
+                    <div class="input-group mb-3" style="flex: 1;"> 
+                        <input class="form-control me-3" name="examUC" id="examUCInput" placeholder="ex: IADE">
+                        <div class="invalid-tooltip"></div> 
+                    </div>
+                    <div class="flex-d justify-content-center mb-5">
+                        <button id="examSearchButton" type="button" class="btn btn-success">Pesquisar</button>
+                    </div>
+                    <input hidden name="examCourseCode" id="examCourseCodeInput">
+                </div>
+            </form>
+        </div>
+        <div id="searchResultsDiv">
+        </div>
     </section>
 
+    <div class="modal" tabindex="-1" role="dialog" id="insertWorkers">
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Selecionar Docentes</h5>
+                </div>
+                <div class="mt-2 mx-3">
+                    <input type="checkbox" id="selectAllCheckbox" name="selectAllCheckbox">
+                    <label for="selectAllCheckbox"><h6>Selecionar todos</h6></label>
+
+                    <label style="margin-left: 7%;" for="scheduleType">Tipo de horários:</label>
+                    <select name="scheduleType" id="scheduleType">
+                        <option value="classes">Aulas</option>
+                        <option value="exams">Vigilâncias</option>
+                        <option value="both">Aulas e Vigilâncias</option>
+                    </select>
+                </div>
+
+                <div class="modal-body">
+                    <table id="table-wrapper-workers" class="table table-striped w-100">
+
+                    </table>
+                </div>
+                
+                <div>
+                    <a style="margin-left: 3%" id="last-updated-class"></a>
+                    <a style="margin-left: 3%" id="last-updated-exams"></a>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeWorkers" data-bs-dismiss="modal">Fechar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveWorkers" data-bs-dismiss="modal">Selecionar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
 </body>

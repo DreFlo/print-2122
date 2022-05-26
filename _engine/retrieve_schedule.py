@@ -292,6 +292,7 @@ def main():
     except: 
         json_obj = BuildJson()
         json_obj.setError()
+        print(json_obj.getJson())
         sys.stdout.flush()
 
 if __name__ == "__main__":

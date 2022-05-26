@@ -450,63 +450,62 @@ def get_UC_teacher_info(UC):
 
     return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}
 
-def get_exams(courses):
+def get_exams(course):
 
     exams = []
-    for course in courses:
-        url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course["code"]
+    url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course
 
-        html = get_html(mc.Browser(),url)
-        soup = bs(html)
+    html = get_html(mc.Browser(),url)
+    soup = bs(html)
 
-        if soup.find(id="erro"):
-            continue
+    if soup.find(id="erro"):
+        return {"exams": exams}
 
-        conteudo_inner = soup.find("div", {"id": "conteudoinner"})
+    conteudo_inner = soup.find("div", {"id": "conteudoinner"})
+    
+    h3_soup = conteudo_inner.find_all("h3")
+    table_soup = conteudo_inner.find_all("table", recursive=False)
+
+    for i in range(len(h3_soup)):
         
-        h3_soup = conteudo_inner.find_all("h3")
-        table_soup = conteudo_inner.find_all("table", recursive=False)
+        # Get all relevant tables in table
 
-        for i in range(len(h3_soup)):
+        child = table_soup[i].findChild().findChild()
+        for table_week in child.find_all("table", recursive=False):
+            days_tr = table_week.find_all("th")
+            exams_tr = table_week.find_all("td", {"class": "l k", "valign": "top"})
             
-            # Get all relevant tables in table
-
-            child = table_soup[i].findChild().findChild()
-            for table_week in child.find_all("table", recursive=False):
-                days_tr = table_week.find_all("th")
-                exams_tr = table_week.find_all("td", {"class": "l k", "valign": "top"})
+            for index in range(len(days_tr)):
+                child = exams_tr[index].findChild()
+                if child.name == "p":
+                    continue
                 
-                for index in range(len(days_tr)):
-                    child = exams_tr[index].findChild()
-                    if child.name == "p":
-                        continue
+                exam_td = child.find_all("td")
+                for td in exam_td:
+                    exam = {}
+                    exam["type"] = h3_soup[i].text
+                    exam["course"] = course
+                    exam["uc"] = td.find("a").find("b").text
+                    exam["date"] = days_tr[index].find("span").text
                     
-                    exam_td = child.find_all("td")
-                    for td in exam_td:
-                        exam = {}
-                        exam["type"] = h3_soup[i].text
-                        exam["course"] = course
-                        exam["uc"] = td.find("a").get("title")
-                        exam["date"] = days_tr[index].find("span").text
-                        
-                        hour = td.text
-                        for h in range(len(hour)):
-                            if hour[h].isdigit() and hour[h+2]==":":
-                                hour = hour[h:h+11]
-                                break
-                        exam["hour"] = hour
+                    hour = td.text
+                    for h in range(len(hour)):
+                        if hour[h].isdigit() and hour[h+2]==":":
+                            hour = hour[h:h+11]
+                            break
+                    exam["hour"] = hour
 
-                        rooms = []
-                        td_span_rooms = td.find("span")
-                        for span_room in td_span_rooms:
-                            if(span_room.string != ", "):
-                                rooms.append(span_room.string)
+                    rooms = []
+                    td_span_rooms = td.find("span")
+                    for span_room in td_span_rooms:
+                        if(span_room.string != ", "):
+                            rooms.append(span_room.string)
 
-                        exam["rooms"] = rooms
+                    exam["rooms"] = rooms
 
-                        exams.append(exam)
+                    exams.append(exam)
 
-    return {"exams": exams}
+    return exams
     
 def get_rooms(bulding_number):
     room_links = []

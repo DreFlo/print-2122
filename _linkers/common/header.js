@@ -36,9 +36,12 @@ let header = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white
     '            <a class="dropdown-item" href="../_views/mass_schedule_conflicts.html">Conflito de Horários de Docentes</a>\n' +
     '            <a class="dropdown-item" href="../_views/student_uc_conflicts.html">Sobreposição de Alunos entre Unidades Curriculares</a>\n' +
     '          </div>\n' +
-    '        <li class="nav-item">\n' +
-    '          <a class="nav-link" href="../_views/ucs_missing_teachers_table.html">Atribuição de Docentes a Unidades Curriculares</a>\n' +
-    '        </li>\n' +
+    '        <li class="nav-item dropdown">\n' +
+    '          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Atribuições</a>\n' +
+    '          <div class="dropdown-menu">\n' +
+    '            <a class="dropdown-item" href="../_views/ucs_missing_teachers_table.html">Atribuição de Docentes a Unidades Curriculares</a>\n' +
+    '            <a class="dropdown-item" href="../_views/assign_teachers_to_exams.html">Atribuição de Docentes a Vigilâncias de Exames</a>\n' +
+    '          </div>\n' +
     '        <li class="nav-item">\n' +
     '          <a class="nav-link" href="../_views/settings.html">Configurações</a>\n' +
     '        </li>\n' +
