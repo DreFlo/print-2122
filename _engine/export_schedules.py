@@ -17,7 +17,7 @@ def main():
     exams_update = datetime.datetime.strptime(updates_info['exam_schedules'], "%d-%m-%Y")
     max_date = max(class_update, exams_update)
     filename = "Horários_" + max_date.strftime("%d-%m-%Y") + ".json"
-    file = open(filepath + "/" + filename, "w")
+    file = open(filepath + "/" + filename, "w", encoding="utf-8")
     file.write(json.dumps(json_object, indent=4, ensure_ascii=False))
     file.close()
     

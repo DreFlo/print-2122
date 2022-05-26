@@ -1,5 +1,3 @@
-
-const { fileURLToPath } = require("url");
 const {pyCall} = require("../_linkers/pyCall.js");
 
 let toast = new ToastComponent();
@@ -29,22 +27,10 @@ $(document).ready(function() {
     var downloadButton = document.getElementById("downloadSchedules");
     downloadButton.addEventListener('click', function() {
         pyCall("export_schedules", "finish_download", []);
-        /*let fs = require("fs")
-        let read = fs.readFileSync(schedulesPath, "utf8").trim()
-        let jsonObject = JSON.parse(read);
-        let regularUpdate = getDatefromString(jsonObject['updates']['class_schedules']);
-        let examsUpdate = getDatefromString(jsonObject['updates']['exam_schedules']);
-        var maxDate;
-        if(regularUpdate > examsUpdate) maxDate = regularUpdate;
-        else maxDate = examsUpdate;
-        let filename = "Schedules_" + maxDate.getDay() + "/" + maxDate.getMonth() + "/" + maxDate.getFullYear() + ".json";
-        fileURLToPath
-        var element = document.createElement('a');
-        element.setAttribute('href', './utils.js');
-        element.setAttribute('download', filename);
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);*/
+    });
+    var uploadButton = document.getElementById("uploadSchedules");
+    uploadButton.addEventListener('click', function() {
+        pyCall("import_schedules", "selected_file", ["open_file"]);
     });
 });
 
@@ -63,5 +49,43 @@ function finish_update(){
 }
 
 function finish_download(){
-    alert("Ficheiro descarregado.");
+    alert("Horários exportados.");
+}
+
+function selected_file(data){
+    if(data['error'] == "true"){
+        alert("Erro:\n" + data['message'])
+    }
+    else{
+        schedulesJSON = JSON.parse(readSchedule());
+        confirm_message = "Horários existente:\n";
+        if(schedulesJSON['updates']['class_schedules'] == "") 
+            confirm_message += "Não existem horários de aulas.\n";
+        else 
+            confirm_message += "Última atualização de horários de aula: " + schedulesJSON['updates']['class_schedules'] + "\n";
+
+        if(schedulesJSON['updates']['exam_schedules'] == "") 
+            confirm_message += "Não existem horários de vigilâncias.\n";
+        else 
+            confirm_message += "Última atualização de horários de vigilância: " + schedulesJSON['updates']['exam_schedules'] + "\n";
+
+        confirm_message += "\nHorários para importar:\n";
+        if(data['class_update'] == "")
+            confirm_message += "Não existem horários de aulas.\n";
+        else
+            confirm_message += "Última atualização de horários de aula: " + data['class_update'] + "\n";
+        
+        if(data['exam_update'] == "")
+            confirm_message += "Não existem horários de vigilâncias.\n";
+        else
+            confirm_message += "Última atualização de horários de vigilância: " + data['exam_update'] + "\n";
+        
+        confirm_message += "\n Se quer importar o ficheiro selecionado, clique em 'OK'";
+        if(confirm(confirm_message))
+            pyCall("import_schedules", "finish_update", [data['file_path']]);
+    }
+}
+
+function finish_update(){
+    alert("Horários importados.")
 }
