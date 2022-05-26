@@ -1,4 +1,5 @@
 import Core
+import sys
 from handle_json import BuildJson
 
 courses_filePath = './data/courses.json'
@@ -11,8 +12,7 @@ def main():
         file.write(coursesJson.getJson())
 
     print(coursesJson.getJson())
-
-    return
+    sys.stdout.flush()
 
 if __name__ == "__main__":
     main()

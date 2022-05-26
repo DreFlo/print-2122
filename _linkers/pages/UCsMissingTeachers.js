@@ -1,6 +1,11 @@
 const { pyCall } = require("../_linkers/pyCall.js");
+<<<<<<< HEAD
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
 const fs = require('fs');
+=======
+const { autocomplete } = require("../_linkers/utils/autocomplete.js");
+const { items } = require("../_linkers/utils/items.js");
+>>>>>>> exams
 
 let toast = new ToastComponent();
 let tables;
@@ -240,10 +245,13 @@ function handleGetTablesResponse(data) {
     listTables();
 }
 
+<<<<<<< HEAD
 // Get all cached course info
 function getCourses() {
     pyCall("get_courses", "handleCoursesResponse", []);
 }
+=======
+>>>>>>> exams
 
 // Update course array and courseNames array for autocomplete
 function handleCoursesResponse(data) {
@@ -977,5 +985,5 @@ function getUnregisteredTeacherById(id) {
 
 window.onload = function() {
     getTables();
-    getCourses();
+    items.getCourses();
 }

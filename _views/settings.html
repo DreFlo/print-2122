@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <title> Configurações </title>
     <link rel="stylesheet" type="text/css" href="../_views/css/style.css">
+
     <script type="text/javascript" src="../lib/bootstrap/bootstrap.bundle.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/jQuery-3.3.1/jquery-3.3.1.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/datatables.min.js" defer></script>
     <script type="text/javascript" src="../lib/DataTables/rowsGroup.js" defer></script>
-    <script src="../_linkers/common/init.js" defer></script> 
-    <script src="../_linkers/utils/utils.js" defer></script>
+
+    <script src="../_linkers/common/init.js" defer></script>
     <script src="../_linkers/common/header.js" defer></script>
     <script src="../_linkers/utils/update_workers_list.js" defer></script>
     <script src="../_linkers/common/login.js" defer></script>
+    <script src="../_linkers/utils/items.js" defer></script> 
+    <script src="../_linkers/utils/utils.js" defer></script>
 </head>
 <body>
     <section id="title">
@@ -22,6 +25,11 @@
         <div class="flex-d justify-content-center mb-5">
             <button id="updateCourses" type="button" class="btn btn-success">Atualizar cursos</button>
         </div>
+        <div class="flex-d justify-content-center mb-5">
+            <button id="updateExams" type="button" class="btn btn-success">Atualizar exames</button>
+        <div class="flex-d justify-content-center mb-5">
+            <button id="updateRooms" type="button" class="btn btn-success">Atualizar salas</button>
+        </div> 
         <hr>
         <h5>Atualizar Horários de Docentes</h5>
         <label for="scheduleType" class="mt-2">Escolher tipo de horários:</label>
@@ -32,5 +40,6 @@
             </select>
         <br>
         <button id="updateWorkers" type="button" class="btn btn-success mt-2">Atualizar</button>
+        </div> 
     </section>
 </body>
