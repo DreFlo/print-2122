@@ -36,10 +36,12 @@ def get_all_dei_schedules(regular, exams):
     if('updates' not in total_info.keys()):
         if(regular and not exams):
             total_info['updates'] = {
-                'class_schedules': datetime.datetime.now().strftime("%d-%m-%Y")
+                'class_schedules': datetime.datetime.now().strftime("%d-%m-%Y"),
+                'exam_schedules': ""
             }
         elif(exams and not regular):
             total_info['updates'] = {
+                'class_schedules': "",
                 'exam_schedules': datetime.datetime.now().strftime("%d-%m-%Y")
             }
         else:
