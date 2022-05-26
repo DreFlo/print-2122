@@ -261,4 +261,8 @@ function buildToolTip(text, data){
     return div;
 }
 
+window.onload = function() {
+    doOnload();
+}
+
 module.exports = {final_handleScheduleTime};

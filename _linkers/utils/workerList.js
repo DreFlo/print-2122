@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
  *  - What happens when clicking the select all checkbox
  *  - Adding at the end of the table the last time the schedules were updated
  */
-window.onload = function() {
+function doOnload() {
     $('#table-wrapper-workers tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
         workerCode = $(this)[0].childNodes[0].innerText

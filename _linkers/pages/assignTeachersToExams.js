@@ -1,6 +1,7 @@
 const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
 const fs = require('fs');
+const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 
 let toast;
 
@@ -8,6 +9,11 @@ let courses;
 let courseNames;
 let exams;
 let selectedSearchResult = undefined;
+let docentsCodeArray;
+let use_class_schedule;
+let use_exam_schedule;
+let date;
+let availableTeachers;
 
 function getCourses() {
     pyCall("get_courses", "handleCoursesResponse", []);
@@ -74,20 +80,16 @@ function listItemOnMouseLeave() {
 }
 
 function searchExam() {
-    if (getLogged() === "false") {
-        toast.show("Não está autenticado", toastColor.RED);
-    }
-    else {
-        if (!validateSearchExamInput()) return;
+    if (!validateSearchExamInput()) return;
 
-        let courseCode = document.querySelector('#examCourseCodeInput').value;
-        let uc = document.querySelector('#examUCInput').value
+    let courseCode = document.querySelector('#examCourseCodeInput').value;
+    let uc = document.querySelector('#examUCInput').value.trim();
 
-        pyCall("search_exams", "handleSearchExamsResponse", [courseCode, uc]);
-    }
+    pyCall("search_exams", "handleSearchExamsResponse", [courseCode, uc]);
 }
 
 function handleSearchExamsResponse(data) {
+    console.log(data);
     let searchExamDiv = document.querySelector('#searchResultsDiv');
 
     exams = data['exams'];
@@ -134,7 +136,7 @@ function selectExamSearchResult() {
     this.removeEventListener('click', selectExamSearchResult);
     this.addEventListener('click', deselectExamSearchresult);
 
-    selectedSearchResult = exams[parseInt(this.getAttribute("result-index"))];
+    setSelectedSearchResult(exams[parseInt(this.getAttribute("result-index"))]);
 
     for (let resultRow of document.querySelectorAll(".exam-search-result-row")) {
         if (resultRow.getAttribute("result-index") !== this.getAttribute("result-index")) {
@@ -150,7 +152,7 @@ function deselectExamSearchresult() {
     this.addEventListener('click', selectExamSearchResult);
     this.removeEventListener('click', deselectExamSearchresult);
 
-    selectedSearchResult = undefined;
+    setSelectedSearchResult(undefined);
 }
 
 function validateSearchExamInput() {
@@ -159,7 +161,7 @@ function validateSearchExamInput() {
     let ucInput = document.querySelector('#examUCInput');
     let ret = true;
 
-    if (ucInput.value == "") {
+    if (ucInput.value.trim() == "") {
         setInvalidInput(ucInput, "Este campo tem de ser preenchido");
         ret = false;
     }
@@ -167,8 +169,8 @@ function validateSearchExamInput() {
         setValidInput(ucInput);
     }
 
-    if (courseCodeInput.value == "") {
-        if (courseInput.value == "") {
+    if (courseCodeInput.value.trim() == "") {
+        if (courseInput.value.trim() == "") {
             setInvalidInput(courseInput, "Este campo tem de ser preenchido");
         }
         else {
@@ -183,7 +185,138 @@ function validateSearchExamInput() {
     return ret;
 }
 
+function setSelectedSearchResult(result) {
+    let button = document.querySelector('#assignButton');
+    if (result === undefined) {
+        if (button !== null) {
+            button.remove();
+        }
+    }
+    else {
+        if (button === null) {
+            let buttonDiv = document.querySelector('#assignButtonDiv');
+
+            button = document.createElement('button');
+            button.classList.add("btn", "btn-success");
+            button.id = "assignButton";
+            button.textContent = "Atribuir";
+            button.addEventListener('click', assignTeachers);
+
+            buttonDiv.appendChild(button);
+        }
+    }
+    selectedSearchResult = result;
+}
+
+function assignTeachers() {
+    let schedule_type = document.querySelector("#scheduleType").value;
+    date = selectedSearchResult['date'];
+
+    use_class_schedule = false;
+    use_exam_schedule = false;
+    switch(schedule_type) {
+        case "classes":
+            use_class_schedule = true;
+            break;
+        case "exams":
+            use_exam_schedule = true;
+            break;
+        case "both":
+            use_class_schedule = true;
+            use_exam_schedule = true;
+            break;
+    }
+
+    let groupedScheds = groupByDate()
+    console.log(groupedScheds);
+    let freeTeachers = getFreeTeachers(groupedScheds);
+    console.log(freeTeachers);
+}
+
+function groupByDate() {
+    let groupedScheds = {}
+    docentsCodeArray = document.querySelector("#code").value.split(" ").map(element => element.trim());
+    let inputTimeFrame = new TimeFrame(stringToDate_yyyymmdd(date), stringToDate_yyyymmdd(date));
+    let scheduleJson = JSON.parse(readSchedule());
+
+    docentsCodeArray.forEach(id => {
+        if(use_class_schedule){
+            scheduleJson[id]['class_schedule']['schedule'].forEach(sched => {     
+                let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
+                if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
+                    sched['teacher'] = id; 
+                    let key = currTimeFrame.toString(); 
+                    if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
+                    else groupedScheds[key] = [sched];
+                }
+            });
+        }
+
+        if(use_exam_schedule){
+            scheduleJson[id]['exam_schedule']['schedule'].forEach(sched => {     
+                let currTimeFrame = new TimeFrame(stringToDate_ddmmyyyy(sched.start_date), stringToDate_ddmmyyyy(sched.end_date));  
+                if (currTimeFrame.isOverlapping(inputTimeFrame) || inputTimeFrame.isOverlapping(currTimeFrame)) { 
+                    sched['teacher'] = id; 
+                    let key = currTimeFrame.toString(); 
+                    if (groupedScheds.hasOwnProperty(key))  groupedScheds[key].push(sched);
+                    else groupedScheds[key] = [sched];
+                }
+            });
+        } 
+    })
+
+    return groupedScheds;
+}
+
+function getFreeTeachers(sched) {
+    let free = [];
+    for (let teacher of docentsCodeArray) {
+        if (selectedSearchResult['teachers'].includes(parseInt(teacher))) continue;
+        let times = teacherInSchedule(sched, teacher);
+        if (times == []) {
+            free.push(teacher);
+        }
+        else {
+            let add = true;
+            for (let time of times) {
+                if (time['day'] == selectedSearchResult['day']) {
+                    if (timesIntersect(time, selectedSearchResult)) {
+                        add = false;
+                    }
+                }
+            }
+            if (add) free.push(teacher);
+        }
+    }
+    return free;
+}
+
+function timesIntersect(time1, time2) {
+    if (time1['start_time'] + time1['duration'] > time2['start_time'] && time1['start_time'] + time1['duration'] <= time2['start_time'] + time2['start_time']) {
+        return true;
+    }
+
+    else if (time1['start_time'] >= time2['start_time'] && time1['start_time'] < time2['start_time'] + time2['start_time']) {
+        return true;
+    }
+
+    return false;
+}
+
+function teacherInSchedule(sched, id) {
+    let times = [];
+    for (let week in sched) {
+        for (let time of week) {
+            if (parseInt(time['teacher']) === id) {
+                times.push(time);
+            }
+        }
+    }
+    return times;
+}
+
 window.onload = function() {
+    doOnload();
     toast = new ToastComponent();
     getCourses();
     document.querySelector('#examCourseInput').addEventListener('input', autocompleteCourses);

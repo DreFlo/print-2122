@@ -1,4 +1,3 @@
-import json
 import Core
 import sys
 from handle_json import BuildJson
@@ -12,8 +11,13 @@ def get_course():
 def get_uc():
     return sys.argv[2]
 
+def add_teachers_and_time_to_exam(exam):
+    return Core.get_with_exam_teachers_and_time(exam)
+
 def main():
-    exams = [exam for exam in Core.get_exams(get_course()) if exam['uc'].lower() == get_uc().lower()]
+    tempExams = [exam for exam in Core.get_exams(get_course()) if exam['uc'].lower() == get_uc().lower()]
+
+    exams = [add_teachers_and_time_to_exam(exam) for exam in tempExams]
 
     exams_json = BuildJson({"exams" : exams})
 
