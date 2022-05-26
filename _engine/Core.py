@@ -378,7 +378,6 @@ def get_UC_teacher_info(url):
 
     return {'name' : name , 'id' : id, 'info' : info}
 
-
 def get_exams(courses):
 
     exams = []
@@ -436,3 +435,59 @@ def get_exams(courses):
                         exams.append(exam)
 
     return {"exams": exams}
+    
+def get_rooms(bulding_number):
+    room_links = []
+
+    pag_n = 1
+
+    while True:
+        url = 'https://sigarra.up.pt/feup/pt/instal_geral.espaco_list?pv_num_pag=' + str(pag_n) + '&pv_edificio_id=' + str(bulding_number) + '&pv_activo=S'
+
+        html = get_html(mc.Browser(), url) 
+        soup = bs(html, features="html5lib")
+
+        if soup.find(id="erro"):
+            break
+
+        table = soup.find('table', {'class' : 'dados'})
+
+        first = True
+
+        for row in table.find_all('tr'):
+            if first:
+                first = False
+                continue
+            elem = row.find('td').find('a')
+
+            room_links.append('https://sigarra.up.pt/feup/pt/' + elem['href'])
+
+        pag_n += 1
+
+    return room_links
+
+def get_room_info(room_url):
+    html = get_html(mc.Browser(), room_url) 
+    soup = bs(html, features="html5lib")
+
+    room_info = {"code" : soup.find_all('h1')[1].text, "cap" : None}
+
+    form_labels = soup.find_all('div', 'form-etiqueta')
+
+    found = False
+
+    for label in form_labels:
+        if label.text == 'Capacidade Exame:':
+            found = True
+            room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+            break
+        elif label.text == 'Número de Computadores:':
+            found = True
+            room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+        elif label.text == 'Capacidade Aulas:':
+            found = True
+            if room_info['cap'] == None:
+                room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+            
+    return room_info if found else None
+
