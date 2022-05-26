@@ -175,7 +175,10 @@ class ScheduleTable {
      * @param {JSON} schedule The schedule JSON object where each key is a time frame and the values are matrixes.
      */
     createButtons(schedule){ 
-        let schedsElement = document.querySelector(".scheds");  
+        let schedsElement = document.querySelector(".scheds");
+        let title = document.createElement("h4");
+        title.innerHTML = "Intervalos de Horários:"
+        schedsElement.appendChild(title);
         let buttonWrapper = document.createElement("div"); 
         buttonWrapper.id = "weeks"; 
         let keys = Object.keys(schedule);  
