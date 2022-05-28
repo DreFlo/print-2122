@@ -213,6 +213,15 @@ function setSelectedSearchResult(result) {
     selectedSearchResult = result;
 }
 
+function handleAssignButtonPress() {
+    if (document.querySelector('#updateSchedules').checked) {
+        pyCall()
+    }
+    else {
+        calculateAvailableTeachers()
+    }
+}
+
 function calculateAvailableTeachers() {
     let schedule_type = document.querySelector("#scheduleType").value;
     date = selectedSearchResult['date'];

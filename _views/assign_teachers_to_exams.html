@@ -35,16 +35,20 @@
                                 data-bs-target="#insertWorkers" id="insertWorkersButton">
                             <span> Escolher Docentes </span>
                         </button>
-                    </div> 
+                        <div class="input-group mb-3 align-items-center justify-content-center" style="flex: 3;">
+                            <input type="checkbox" id="updateSchedules" style="padding: 20px;">
+                            <label style="margin-left: 5px; margin-bottom: 0px;">Atualizar horários de vigilância dos selecionados</label> 
+                        </div>
+                    </div>
                 </div>
-                <label for="name"><strong>Pesquisar Exame</strong></label>
+                <label><strong>Pesquisar Exame</strong></label>
                 <div class="form-flex-row m-3">
                     <div class="input-group mb-3" id="courseInputDiv" style="flex: 3;"> 
-                        <input class="form-control me-3" name="examCourse" id="examCourseInput" number="0">
+                        <input class="form-control me-3" name="examCourse" id="examCourseInput" placeholder="Curso">
                         <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="input-group mb-3" style="flex: 1;"> 
-                        <input class="form-control me-3" name="examUC" id="examUCInput" placeholder="ex: IADE">
+                        <input class="form-control me-3" name="examUC" id="examUCInput" placeholder="UC ex: IADE">
                         <div class="invalid-tooltip"></div> 
                     </div>
                     <div class="flex-d justify-content-center mb-5">
