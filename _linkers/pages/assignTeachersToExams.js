@@ -80,6 +80,8 @@ function listItemOnMouseLeave() {
 function searchExam() {
     if (!validateSearchExamInput()) return;
 
+    toast.show("A pesquisar exame...", toastColor.BLUE, false);
+
     let courseCode = document.querySelector('#examCourseCodeInput').value;
     let uc = document.querySelector('#examUCInput').value.trim();
 
@@ -87,7 +89,12 @@ function searchExam() {
 }
 
 function handleSearchExamsResponse(data) {
-    console.log(data);
+    if (data['error'] === "true") {
+        toast.show("Erro", toastColor.RED);
+    }
+    else {
+        toast.show("Pesquisa concluída", toastColor.GREEN);
+    }
     let searchExamDiv = document.querySelector('#searchResultsDiv');
 
     exams = data['exams'];
@@ -339,6 +346,7 @@ function buildResultsTable(teachers) {
 
 function addTableToHtml(table) {
     let tableWrapper = document.querySelector('#table-wrapper');
+    tableWrapper.innerHTML = "";
     tableWrapper.appendChild(table);
 
     let hiddenTable = document.createElement("table");
