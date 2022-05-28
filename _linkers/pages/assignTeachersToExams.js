@@ -1,6 +1,5 @@
 const { pyCall } = require("../_linkers/pyCall.js");
 const { autocomplete } = require("../_linkers/utils/autocomplete.js")
-const fs = require('fs');
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 
 let toast;
@@ -13,7 +12,6 @@ let docentsCodeArray;
 let use_class_schedule;
 let use_exam_schedule;
 let date;
-let availableTeachers;
 
 function getCourses() {
     pyCall("get_courses", "handleCoursesResponse", []);
@@ -199,8 +197,8 @@ function setSelectedSearchResult(result) {
             button = document.createElement('button');
             button.classList.add("btn", "btn-success");
             button.id = "assignButton";
-            button.textContent = "Atribuir";
-            button.addEventListener('click', assignTeachers);
+            button.textContent = "Calcular Disponibilidades";
+            button.addEventListener('click', calculateAvailableTeachers);
 
             buttonDiv.appendChild(button);
         }
@@ -208,7 +206,7 @@ function setSelectedSearchResult(result) {
     selectedSearchResult = result;
 }
 
-function assignTeachers() {
+function calculateAvailableTeachers() {
     let schedule_type = document.querySelector("#scheduleType").value;
     date = selectedSearchResult['date'];
 
@@ -228,9 +226,15 @@ function assignTeachers() {
     }
 
     let groupedScheds = groupByDate()
-    console.log(groupedScheds);
     let freeTeachers = getFreeTeachers(groupedScheds);
-    console.log(freeTeachers);
+    let teacherNamesAndSurveillanceNumbers = getTeacherNamesAndNumberOfSurveillances(freeTeachers);
+    let table = buildResultsTable(teacherNamesAndSurveillanceNumbers);
+    createTableButtons(table);
+
+    addTableToHtml(table);
+
+    listenCopy();
+    listenCSV("Professores Disponíveis");
 }
 
 function groupByDate() {
@@ -289,6 +293,78 @@ function getFreeTeachers(sched) {
         }
     }
     return free;
+}
+
+function getTeacherNamesAndNumberOfSurveillances(teachers) {
+    let namesAndSurveillances = [];
+    let schedules = JSON.parse(fs.readFileSync('./data/schedules.json'));
+
+    for (let teacher of teachers) {
+        let teacherSchedule = schedules[teacher];
+        namesAndSurveillances.push({'name' : teacherSchedule['name'], 'surveillanceNumber' : teacherSchedule['exam_schedule']['schedule'].length});
+    }
+
+    return namesAndSurveillances;
+}
+
+function buildResultsTable(teachers) {
+    let table = document.createElement('table');
+    table.classList.add("table", "table-striped", "table-bordered");
+    table.id = "table_id";
+
+    table.appendChild(buildTableHead(['Nome', 'Número de Vigilâncias']));
+
+    let tbody = document.createElement('tbody');
+
+    for (let teacher of teachers) {
+        let tr = document.createElement('tr');
+
+        let td = document.createElement('td');
+        td.textContent = teacher['name'];
+
+        tr.appendChild(td);
+
+        td = document.createElement('td');
+        td.textContent = teacher['surveillanceNumber'];
+
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+    }
+
+    table.appendChild(tbody);
+
+    return table;
+}
+
+function addTableToHtml(table) {
+    let tableWrapper = document.querySelector('#table-wrapper');
+    tableWrapper.appendChild(table);
+
+    let hiddenTable = document.createElement("table");
+    hiddenTable.innerHTML = table.querySelector("thead").innerHTML;
+    let hiddenTableBody = document.createElement("tbody");
+    table.querySelector("tbody").querySelectorAll("tr").forEach((tr) => {
+        let newTr = document.createElement("tr");
+        tr.querySelectorAll("td").forEach((td) => {
+            let a;
+            let newTd = document.createElement("td");
+            if ((a = td.querySelector("a")) != null) {
+                newTd.innerHTML = a.href;
+            }
+            else {
+                newTd.innerHTML = td.innerHTML;
+            }
+            newTr.appendChild(newTd);
+        });
+        hiddenTableBody.appendChild(newTr)
+    });
+    hiddenTable.appendChild(hiddenTableBody);
+    hiddenTable.id = "hidden_table_id";
+    hiddenTable.setAttribute("hidden", "true");
+    tableWrapper.appendChild(hiddenTable);
+
+    $('#table_id').DataTable();
 }
 
 function timesIntersect(time1, time2) {
