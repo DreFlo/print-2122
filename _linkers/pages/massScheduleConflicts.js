@@ -1,6 +1,5 @@
 const { TimeFrame } = require("../_linkers/utils/TimeFrame.js");
 const { ScheduleTable } = require("../_linkers/components/ScheduleTable.js");
-const {pyCall} = require("../_linkers/pyCall.js");
 
 let docentsCode;
 let docentsCodeArray;
@@ -17,12 +16,12 @@ function validateInput(){
     docentsCodeElement = document.querySelector("#code"); 
     startDateElement = document.querySelector("#start-date");
     endDateElement = document.querySelector("#end-date"); 
-    academicYearElement = document.querySelector("#academic-year"); 
+    academicYearElement = document.querySelector("#academic-year");
 
     let isValid = true; 
 
     if (docentsCodeElement.value.trim() == ""){
-        setInvalidInput(docentsCodeElement, "Este campo deve ser preenchido.");   
+        setInvalidInput(docentsCodeElement, "Tem de escolher pelo menos um docente.");   
         isValid = false; 
     } else setValidInput(docentsCodeElement); 
 

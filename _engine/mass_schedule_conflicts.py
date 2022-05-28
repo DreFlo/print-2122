@@ -1,4 +1,4 @@
-import os
+from flask import render_template
 import Core
 from handle_json import BuildJson
 import retrieve_schedule
@@ -8,6 +8,7 @@ import json
 import datetime
 import os
 import sys
+import ast
 
 cwd = os.getcwd()
 
@@ -19,9 +20,23 @@ def get_regular():
 def get_exams(): 
     return sys.argv[2]
 
+def get_year():
+    return sys.argv[3]
+
+# Receives string in format '[code, code]' and returns a list like [code, code]
+def get_workers():
+    list = ast.literal_eval(sys.argv[4])
+    if(type(list) == int):
+        return [str(list)]
+    return [str(n) for n in list]
+
+
 # Gets the schedules, both vigilance and class schedules, and stores them in the correct file
-def get_all_dei_schedules(regular, exams):
-    workers_list = get_dei_workers_list()
+def get_all_dei_schedules(regular, exams, year, workers):
+    if(len(workers) == 0):
+        workers_list = get_dei_workers_list()
+    else:
+        workers_list = workers
 
     if(os.path.exists(data_file)):
         f = open(data_file, "r+", encoding="utf-8")
@@ -59,7 +74,7 @@ def get_all_dei_schedules(regular, exams):
         name, sigla = Core.get_teacher_info(worker)
         
         if(regular):
-            class_schedule, due_to = retrieve_schedule.get_complete_schedule(str(worker), "2021")
+            class_schedule, due_to = retrieve_schedule.get_complete_schedule(str(worker), year)
             due_to_class = due_to.strftime("%d-%m-%Y")
             class_schedule_info = {'due_to': due_to_class, 'schedule': class_schedule}
         
@@ -142,22 +157,20 @@ def get_dei_workers_list():
     for i in range(1, len(list)):
         m = re.search('(?<=CODIGO=)\d+', list[i])
         workers_list.append(m.group(0))
-
     return workers_list
          
 def main():
-    try: 
-        get_all_dei_schedules(get_regular(), get_exams())
-
+    try:
+        get_all_dei_schedules(get_regular(), get_exams(), get_year(), get_workers())
+        
         # Return json setting no error. 
         json = BuildJson({})
         print(json.getJson())
         sys.stdout.flush()
     except: 
-        json_obj = BuildJson()
+        json_obj = BuildJson({})
         json_obj.setError()
+        print(json_obj.getJson())
         sys.stdout.flush()
-    #get_all_dei_schedules(True, True)
     
-
 main()

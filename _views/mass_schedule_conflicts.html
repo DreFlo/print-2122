@@ -60,7 +60,7 @@
             </div>
 
             <div class="form-input-label">
-                <label for="academic-year">Ano academico*: </label> 
+                <label for="academic-year">Ano académico*: </label> 
                 <div class="input-group">
                     <input type="number" min="2004" max="2300" class="form-control" id="academic-year" placeholder="Ex: 2021" required> 
                     <div class="invalid-tooltip"></div>  
@@ -83,46 +83,44 @@
 </div>
 
 
-    <div class="modal" tabindex="-1" role="dialog" id="insertWorkers">
-        <div class="modal-dialog" role="document">
+<div class="modal" tabindex="-1" role="dialog" id="insertWorkers">
+    <div class="modal-dialog" role="document">
 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Docentes</h5>
-                </div>
-                <div class="mt-2 mx-3">
-                    <input type="checkbox" id="selectAllCheckbox" name="selectAllCheckbox">
-                    <label for="selectAllCheckbox"><h6>Selecionar todos</h6></label>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Docentes</h5>
+            </div>
+            <div class="mt-2 mx-3">
+                <input type="checkbox" id="selectAllCheckbox" name="selectAllCheckbox">
+                <label for="selectAllCheckbox"><h6>Selecionar todos</h6></label>
 
-                    <label style="margin-left: 7%;" for="scheduleType">Tipo de horários:</label>
-                    <select name="scheduleType" id="scheduleType">
-                        <option value="classes">Aulas</option>
-                        <option value="exams">Vigilâncias</option>
-                        <option value="both">Aulas e Vigilâncias</option>
-                    </select>
-                </div>
+                <label style="margin-left: 7%;" for="scheduleType">Tipo de horários:</label>
+                <select name="scheduleType" id="scheduleType">
+                    <option value="classes">Aulas</option>
+                    <option value="exams">Vigilâncias</option>
+                    <option value="both">Aulas e Vigilâncias</option>
+                </select>
+            </div>
 
-                <div class="modal-body">
-                    <table id="table-wrapper-workers" class="table table-striped w-100">
+            <div class="modal-body">
+                <table id="table-wrapper-workers" class="table table-striped w-100">
 
-                    </table>
-                </div>
-                
-                <div>
-                    <a style="margin-left: 3%" id="last-updated-class"></a>
-                    <a style="margin-left: 3%" id="last-updated-exams"></a>
-                </div>
+                </table>
+            </div>
+            
+            <div>
+                <a style="margin-left: 3%" id="last-updated-class"></a>
+                <a style="margin-left: 3%" id="last-updated-exams"></a>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="closeWorkers" data-bs-dismiss="modal">Fechar
-                    </button>
-                    <button type="button" class="btn btn-primary" id="saveWorkers" data-bs-dismiss="modal">Selecionar
-                    </button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeWorkers" data-bs-dismiss="modal">Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="saveWorkers" data-bs-dismiss="modal">Selecionar
+                </button>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 </body>

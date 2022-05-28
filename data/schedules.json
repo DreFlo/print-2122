@@ -1,7 +1,7 @@
 {
     "updates": {
-        "class_schedules": "17-05-2022",
-        "exam_schedules": "17-05-2022"
+        "class_schedules": "27-05-2022",
+        "exam_schedules": "27-05-2022"
     },
     "231081": {
         "name": "Ademar Manuel Teixeira de Aguiar",
@@ -197,19 +197,6 @@
             "due_to": "12-07-2022",
             "schedule": [
                 {
-                    "day": 2,
-                    "start_time": 15.0,
-                    "duration": 2.0,
-                    "name": " Arquitetura de Sistemas de Software ",
-                    "class_name": "ASSO (Exame)",
-                    "lesson_type": "",
-                    "link": "",
-                    "location": "B104",
-                    "start_date": "16-05-2022",
-                    "end_date": "21-05-2022",
-                    "teacher_name": "Ademar Aguiar"
-                },
-                {
                     "day": 0,
                     "start_time": 8.5,
                     "duration": 2.0,
@@ -217,20 +204,7 @@
                     "class_name": "ES (Exame)",
                     "lesson_type": "",
                     "link": "",
-                    "location": "B104, B208, B213, B207, B105, B103",
-                    "start_date": "20-06-2022",
-                    "end_date": "25-06-2022",
-                    "teacher_name": "Ademar Aguiar"
-                },
-                {
-                    "day": 0,
-                    "start_time": 11.5,
-                    "duration": 2.0,
-                    "name": " Engenharia de Software ",
-                    "class_name": "ES (Exame)",
-                    "lesson_type": "",
-                    "link": "",
-                    "location": "B104, B208, B213, B207, B105, B103",
+                    "location": "B221, B215, B338, B336, B104, B208, B213, B207",
                     "start_date": "20-06-2022",
                     "end_date": "25-06-2022",
                     "teacher_name": "Ademar Aguiar"
@@ -255,7 +229,7 @@
         "name": "Afonso Manuel Maia Lopes Salgado de Sousa",
         "sigla": "AMMLSS",
         "class_schedule": {
-            "due_to": "17-05-2022",
+            "due_to": "27-05-2022",
             "schedule": [
                 {
                     "day": 1,
