@@ -204,7 +204,7 @@ function splitInput(text){
  */
 function setInvalidInput(inputElement, feedback){  
     if (inputElement.classList.contains("is-valid")) inputElement.classList.remove("is-valid"); 
-    inputElement.classList.add("is-invalid");   
+    inputElement.classList.add("is-invalid");
     inputElement.nextElementSibling.innerText = feedback; 
 }
 

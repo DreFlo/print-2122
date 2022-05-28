@@ -601,10 +601,6 @@ function validateAddNewTeacher(classType) {
         setInvalidInput(hoursInput, "Este campo não pode estar vazio");
         ret = false;
     }
-    else if (teacher == null) {
-        setInvalidInput(hoursInput, "Tem de ser selecionado um professor da lista dos sugeridos");
-        ret = false;
-    }
     else if (teacher.availableHours < teacher.assignedHours + parseInt(hoursInput.value)) {
         setInvalidInput(hoursInput, "O número de horas atribuídas totais do professor seria maior do que o número de horas disponíveis");
         ret = false;
@@ -613,7 +609,6 @@ function validateAddNewTeacher(classType) {
         setValidInput(hoursInput);
     }
 
-    /*
     if (nameInput.value = "") {
         setInvalidInput(nameInput, "Este campo não pode estar vazio");
         ret = false;
@@ -624,7 +619,7 @@ function validateAddNewTeacher(classType) {
     }
     else {
         setValidInput(nameInput);
-    }*/
+    }
 
     return ret;
 }
@@ -643,15 +638,15 @@ function addNewTeacherArea(body, classType) {
     // Searchbox
     childDiv = document.createElement('div');
     childDiv.classList.add("input-group", "mb-3", "add-unregistered-teacher-input-div-" + classType);
+    childDiv.id="add-unregistered-teacher-input-div-" + classType;
     childDiv.style = 'flex: 3;';
     let input = document.createElement('input');
     input.classList.add('form-control', 'me-3');
     input.placeholder = 'Nome';
     input.id = 'teacher-name-input-' + classType;
     // On inputshow autocomplete suggestions
-    input.addEventListener('input', () => {autocompleteTeacher(input, classType); document.querySelector('#teacher-code-input-' + classType).value = "";});
     childDiv.appendChild(input);
-    childDiv.innerHTML += "<div class=\"invalid-tooltip\"></div><div id=\"teacher-autocomplete-" + classType + "\"></div>";
+    childDiv.innerHTML += "<div class=\"invalid-tooltip\"></div>";
     div.appendChild(childDiv);
 
 
@@ -688,7 +683,10 @@ function addNewTeacherArea(body, classType) {
     input2.setAttribute('hidden', 'true');
     div.appendChild(input2);
 
-    body.appendChild(div);
+    body.appendChild(div); 
+
+
+    document.querySelector('#teacher-name-input-' + classType).addEventListener('input', () => {autocompleteTeacher(document.querySelector('#teacher-name-input-' + classType), classType); document.querySelector('#teacher-code-input-' + classType).value = "";});
 }
 
 function findUnregisterTeacherByCode(code) {
@@ -721,7 +719,6 @@ function addUnregisteredTeacher(classType) {
 // Show autocomplete dorpdown for teacher search owhen editing UC
 function autocompleteTeacher(input, classType) {
     closeAutocompleteSugestions();
-    console.log(classType);
 
     let unregisteredTeacherNames = unregisteredTeachers.map((teacher) => {return teacher.name;});
 
@@ -748,7 +745,7 @@ function autocompleteTeacher(input, classType) {
         }
     }
     
-    document.querySelector('#teacher-autocomplete-' + classType).appendChild(div);
+    document.querySelector("#add-unregistered-teacher-input-div-" + classType).appendChild(div);
 }
 
 // Close autocomplete suggesting for teachers and set inputs

@@ -8,6 +8,7 @@ class ReadJson{
     }
 
     parseJsonInfo(){
+        console.log(this.content);
         this.data = JSON.parse(this.content); 
         this.keys = Object.keys(this.data); 
         this.values = Object.values(this.data); 

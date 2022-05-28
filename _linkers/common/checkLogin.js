@@ -1,5 +1,4 @@
 const path = require('path');
-console.log(path.join(__dirname, '../../logged'));
 
 /**
  * @file This file is responsible for managing the authentication state of the user in the app. 

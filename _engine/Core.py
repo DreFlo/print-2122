@@ -1,3 +1,4 @@
+from datetime import datetime
 from msilib.schema import tables
 from numpy import double
 import mechanize as mc
@@ -8,6 +9,7 @@ import collections
 import Login
 import pandas as pd
 import requests
+import json
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
@@ -448,3 +450,167 @@ def get_UC_teacher_info(UC):
                 info[type]['teachers'].append(teacher)
 
     return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}
+
+def get_exams(course):
+
+    exams = []
+    url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course
+
+    html = get_html(mc.Browser(),url)
+    soup = bs(html)
+
+    if soup.find(id="erro"):
+        return {"exams": exams}
+
+    conteudo_inner = soup.find("div", {"id": "conteudoinner"})
+    
+    h3_soup = conteudo_inner.find_all("h3")
+    table_soup = conteudo_inner.find_all("table", recursive=False)
+
+    for i in range(len(h3_soup)):
+        
+        # Get all relevant tables in table
+
+        child = table_soup[i].findChild().findChild()
+        for table_week in child.find_all("table", recursive=False):
+            days_tr = table_week.find_all("th")
+            exams_tr = table_week.find_all("td", {"class": "l k", "valign": "top"})
+            
+            for index in range(len(days_tr)):
+                child = exams_tr[index].findChild()
+                if child.name == "p":
+                    continue
+                
+                exam_td = child.find_all("td")
+                for td in exam_td:
+                    exam = {}
+                    exam["type"] = h3_soup[i].text
+                    exam["course"] = course
+                    exam["uc"] = td.find("a").find("b").text
+                    exam["date"] = days_tr[index].find("span").text
+                    
+                    hour = td.text
+                    for h in range(len(hour)):
+                        if hour[h].isdigit() and hour[h+2]==":":
+                            hour = hour[h:h+11]
+                            break
+                    exam["hour"] = hour
+                    exam['href'] = td.find("a")['href']
+
+                    rooms = []
+                    td_span_rooms = td.find("span")
+                    for span_room in td_span_rooms:
+                        if(span_room.string != ", "):
+                            rooms.append(span_room.string)
+
+                    exam["rooms"] = rooms
+
+                    exams.append(exam)
+
+    return exams
+
+def get_with_exam_teachers_and_time(exam):
+    exam['teachers'] = []
+
+    url = 'https://sigarra.up.pt/feup/pt/' + exam['href']
+
+    html = get_html(mc.Browser(),url)
+    soup = bs(html)
+
+    inTeachers = False
+    inStart = False
+    inDuration = False
+
+    for td in soup.find("table").find_all("td"):
+        if td.string == "Vigilantes:":
+            inTeachers = True
+            inDuration = False
+            inStart = False
+            continue
+        elif td.string == "Hora Início:":
+            inTeachers = False
+            inDuration = False
+            inStart = True
+            continue
+        elif td.string == "Duração:":
+            inTeachers = False
+            inDuration = True
+            inStart = False
+            continue
+
+        if inTeachers:
+            for a in td.find_all("a"):
+                exam['teachers'].append(extract_teacher_code(a['href']))
+            inTeachers = False
+            continue
+        elif inStart:
+            start_string = td.string
+            start_split = start_string.split(':')
+            exam['start_time'] = int(start_split[0]) + (int(start_split[1]) / 60)
+            inStart = False
+            continue
+        elif inDuration:
+            duration_string = td.string
+            duration_split = duration_string.split(':')
+            exam['duration'] = int(duration_split[0]) + (int(duration_split[1]) / 60)
+            inDuration = False
+            continue
+    
+    exam['day'] = datetime.strptime(exam['date'], '%Y-%m-%d').weekday()
+
+    return exam
+    
+def get_rooms(bulding_number):
+    room_links = []
+
+    pag_n = 1
+
+    while True:
+        url = 'https://sigarra.up.pt/feup/pt/instal_geral.espaco_list?pv_num_pag=' + str(pag_n) + '&pv_edificio_id=' + str(bulding_number) + '&pv_activo=S'
+
+        html = get_html(mc.Browser(), url) 
+        soup = bs(html, features="html5lib")
+
+        if soup.find(id="erro"):
+            break
+
+        table = soup.find('table', {'class' : 'dados'})
+
+        first = True
+
+        for row in table.find_all('tr'):
+            if first:
+                first = False
+                continue
+            elem = row.find('td').find('a')
+
+            room_links.append('https://sigarra.up.pt/feup/pt/' + elem['href'])
+
+        pag_n += 1
+
+    return room_links
+
+def get_room_info(room_url):
+    html = get_html(mc.Browser(), room_url) 
+    soup = bs(html, features="html5lib")
+
+    room_info = {"code" : soup.find_all('h1')[1].text, "cap" : None}
+
+    form_labels = soup.find_all('div', 'form-etiqueta')
+
+    found = False
+
+    for label in form_labels:
+        if label.text == 'Capacidade Exame:':
+            found = True
+            room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+            break
+        elif label.text == 'Número de Computadores:':
+            found = True
+            room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+        elif label.text == 'Capacidade Aulas:':
+            found = True
+            if room_info['cap'] == None:
+                room_info['cap'] = int(label.find_next_sibling('div', {'class': 'form-campo'}).text)
+            
+    return room_info if found else None
