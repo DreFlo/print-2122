@@ -3,6 +3,7 @@
  */ 
 
 const loginButtonElement= document.getElementById("login");
+const { pyCall } = require("../_linkers/pyCall.js");
 
 if (loginButtonElement !== null)
     loginButtonElement.addEventListener('click', handleLogin);
@@ -10,6 +11,17 @@ if (loginButtonElement !== null)
 const logoutButtonElement = document.querySelector("#logout");
 if (logoutButtonElement !== null) {
     logoutButtonElement.addEventListener("click", logout);
+}
+
+/* Enter key */
+var passwordEnter = document.getElementById("password");
+if(passwordEnter != null) {
+    passwordEnter.addEventListener("keypress", function(event){
+        if(event.key === "Enter") {
+            event.preventDefault();
+            handleLogin();
+        }
+    });
 }
 
 // REQUESTING ------------------------------------------------
