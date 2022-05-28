@@ -34,7 +34,11 @@
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                                 data-bs-target="#insertWorkers" id="insertWorkersButton">
                             <span> Escolher Docentes </span>
-                        </button>
+                        </button>                        
+                        <div class="input-group mb-3 align-items-center justify-content-center" style="flex: 1;">
+                            <input class="form-control me-3" type="number" min="2001" max="2300" id="scheduleYearInput" placeholder="ex: 2021" style="margin-left: 5%;">
+                            <div class="invalid-tooltip"></div> 
+                        </div>
                         <div class="input-group mb-3 align-items-center justify-content-center" style="flex: 3;">
                             <input type="checkbox" id="updateSchedules" style="padding: 20px;">
                             <label style="margin-left: 5px; margin-bottom: 0px;">Atualizar horários de vigilância dos selecionados</label> 

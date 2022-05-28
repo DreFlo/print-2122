@@ -205,7 +205,7 @@ function setSelectedSearchResult(result) {
             button.classList.add("btn", "btn-success");
             button.id = "assignButton";
             button.textContent = "Calcular Disponibilidades";
-            button.addEventListener('click', calculateAvailableTeachers);
+            button.addEventListener('click', handleAssignButtonPress);
 
             buttonDiv.appendChild(button);
         }
@@ -215,9 +215,29 @@ function setSelectedSearchResult(result) {
 
 function handleAssignButtonPress() {
     if (document.querySelector('#updateSchedules').checked) {
-        pyCall()
+        if (getLogged() !== "false") {
+            let yearInput = document.querySelector('#scheduleYearInput');
+            if (yearInput.value === "") {
+                setInvalidInput(yearInput, "Este campo não pode estar vazio quando se está a atualizar horários");
+                return;
+            }
+            setValidInput(yearInput);
+            toast.show("A atualizar horários...", toastColor.BLUE, false);
+            pyCall("mass_schedule_conflicts", "handleUpdate", [false, true, yearInput.value, document.querySelector("#code").value.split(" ").map(element => element.trim())]);
+        }
+        else {            
+            toast.show("Não está autenticado", toastColor.RED);
+        }
     }
     else {
+        calculateAvailableTeachers()
+    }
+}
+
+function handleUpdate(data) {
+    console.log(data);
+    if (data['error'] === "false") {
+        toast.show("Horários atualizados", toastColor.GREEN);
         calculateAvailableTeachers()
     }
 }
@@ -245,6 +265,8 @@ function calculateAvailableTeachers() {
     let freeTeachers = getFreeTeachers(groupedScheds);
     let teacherNamesAndSurveillanceNumbers = getTeacherNamesAndNumberOfSurveillances(freeTeachers);
     let table = buildResultsTable(teacherNamesAndSurveillanceNumbers);
+    
+    document.querySelector('#table-wrapper').innerHTML = "";
     createTableButtons(table);
 
     addTableToHtml(table);
@@ -355,7 +377,6 @@ function buildResultsTable(teachers) {
 
 function addTableToHtml(table) {
     let tableWrapper = document.querySelector('#table-wrapper');
-    tableWrapper.innerHTML = "";
     tableWrapper.appendChild(table);
 
     let hiddenTable = document.createElement("table");

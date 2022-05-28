@@ -1,7 +1,7 @@
 {
     "updates": {
-        "class_schedules": "27-05-2022",
-        "exam_schedules": "27-05-2022"
+        "class_schedules": "28-05-2022",
+        "exam_schedules": "28-05-2022"
     },
     "231081": {
         "name": "Ademar Manuel Teixeira de Aguiar",
@@ -229,7 +229,7 @@
         "name": "Afonso Manuel Maia Lopes Salgado de Sousa",
         "sigla": "AMMLSS",
         "class_schedule": {
-            "due_to": "27-05-2022",
+            "due_to": "28-05-2022",
             "schedule": [
                 {
                     "day": 1,
@@ -372,7 +372,7 @@
         "name": "Ahmed Adel Fares Gadelrab Mohamed",
         "sigla": "AAFGM",
         "class_schedule": {
-            "due_to": "17-05-2022",
+            "due_to": "28-05-2022",
             "schedule": []
         },
         "exam_schedule": {
