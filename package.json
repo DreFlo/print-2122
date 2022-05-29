@@ -14,7 +14,21 @@
     "appId": "com.Sigtools.app",
     "asar" : false,
     "files" : [
-      "**/*"
+      "_engine/",
+      "_linkers/",
+      "_views/",
+      "js/",
+      "index.html",
+      "main.js",
+      "webdev/",
+      "lib/",
+      "rederer.js",
+      "preload.js",
+      "data/",
+      "logged",
+      "images/",
+      "public/",
+      "color.less"
     ]
   },
   "repository": {
