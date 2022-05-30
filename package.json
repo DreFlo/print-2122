@@ -1,6 +1,6 @@
 {
   "name": "Sigtools",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Tools for sigarra",
   "main": "main.js",
   "scripts": {
@@ -14,7 +14,21 @@
     "appId": "com.Sigtools.app",
     "asar" : false,
     "files" : [
-      "**/*"
+      "_engine/",
+      "_linkers/",
+      "_views/",
+      "js/",
+      "index.html",
+      "main.js",
+      "webdev/",
+      "lib/",
+      "rederer.js",
+      "preload.js",
+      "data/",
+      "logged",
+      "images/",
+      "public/",
+      "color.less"
     ]
   },
   "repository": {
@@ -24,7 +38,6 @@
   "keywords": [
     "Electron"
   ],
-  "author": "Jumaruba",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^8.0.3",
@@ -33,9 +46,9 @@
     "jsdoc": "^3.6.5"
   },
   "bugs": {
-    "url": "https://github.com/Jumaruba/guiSigtools/issues"
+    "url": "https://git.fe.up.pt/printegrador/2022/pe38-sigarratools"
   },
-  "homepage": "https://github.com/Jumaruba/guiSigtools/",
+  "homepage": "https://git.fe.up.pt/printegrador/2022/pe38-sigarratools",
   "dependencies": {
     "clipboard": "^2.0.6",
     "lodash.deburr": "^4.1.0",
