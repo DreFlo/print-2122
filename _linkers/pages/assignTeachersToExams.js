@@ -33,6 +33,7 @@ function autocompleteCourses() {
     let names = autocomplete(this.value, courseNames);
 
     let div = document.createElement('div');
+    div.id = "dropdown-menu";
     div.classList.add('dropdown-menu', 'show', 'autocompleteList');
     div.style = 'max-height: 300px; overflow-y: auto;';
 

@@ -23,6 +23,15 @@ function clearTable(table) {
     }
 }
 
+document.addEventListener("click", function(event) {
+    let div = document.getElementById("dropdown-menu");
+    if(div == null) return;
+    if(!div.contains(event.target)) {
+        div.classList.remove('show');
+        div.classList.add('none');
+    }
+});
+
 
 // TABLE FOR SCHEDULES  ----------------------------------------------------------------------------------
 function buildTable(data) {

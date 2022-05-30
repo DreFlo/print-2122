@@ -3,7 +3,7 @@
  */ 
 
 const loginButtonElement= document.getElementById("login");
-const { pyCall } = require("../_linkers/pyCall.js");
+
 
 if (loginButtonElement !== null)
     loginButtonElement.addEventListener('click', handleLogin);

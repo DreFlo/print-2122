@@ -113,6 +113,7 @@ function autocompleteCourses() {
     let names = autocomplete(this.value, courseNames);
 
     let div = document.createElement('div');
+    div.id = "dropdown-menu"
     div.classList.add('dropdown-menu', 'show', 'autocompleteList');
     div.style = 'max-height: 300px; overflow-y: auto;';
 
@@ -133,6 +134,11 @@ function autocompleteCourses() {
         }
     }
 
+    div.addEventListener('mouseup', function(e) {
+        if (!container.contains(e.target)) {
+            div.style.display = 'none';
+        }
+    });
     document.querySelector('#courseInputDiv').appendChild(div);
 }
 
@@ -725,6 +731,7 @@ function autocompleteTeacher(input, classType) {
     let names = autocomplete(input.value, unregisteredTeacherNames);
 
     let div = document.createElement('div');
+    div.id = "dropdown-menu";
     div.classList.add('dropdown-menu', 'show', 'autocompleteList');
     div.style = 'max-height: 300px; overflow-y: auto;';
 
@@ -744,9 +751,13 @@ function autocompleteTeacher(input, classType) {
             div.appendChild(a);
         }
     }
-    
+
+
+
     document.querySelector("#add-unregistered-teacher-input-div-" + classType).appendChild(div);
 }
+
+
 
 // Close autocomplete suggesting for teachers and set inputs
 function handleAddUnregisteredTeacherClick(teacher, classType) {
