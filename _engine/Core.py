@@ -452,7 +452,9 @@ def get_UC_teacher_info(UC):
     return {'name' : name, 'period': period, 'code': code, 'id' : id, 'info' : info}
 
 def get_exams(course):
-
+    '''
+    Get exams for a given course
+    '''
     exams = []
     url = "https://sigarra.up.pt/feup/pt/exa_geral.mapa_de_exames?p_curso_id=" + course
 
@@ -510,6 +512,9 @@ def get_exams(course):
     return exams
 
 def get_with_exam_teachers_and_time(exam):
+    '''
+    Get teachers, start time, and duration 
+    '''
     exam['teachers'] = []
 
     url = 'https://sigarra.up.pt/feup/pt/' + exam['href']
@@ -561,6 +566,9 @@ def get_with_exam_teachers_and_time(exam):
     return exam
     
 def get_rooms(bulding_number):
+    '''
+    Get room list for a given building
+    '''
     room_links = []
 
     pag_n = 1
@@ -591,6 +599,9 @@ def get_rooms(bulding_number):
     return room_links
 
 def get_room_info(room_url):
+    '''
+    Get room information from url
+    '''
     html = get_html(mc.Browser(), room_url) 
     soup = bs(html, features="html5lib")
 
