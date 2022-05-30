@@ -128,7 +128,7 @@ function autocompleteCourses() {
             a.setAttribute('href', '#');
             a.addEventListener('click', setCourseInput)
             a.classList.add('list-group-item', 'dropdown-item');
-            a.addEventListener('mouseenter', listItemOnMouseEnter);
+            a.addEventListener('mousemove', listItemOnMouseMove);
             a.addEventListener('mouseleave', listItemOnMouseLeave);
             div.appendChild(a);
         }
@@ -146,6 +146,18 @@ function autocompleteCourses() {
 function listItemOnMouseEnter() {
     this.classList.add('active');
 }
+
+// Set element to active on mouse move
+function listItemOnMouseMove() {
+    let div = document.getElementById("dropdown-menu");
+    if(div == null) return;
+    let childDiv = div.childNodes;
+    for(let i = 0; i < childDiv.length; i++) {
+        childDiv[i].classList.remove("active");
+    }
+    this.classList.add('active');
+}
+
 
 // Remove active from element on mouse leave
 function listItemOnMouseLeave() {
@@ -746,7 +758,7 @@ function autocompleteTeacher(input, classType) {
             a.setAttribute('href', '#');
             a.classList.add('list-group-item', 'dropdown-item');
             a.addEventListener('click', () => {handleAddUnregisteredTeacherClick(unregisteredTeachers[i], classType)});
-            a.addEventListener('mouseenter', listItemOnMouseEnter);
+            a.addEventListener('mousemove', listItemOnMouseMove);
             a.addEventListener('mouseleave', listItemOnMouseLeave);
             div.appendChild(a);
         }
