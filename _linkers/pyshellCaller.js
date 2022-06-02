@@ -68,7 +68,7 @@ class pyshellCaller{
                 return false;
             }
             if (jsonObject.data['Name'] === "NONE") setLogged('false');
-            else setLogged('true');
+            else setLogged(jsonObject.data['Name']);
             console.log(getLogged());
         });
         return false;

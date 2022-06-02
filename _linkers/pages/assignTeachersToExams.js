@@ -96,6 +96,7 @@ function handleSearchExamsResponse(data) {
         toast.show("Pesquisa concluída", toastColor.GREEN);
     }
     let searchExamDiv = document.querySelector('#searchResultsDiv');
+    searchExamDiv.innerHTML = "";
 
     exams = data['exams'];
 
@@ -214,6 +215,7 @@ function setSelectedSearchResult(result) {
 }
 
 function handleAssignButtonPress() {
+    console.log("Calculating availability");
     if (document.querySelector('#updateSchedules').checked) {
         if (getLogged() !== "false") {
             let yearInput = document.querySelector('#scheduleYearInput');
@@ -307,13 +309,17 @@ function groupByDate() {
         } 
     })
 
+    console.log(groupedScheds);
     return groupedScheds;
 }
 
 function getFreeTeachers(sched) {
     let free = [];
     for (let teacher of docentsCodeArray) {
-        if (selectedSearchResult['teachers'].includes(parseInt(teacher))) continue;
+        if (selectedSearchResult['teachers'].includes(parseInt(teacher))) {
+            console.log(`Teacher ${teacher} already in exam`);
+            continue;
+        }
         let times = teacherInSchedule(sched, teacher);
         if (times == []) {
             free.push(teacher);
@@ -323,6 +329,7 @@ function getFreeTeachers(sched) {
             for (let time of times) {
                 if (time['day'] == selectedSearchResult['day']) {
                     if (timesIntersect(time, selectedSearchResult)) {
+                        console.log(`Teacher ${teacher} has schedule conflict`);
                         add = false;
                     }
                 }
@@ -330,6 +337,7 @@ function getFreeTeachers(sched) {
             if (add) free.push(teacher);
         }
     }
+    console.log(free);
     return free;
 }
 
