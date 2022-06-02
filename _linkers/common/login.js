@@ -4,12 +4,24 @@
 
 const loginButtonElement= document.getElementById("login");
 
+
 if (loginButtonElement !== null)
     loginButtonElement.addEventListener('click', handleLogin);
 
 const logoutButtonElement = document.querySelector("#logout");
 if (logoutButtonElement !== null) {
     logoutButtonElement.addEventListener("click", logout);
+}
+
+/* Enter key */
+var passwordEnter = document.getElementById("password");
+if(passwordEnter != null) {
+    passwordEnter.addEventListener("keypress", function(event){
+        if(event.key === "Enter") {
+            event.preventDefault();
+            handleLogin();
+        }
+    });
 }
 
 // REQUESTING ------------------------------------------------

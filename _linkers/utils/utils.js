@@ -23,6 +23,64 @@ function clearTable(table) {
     }
 }
 
+document.addEventListener("click", function(event) {
+    let div = document.getElementById("dropdown-menu");
+    if(div == null) return;
+    if(!div.contains(event.target)) {
+        div.classList.remove('show');
+        div.classList.add('none');
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+
+    let div = document.getElementById("dropdown-menu");
+    if(div == null) return;
+
+    let childDiv = div.childNodes;
+    let selectedChild = undefined;
+    let index = 0;
+    for(index = 0; index < childDiv.length; index++) {
+        if(childDiv[index].classList.contains("active")) {
+            selectedChild = childDiv[index];
+            break;
+        }
+    }
+
+    for(let i = 0; i < childDiv.length; i++) {
+        if(i == index) continue;
+        childDiv[i].classList.remove("active");
+    }
+
+    switch(event.key) {
+        case "ArrowDown":
+            
+            if(selectedChild === undefined) {
+                childDiv[0].classList.add("active");
+                return;
+            } else {
+                if(index+1 < childDiv.length) {
+                    childDiv[index].classList.remove("active");
+                    childDiv[index+1].classList.add("active");
+                }
+            }
+            break;
+        case "ArrowUp":
+            if(selectedChild === undefined) {
+                childDiv[0].classList.add("active");
+                return;
+            } else {
+                if(index-1 >= 0) {
+                    childDiv[index-1].classList.add("active");
+                    childDiv[index].classList.remove("active");
+                }
+            }
+            break;
+        default:
+            return;
+    }
+});
+
 
 // TABLE FOR SCHEDULES  ----------------------------------------------------------------------------------
 function buildTable(data) {
