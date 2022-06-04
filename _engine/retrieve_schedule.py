@@ -10,7 +10,7 @@ import os
 
 cwd = os.getcwd()
 
-docents_schedule_path = os.path.join(cwd, 'data\\schedules.json')
+docents_schedule_path = os.path.join(cwd, 'resources\\app\\data\\schedules.json')
 
 def get_teachers_id():
     return sys.argv[1]
@@ -60,7 +60,7 @@ def save_sched(schedule, due_to, docent_id):
     docent_json = {'due_to': due_to, 'schedule': schedule} 
     f = open(docents_schedule_path, "r+", encoding="utf-8")
     all_schedules = json.loads(f.read())  
-    if(docents_schedule_path == "./data/schedules.json"):
+    if(docents_schedule_path == "./resources/app/data/schedules.json"):
         all_schedules[docent_id] = docent_json
     else:
         all_schedules[docent_id]['class_schedule'] = docent_json

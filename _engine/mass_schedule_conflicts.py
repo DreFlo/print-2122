@@ -12,7 +12,7 @@ import ast
 
 cwd = os.getcwd()
 
-data_file = os.path.join(cwd, 'data\\schedules.json')
+data_file = os.path.join(cwd, 'resources\\app\\data\\schedules.json')
 
 def get_regular():
     return sys.argv[1]

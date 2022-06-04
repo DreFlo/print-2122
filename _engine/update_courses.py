@@ -2,7 +2,7 @@ import Core
 import sys
 from handle_json import BuildJson
 
-courses_filePath = './data/courses.json'
+courses_filePath = './resources/app/data/courses.json'
 
 def main():
     courses = Core.get_courses()

@@ -1,7 +1,7 @@
 let selectedWorkers = []
 var table;
 
-let schedules_doc = './data/schedules.json';
+let schedules_doc = './resources/app/data/schedules.json';
 
 document.addEventListener("DOMContentLoaded", () => {
     setWorkerListEvent();

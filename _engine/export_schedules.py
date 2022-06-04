@@ -5,7 +5,7 @@ import json
 from handle_json import BuildJson
 import datetime
 
-schedules_path = "./data/schedules.json"
+schedules_path = "./resources/app/data/schedules.json"
 
 def main():
     tkinter.Tk().withdraw()

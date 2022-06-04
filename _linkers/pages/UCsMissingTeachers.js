@@ -806,7 +806,7 @@ function getUCIndex(id) {
 
 // Save tables to file
 function saveTables() {
-    fs.writeFileSync(path.join(__dirname, '../data/uc_teachers_table.json'), JSON.stringify({"data" : tables, "error" : false}));
+    fs.writeFileSync(path.join(__dirname, './resources/app/data/uc_teachers_table.json'), JSON.stringify({"data" : tables, "error" : false}));
 }
 
 // Remove table from table array
@@ -847,7 +847,7 @@ function handleAddUnregisteredTeacher(data) {
 // Save unregistered teachers to file
 function saveUnregisteredTeachers() {
     unregisteredTeachers = JSON.parse(JSON.stringify(tempUnregisteredTeachers));
-    fs.writeFileSync(oath.join(__dirname, '../data/unregistered_teachers.json'), JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
+    fs.writeFileSync(oath.join(__dirname, './resources/app/data/unregistered_teachers.json'), JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
 }
 
 // Toggle showing options for Course tables

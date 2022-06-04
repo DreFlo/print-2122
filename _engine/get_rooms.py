@@ -2,7 +2,7 @@ import Core
 import sys
 from handle_json import BuildJson
 
-rooms_file_path = './data/rooms.json'
+rooms_file_path = './resources/app/data/rooms.json'
 
 def main():
     rooms = Core.get_rooms(1403)

@@ -40,7 +40,7 @@ def create_reminder():
     return
 
 def main():
-    with open('./data/unregistered_teachers.json', 'r', encoding='utf-8') as file:
+    with open('./resources/app/data/unregistered_teachers.json', 'r', encoding='utf-8') as file:
         data = json.load(file)
 
     newTeacher = {"name" : get_name(), "code" : len(data['unregisteredTeachers']), "contractStart" : get_contract_start(), "availableHours" : get_available_hours(), "assignedHours" : 0}
@@ -52,7 +52,7 @@ def main():
     if get_reminder():
         create_reminder()
 
-    with open('./data/unregistered_teachers.json', 'w', encoding='utf-8') as file:
+    with open('./resources/app/data/unregistered_teachers.json', 'w', encoding='utf-8') as file:
         file.write(json_object.getJson())
 
     print(json_object.getJson())

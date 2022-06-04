@@ -28,7 +28,7 @@ function listenCopyColButton(column){
     const copyColButton = document.querySelector("#copy-col");
     const table = document.querySelector("#hidden_table_id");
     copyColButton.addEventListener("click", ()=> {
-        let tempFileName = './data/temp_table_' + Date.now() + ".txt";
+        let tempFileName = './resources/app/data/temp_table_' + Date.now() + ".txt";
         fs.writeFileSync(tempFileName, table.outerHTML);
         pyCall("copy_col_table", "handleCopyColResponse", [tempFileName, column])
     })
@@ -42,7 +42,7 @@ function listenCopy(){
     const copyButton = document.querySelector("button.copy");
     const table = document.querySelector("#hidden_table_id");
     copyButton.addEventListener("click", ()=> {
-        let tempFileName = './data/temp_table_' + Date.now() + ".txt";
+        let tempFileName = './resources/app/data/temp_table_' + Date.now() + ".txt";
         fs.writeFileSync(tempFileName, table.outerHTML);
         pyCall("copy_table", "handleCopyResponse",[tempFileName]);
     });
@@ -52,7 +52,7 @@ function listenCSV(default_name){
     const CSVButton = document.querySelector("button#toCSV");
     const table = document.querySelector("#hidden_table_id");
     CSVButton.addEventListener("click", ()=> {
-        let tempFileName = './data/temp_table_' + Date.now() + ".txt";
+        let tempFileName = './resources/app/data/temp_table_' + Date.now() + ".txt";
         fs.writeFileSync(tempFileName, table.outerHTML);
         pyCall("csv_table", "handleCSVResponse", [tempFileName, default_name]);
     });

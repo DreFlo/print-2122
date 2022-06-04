@@ -357,7 +357,7 @@ function getFreeTeachers(sched) {
 
 function getTeacherNamesAndNumberOfSurveillances(teachers) {
     let namesAndSurveillances = [];
-    let schedules = JSON.parse(fs.readFileSync('./data/schedules.json'));
+    let schedules = JSON.parse(fs.readFileSync('./resources/app/data/schedules.json'));
 
     for (let teacher of teachers) {
         let teacherSchedule = schedules[teacher];
@@ -432,7 +432,7 @@ function timesIntersect(time1, time2) {
         return true;
     }
 
-    else if (time1['start_time'] >= time2['start_time'] && time1['start_time'] < time2['start_time'] + time2['start_time']) {
+    else if (time1['start_time'] >= time2['start_time'] && time1['start_time'] < time2['start_time'] + time2['duration']) {
         return true;
     }
 
