@@ -2,8 +2,8 @@ variables:
   GIT_STRATEGY: clone
 
 stages:
-  - release
   - build
+  - release
 
 release_project:
    stage: release
