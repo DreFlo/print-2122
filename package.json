@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist:win": "electron-builder -w",
     "sass": "sass --watch ./_views/css/style.scss ./_views/css/style.css",
     "doc": "jsdoc _linkers/ -r -c jsdoc.json -d docs"
   },
