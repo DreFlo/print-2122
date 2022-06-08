@@ -27,6 +27,6 @@ build:
   artifacts:
     expire_in: 30 days
     paths:
-      - ./dist/
+      - ./release/
   only:
     - master     
