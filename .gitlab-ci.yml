@@ -11,6 +11,9 @@ release_project:
    rules:
      - if: $CI_COMMIT_TAG
    script:
+     - echo "Running build from $CI_COMMIT_TAG"
+     - yarn
+     - yarn dist:win
      - echo "Running release from $CI_COMMIT_TAG"
    release:
      name: "Sigtools $CI_COMMIT_TAG"
@@ -23,8 +26,6 @@ build:
     CI_DEBUG_TRACE: "true"
   image: electronuserland/builder:wine
   stage: build
-  rules:
-     - if: $CI_COMMIT_TAG
   script:
     - echo "Running build from $CI_COMMIT_TAG"
     - yarn
