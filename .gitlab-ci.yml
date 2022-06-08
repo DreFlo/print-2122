@@ -19,9 +19,12 @@ release_project:
      ref: '$CI_COMMIT_TAG'
 
 build:
+  variables:
+    CI_DEBUG_TRACE: "true"
   image: electronuserland/builder:wine
   stage: build
   script:
+    - echo "Running build from $CI_COMMIT_TAG"
     - yarn
     - yarn dist:win
   artifacts:
