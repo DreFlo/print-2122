@@ -24,6 +24,11 @@ build:
   stage: build
   image: electronuserland/builder:wine
   script:
+    - git init /builds/printegrador/2022/pe38-sigarratools --template /builds/printegrador/2022/pe38-sigarratools.tmp/git-template
+    - cd /builds/printegrador/2022/pe38-sigarratools
+    - git remote add origin https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git
+    - git config http.postBuffer 524288000
+    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' fetch origin +refs/pipelines/5444:refs/pipelines/5444 +refs/heads/auto-release:refs/remotes/origin/auto-release --depth 1 --prune
     - echo "Running build from v2.1.4"
     - yarn
     - yarn dist:win
