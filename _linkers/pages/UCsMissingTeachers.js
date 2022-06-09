@@ -10,7 +10,7 @@ let selectedTableIndex = undefined;
 let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
 let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
-let unregisteredTeachers = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/unregistered_teachers.json')))['unregisteredTeachers'];
+let unregisteredTeachers = JSON.parse(fs.readFileSync(path.join(__dirname, '../resources/app/unregistered_teachers.json')))['unregisteredTeachers'];
 let tempUnregisteredTeachers;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);

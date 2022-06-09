@@ -6,7 +6,7 @@ import tkinter
 import json
 import os
 
-schedules_path = ".resoursces/app/data/schedules.json"
+schedules_path = "./resources/app/data/schedules.json"
 
 def get_arg():
     return sys.argv[1]

@@ -17,12 +17,14 @@
     <script src="../_linkers/utils/items.js" defer></script> 
     <script src="../_linkers/utils/utils.js" defer></script>
     <script src="../_linkers/utils/workerList.js" defer></script>
+    <script>window.onload = function() {doOnload();}</script>
 </head>
+
 <body>
     <section id="title">
         <h1> Configurações </h1>
     </section>
-    <section id="updateButtons">
+    <section id="updateButtons" style="padding-left: 5%; padding-bottom: 5%">
         <h5>Atualizar Cursos</h5>
         <div class="flex-d justify-content-center">
             <button id="updateCourses" type="button" class="btn btn-success">Atualizar cursos</button>
@@ -105,3 +107,10 @@
         </div>
     </div>
 </section>
+
+<div id="updateInfoModal">
+    <div class="updateInfoContent">
+        <p id="numberUpdated"></p>
+        <button type="button" class="btn btn-secondary float-end" style="text-align: right;" id="closeInfoModal">Fechar</button>
+    </div>
+</span>

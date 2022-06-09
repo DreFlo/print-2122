@@ -1,7 +1,7 @@
 {
     "updates": {
-        "class_schedules": "02-06-2022",
-        "exam_schedules": "02-06-2022"
+        "class_schedules": "09-06-2022",
+        "exam_schedules": "09-06-2022"
     },
     "231081": {
         "name": "Ademar Manuel Teixeira de Aguiar",
@@ -211,13 +211,13 @@
                 },
                 {
                     "day": 1,
-                    "start_time": 11.5,
+                    "start_time": 8.5,
                     "duration": 2.0,
                     "name": " Engenharia de Software ",
                     "class_name": "ES (Exame)",
                     "lesson_type": "",
                     "link": "",
-                    "location": "B104, B208, B213, B207, B105, B201, B101, B102, B103",
+                    "location": "",
                     "start_date": "11-07-2022",
                     "end_date": "16-07-2022",
                     "teacher_name": "Ademar Aguiar"
@@ -229,7 +229,7 @@
         "name": "Afonso Manuel Maia Lopes Salgado de Sousa",
         "sigla": "AMMLSS",
         "class_schedule": {
-            "due_to": "02-06-2022",
+            "due_to": "09-06-2022",
             "schedule": [
                 {
                     "day": 1,
@@ -372,7 +372,7 @@
         "name": "Ahmed Adel Fares Gadelrab Mohamed",
         "sigla": "AAFGM",
         "class_schedule": {
-            "due_to": "02-06-2022",
+            "due_to": "09-06-2022",
             "schedule": []
         },
         "exam_schedule": {
