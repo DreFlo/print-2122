@@ -59,11 +59,8 @@ def save_sched(schedule, due_to, docent_id):
     due_to = due_to.strftime("%d-%m-%Y")
     docent_json = {'due_to': due_to, 'schedule': schedule} 
     f = open(docents_schedule_path, "r+", encoding="utf-8")
-    all_schedules = json.loads(f.read())  
-    if(docents_schedule_path == "./resources/app/data/schedules.json"):
-        all_schedules[docent_id] = docent_json
-    else:
-        all_schedules[docent_id]['class_schedule'] = docent_json
+    all_schedules = json.loads(f.read())
+    all_schedules[docent_id]['class_schedule'] = docent_json
     json_object = json.dumps(all_schedules, indent=4, ensure_ascii=False)
     f.seek(0)
     f.write(json_object)
@@ -85,7 +82,7 @@ def get_complete_schedule(docent_id, academic_year = 0):
     # In a year a docent has many schedules. Now we are retrieving these links. 
 
     if(academic_year == 0):
-        academic_year == get_academic_year()
+        academic_year = get_academic_year()
     
     links_schedules, soup = Core.get_links_schedules(docent_id, academic_year)
     teacher_name = Core.get_teacher_name_schedule(soup)

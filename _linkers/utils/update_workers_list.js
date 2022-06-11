@@ -100,6 +100,7 @@ $(document).ready(function() {
 function getListAndUpdate(data){
     if(data['error'] == true){
         alert("Erro a obter lista de docentes DEI.");
+        updateModal.style.display = "none";
     }
     else{
         var data_list = data['list'];
@@ -113,6 +114,7 @@ function updateSchedules(data = null){
     if(data != null){
         if(data['error'] == "true"){
             alert("Erro a atualizar horário do docente com código: " + data['worker'] + ".");
+            updateModal.style.display = "none";
             return;
         }
     }
