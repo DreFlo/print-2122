@@ -720,9 +720,7 @@ function addUnregisteredTeacher(classType) {
     let unregisteredTeacher = findUnregisterTeacherByCode(parseInt(document.querySelector('#teacher-code-input-' + classType).value));
     let hoursInput = document.querySelector('#teacher-hours-input-' + classType).value;
     let hours = hoursInput == '' ? 0 : parseInt(hoursInput);
-    // TODO MENSAGEM DE ERRO - O TOAST N TA A APARECER, MAYBE FAZ-SE C/ UM POPOVER
     if (unregisteredTeacher.assignedHours + hours > unregisteredTeacher.availableHours) {
-        console.log("here");
         toast.show('Este/a professor/a apenas está disponível por ' + unregisteredTeacher.availableHours + ' semanalmente, o total seria ' + (unregisteredTeacher.assignedHours + hours), toastColor.RED);
     }
     else {
@@ -836,7 +834,7 @@ function createNewUnregisteredTeacher() {
 // Update unregistered teachers
 function handleAddUnregisteredTeacher(data) {
     if (data.error == "true") {
-        toast.show("Erro ao criar", toastColor.RED);
+        toast.show("Erro ao guardar docente", toastColor.RED);
     }
     else {
         unregisteredTeachers = data['unregisteredTeachers'];

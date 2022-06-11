@@ -104,7 +104,7 @@ function searchExam() {
 
 function handleSearchExamsResponse(data) {
     if (data['error'] === "true") {
-        toast.show("Erro", toastColor.RED);
+        toast.show("Não foi possível pesquisar exames", toastColor.RED);
     }
     else {
         toast.show("Pesquisa concluída", toastColor.GREEN);
