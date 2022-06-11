@@ -10,7 +10,7 @@ let selectedTableIndex = undefined;
 let modal = document.querySelector('#UCDetailDialog');
 let ucIndex = undefined;
 let classTypeTitles = {'theoretical' : 'Teóricas', 'practical' : 'Teórico-Práticas', 'laboratorial' : 'Práticas Laboratoriais', 'other' : 'Outras'};
-let unregisteredTeachers = JSON.parse(fs.readFileSync(path.join(__dirname, '../resources/app/unregistered_teachers.json')))['unregisteredTeachers'];
+let unregisteredTeachers = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/unregistered_teachers.json')))['unregisteredTeachers'];
 let tempUnregisteredTeachers;
 
 document.querySelector('#newTableFormButton').addEventListener('click', createNewTable);
@@ -135,7 +135,7 @@ function autocompleteCourses() {
     }
 
     div.addEventListener('mouseup', function(e) {
-        if (!container.contains(e.target)) {
+        if (!div.contains(e.target)) {
             div.style.display = 'none';
         }
     });
@@ -619,7 +619,7 @@ function validateAddNewTeacher(classType) {
         setInvalidInput(hoursInput, "Este campo não pode estar vazio");
         ret = false;
     }
-    else if (teacher.availableHours < teacher.assignedHours + parseInt(hoursInput.value)) {
+    else if (teacher.availableHours < teacher.assignedHours + parseFloat(hoursInput.value)) {
         setInvalidInput(hoursInput, "O número de horas atribuídas totais do professor seria maior do que o número de horas disponíveis");
         ret = false;
     }
@@ -719,7 +719,7 @@ function findUnregisterTeacherByCode(code) {
 function addUnregisteredTeacher(classType) {
     let unregisteredTeacher = findUnregisterTeacherByCode(parseInt(document.querySelector('#teacher-code-input-' + classType).value));
     let hoursInput = document.querySelector('#teacher-hours-input-' + classType).value;
-    let hours = hoursInput == '' ? 0 : parseInt(hoursInput);
+    let hours = hoursInput == '' ? 0 : parseFloat(hoursInput);
     if (unregisteredTeacher.assignedHours + hours > unregisteredTeacher.availableHours) {
         toast.show('Este/a professor/a apenas está disponível por ' + unregisteredTeacher.availableHours + ' semanalmente, o total seria ' + (unregisteredTeacher.assignedHours + hours), toastColor.RED);
     }
@@ -804,7 +804,7 @@ function getUCIndex(id) {
 
 // Save tables to file
 function saveTables() {
-    fs.writeFileSync(path.join(__dirname, './resources/app/data/uc_teachers_table.json'), JSON.stringify({"data" : tables, "error" : false}));
+    fs.writeFileSync(path.join(__dirname, '../data/uc_teachers_table.json'), JSON.stringify({"data" : tables, "error" : false}));
 }
 
 // Remove table from table array
@@ -845,7 +845,7 @@ function handleAddUnregisteredTeacher(data) {
 // Save unregistered teachers to file
 function saveUnregisteredTeachers() {
     unregisteredTeachers = JSON.parse(JSON.stringify(tempUnregisteredTeachers));
-    fs.writeFileSync(oath.join(__dirname, './resources/app/data/unregistered_teachers.json'), JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
+    fs.writeFileSync(path.join(__dirname, '../data/unregistered_teachers.json'), JSON.stringify({"unregisteredTeachers" : unregisteredTeachers, "error" : false}));
 }
 
 // Toggle showing options for Course tables

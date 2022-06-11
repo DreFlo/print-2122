@@ -10,7 +10,7 @@ import os
 
 cwd = os.getcwd()
 
-docents_schedule_path = os.path.join(cwd, 'data\\schedules.json')
+docents_schedule_path = os.path.join(cwd, 'resources\\app\\data\\schedules.json')
 
 def get_teachers_id():
     return sys.argv[1]
@@ -290,7 +290,7 @@ def main():
         print(json.getJson())
         sys.stdout.flush()
     except: 
-        json_obj = BuildJson()
+        json_obj = BuildJson({})
         json_obj.setError()
         print(json_obj.getJson())
         sys.stdout.flush()

@@ -137,6 +137,7 @@ function groupByDate(){
       else groupedScheds[key] = [sched]; 
     });   
 
+    console.log(groupedScheds);
     return groupedScheds;
 }
 

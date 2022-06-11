@@ -40,15 +40,20 @@ function validateInput(){
  * Request GET data from python.
  */
 function handleSearchStd() { 
-    if (!validateInput()) return;  
-
-    const students = document.querySelector("#code").value.trim();
-    const courses = document.querySelector("#ucs").value.trim();
-    const semesterYear = getCheckBoxValues();
-    const media = getCheckBoxMedia();
-    const onlyAtrasadas = getCheckBoxAtrasadas();
-    toast.show("Carregando...", toastColor.BLUE, false);
-    pyCall("search_student", "final_handleSearchStd", [students, courses, semesterYear, media, onlyAtrasadas]);
+    if (!validateInput()) return;
+    
+    if (getLogged() === "false") {
+        toast.show("Não está autenticado", toastColor.RED);
+    }
+    else {
+        const students = document.querySelector("#code").value.trim();
+        const courses = document.querySelector("#ucs").value.trim();
+        const semesterYear = getCheckBoxValues();
+        const media = getCheckBoxMedia();
+        const onlyAtrasadas = getCheckBoxAtrasadas();
+        toast.show("Carregando...", toastColor.BLUE, false);
+        pyCall("search_student", "final_handleSearchStd", [students, courses, semesterYear, media, onlyAtrasadas]);
+    }
 }
 
 function getCheckBoxValues(){
