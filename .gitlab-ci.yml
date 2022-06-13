@@ -16,8 +16,6 @@ RRTest:
   script:
     - echo Running RR Test
     - apk --no-cache add git 
-    #- apt update
-    #- apt install gnutls-bin 
     - mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
     - git config --global http.postBuffer 1000M
