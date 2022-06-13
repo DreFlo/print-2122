@@ -30,7 +30,7 @@ npm start
 
 ### IMPORTANT NOTES
 
-When running the program with _npm start_ versus building and installing it the working directory of the Python proccesses is different relative to the program files, so, for file access to work correctly using __npm start__, "resources/app/" must be removed from the filepaths in the Python scripts. 
+When running the program with __npm start__ versus building and installing it the working directory of the Python proccesses is different relative to the program files, so, for file access to work correctly using __npm start__, "resources/app/" must be removed from the filepaths in the Python scripts. 
 
 When building the program the following warning will appear:
 
@@ -42,7 +42,7 @@ Asar usage was disabled in _package.json_ as having it enabled breaks Python fun
 
 ## General Advice
 
-When further developing the program, if a new python module needs to be installed this must be done by changing directories to the folder _webdev/Scripts__ and then running:
+When further developing the program, if a new python module needs to be installed this must be done by changing directories to the folder _webdev/Scripts_ and then running:
 
 ``` bash
 ./pip.exe install <module>
