@@ -7,6 +7,8 @@ stages:
   - rrtest
 
 RRTest:
+  variables:
+    CI_DEBUG_TRACE: "true"
   stage: rrtest
   when: manual
   image: electronuserland/builder:wine
