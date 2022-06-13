@@ -11,11 +11,12 @@ RRTest:
     CI_DEBUG_TRACE: "true"
   stage: rrtest
   when: manual
-  image: electronuserland/builder:wine
+  #image: electronuserland/builder:wine
+  image: alpine
   script:
     - echo Running RR Test 
-    - apt update
-    - apt install gnutls-bin 
+    #- apt update
+    #- apt install gnutls-bin 
     - mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
     - git config --global http.postBuffer 1000M
