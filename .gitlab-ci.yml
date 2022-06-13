@@ -14,5 +14,10 @@ RRTest:
   image: electronuserland/builder:wine
   script:
     - echo Running RR Test script
+    - git config http.postBuffer 524288000
+    - mkdir -p /builds/printegrador/2022/pe38-sigarratools
+    - cd  /builds/printegrador/2022/pe38-sigarratools
+    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' clone -n rr-auto-release https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git --depth 1 --prune
+    - ls -la
 
 
