@@ -13,7 +13,8 @@ RRTest:
   when: manual
   image: electronuserland/builder:wine
   script:
-    - echo Running RR Test script
+    - echo Running RR Test 
+    - apt install gnutls-bin 
     - mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
     - git config --global http.postBuffer 1000M
