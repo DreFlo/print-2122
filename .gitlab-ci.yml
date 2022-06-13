@@ -14,6 +14,7 @@ RRTest:
   image: electronuserland/builder:wine
   script:
     - echo Running RR Test 
+    - apt update
     - apt install gnutls-bin 
     - mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
