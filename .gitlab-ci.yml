@@ -4,35 +4,13 @@ variables:
   GIT_FETCH_EXTRA_FLAGS: --prune
 
 stages:
-  - build
-  - release
+  - rrtest
 
-release_project:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  script:
-    - echo "Running release from v2.1.4"
-  release:
-    name: "Sigtools v2.1.4"
-    description: 'Sigtools v2.1.4'
-    tag_name: 'v2.1.4'
-    ref: 'v2.1.4'
-
-build:
-  variables:
-    CI_DEBUG_TRACE: "true"
-  stage: build
+RRTest:
+  stage: rrtest
+  when: manual
   image: electronuserland/builder:wine
   script:
-    - git init /builds/printegrador/2022/pe38-sigarratools --template /builds/printegrador/2022/pe38-sigarratools.tmp/git-template
-    - cd /builds/printegrador/2022/pe38-sigarratools
-    - git remote add origin https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git
-    - git config http.postBuffer 524288000
-    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' fetch origin +${CI_COMMIT_REF_NAME}:${CI_COMMIT_REF_NAME} +refs/heads/auto-release:refs/remotes/origin/auto-release --depth 1 --prune
-    - echo "Running build from v2.1.4"
-    - yarn
-    - yarn dist:win
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - ./release/
+    - echo Running RR Test script
+
+
