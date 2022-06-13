@@ -16,8 +16,9 @@ RRTest:
     - echo Running RR Test script
     - mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
-    - git config --global http.postBuffer 524288000
-    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' clone -b rr-auto-release-tests https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git --depth 1
+    - git config --global http.postBuffer 1000M
+    - git config --global http.maxRequestBuffer 100M
+    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' clone -b rr-auto-release-tests --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git --depth 1
     - ls -la
 
 
