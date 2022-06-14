@@ -836,10 +836,8 @@ function createNewUnregisteredTeacher() {
     let name = document.querySelector('#newTeacherNameInput').value;
     let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
     let dateValue = document.querySelector('#newTeacherContractStartInput').value;
-    console.log(dateValue);
     let date = dateValue != "" ? new Date(dateValue) : new Date();
     let reminder = document.querySelector('#newTeacherReminderCheckbox').checked;
-    console.log(reminder);
     
     toast.show("A criar...", toastColor.BLUE, false);
     pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString(), reminder]);

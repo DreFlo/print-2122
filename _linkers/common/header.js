@@ -13,7 +13,7 @@ let header = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white
     '    <div class="collapse navbar-collapse" id="navbarColor01">\n' +
     '      <ul class="navbar-nav me-auto">\n' +
     '        <li class="nav-item">\n' +
-    '          <a class="nav-link active" href="#">Home\n' +
+    '          <a class="nav-link active" href="../index.html">Home\n' +
     '            <span class="visually-hidden">(current)</span>\n' +
     '          </a>\n' +
     '        </li>\n' +
