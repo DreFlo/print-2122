@@ -16,7 +16,7 @@ def get_available_hours():
     return sys.argv[2]
 
 def get_reminder():
-    return sys.argv[4]
+    return sys.argv[4] == "true"
 
 # Create .ics file where user chooses with reminder to add teacher to sigarra
 def create_reminder():

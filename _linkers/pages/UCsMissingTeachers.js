@@ -398,8 +398,19 @@ function addClassTypeToTableRow(tr, _class) {
     else if (_class.total != _class.fulfilled) {
         td.style = "background-color: #dc3545; color: #ffffff";
     }
+    // If has unregistered teacher set backgrounf to yellow
+    else if (hasUnregisteredTeacher(_class)) {
+        td.style = "background-color: #eed202; color: #ffffff";
+    }
 
     tr.appendChild(td);
+}
+
+function hasUnregisteredTeacher(_class) {
+    for (let i = 0; i < _class.teachers.length; i++) {
+        if (!_class.teachers[i].underContract) return true;
+    }
+    return false;
 }
 
 // Open editUC screen
@@ -824,8 +835,11 @@ function createNewUnregisteredTeacher() {
     if (!validateNewTeacherInput()) return;
     let name = document.querySelector('#newTeacherNameInput').value;
     let hours = document.querySelector('#newTeacherAvailableHoursInput').value;
-    let date = new Date(document.querySelector('#newTeacherContractStartInput').value);
+    let dateValue = document.querySelector('#newTeacherContractStartInput').value;
+    console.log(dateValue);
+    let date = dateValue != "" ? new Date(dateValue) : new Date();
     let reminder = document.querySelector('#newTeacherReminderCheckbox').checked;
+    console.log(reminder);
     
     toast.show("A criar...", toastColor.BLUE, false);
     pyCall("add_unregistered_teacher", "handleAddUnregisteredTeacher", [name, hours, date.toISOString(), reminder]);
