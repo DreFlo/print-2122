@@ -25,7 +25,7 @@ RRTest:
     - yarn
     - yarn dist:win
     - ls -la dist
-  #artifacts:
-   # paths:
-    #  - dist/*.zip
+  artifacts:
+    paths:
+      - dist/*.7z
 
