@@ -1,5 +1,5 @@
 variables:
-  GIT_STRATEGY: clone
+  GIT_STRATEGY: fetch
   GIT_DEPTH: 1
   GIT_FETCH_EXTRA_FLAGS: --prune
 
@@ -8,7 +8,7 @@ stages:
 
 RRTest:
   variables:
-    CI_DEBUG_TRACE: "true"
+    #CI_DEBUG_TRACE: "true"
     ELECTRON_CACHE: "$CI_PROJECT_DIR/.cache/electron"
     ELECTRON_BUILDER_CACHE: "$CI_PROJECT_DIR/.cache/electron-builder"
   stage: rrtest
