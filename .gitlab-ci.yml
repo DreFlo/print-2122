@@ -9,16 +9,22 @@ stages:
 RRTest:
   variables:
     CI_DEBUG_TRACE: "true"
+    ELECTRON_CACHE: "$CI_PROJECT_DIR/.cache/electron"
+    ELECTRON_BUILDER_CACHE: "$CI_PROJECT_DIR/.cache/electron-builder"
   stage: rrtest
   when: manual
   image: electronuserland/builder:wine
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .cache/
   script:
     - echo Running RR Test
-    - cd  /builds/printegrador/2022/pe38-sigarratools
+    - cd  $CI_PROJECT_DIR
     - yarn
     - yarn dist:win
     - ls -la dist
-  artifacts:
-    paths:
-      - dist/*.zip
+  #artifacts:
+   # paths:
+    #  - dist/*.zip
 
