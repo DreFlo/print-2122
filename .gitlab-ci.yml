@@ -1,5 +1,5 @@
 variables:
-  GIT_STRATEGY: none
+  GIT_STRATEGY: clone
   GIT_DEPTH: 1
   GIT_FETCH_EXTRA_FLAGS: --prune
 
@@ -11,16 +11,18 @@ RRTest:
     CI_DEBUG_TRACE: "true"
   stage: rrtest
   when: manual
-  #image: electronuserland/builder:wine
-  image: alpine
+  image: electronuserland/builder:wine
+  #image: alpine
   script:
     - echo Running RR Test
-    - apk --no-cache add git 
-    - mkdir -p /builds/printegrador/2022/pe38-sigarratools
+    #- apk --no-cache add git 
+    #- mkdir -p /builds/printegrador/2022/pe38-sigarratools
     - cd  /builds/printegrador/2022/pe38-sigarratools
-    - git config --global http.postBuffer 1000M
-    - git config --global http.maxRequestBuffer 100M
-    - git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' clone -b rr-auto-release-tests --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git --depth 1
-    - ls -la
+    - yarn
+    - yarn dist:win
+    #- git config --global http.postBuffer 1000M
+    #- git config --global http.maxRequestBuffer 100M
+    #- git -c 'http.userAgent=gitlab-runner 15.0.0 linux/amd64' clone -b rr-auto-release-tests --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.fe.up.pt/printegrador/2022/pe38-sigarratools.git --depth 1
+    - ls -la dist
 
 
