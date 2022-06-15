@@ -32,10 +32,6 @@
       "color.less"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Jumaruba/guiSigtools.git"
-  },
   "keywords": [
     "Electron"
   ],

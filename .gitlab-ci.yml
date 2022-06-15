@@ -20,5 +20,5 @@ RRTest:
     - ls -la dist
   artifacts:
     paths:
-      - dist/
+      - dist/*.zip
 
