@@ -18,6 +18,7 @@ RRTest:
     key: $CI_COMMIT_REF_SLUG
     paths:
       - .cache/
+      - node_modules/
   script:
     - echo Running RR Test
     - cd  $CI_PROJECT_DIR
