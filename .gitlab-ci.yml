@@ -26,7 +26,8 @@ RRTest:
     - yarn
     - yarn dist:win
     - ls -la dist
-    - curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${PACKAGE_REGISTRY_URL}/${RELEASE_PACKAGE}"
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${PACKAGE_REGISTRY_URL}/${RELEASE_PACKAGE}"
   artifacts:
     paths:
       - dist/*.7z
