@@ -34,6 +34,7 @@ Build:
 
 Upload:
   variables:
+    GIT_STRATEGY: none
     CI_DEBUG_TRACE: "true"
     RELEASE_PACKAGE: "Sigtools-2.1.2-win.7z"
   stage: upload
@@ -44,9 +45,10 @@ Upload:
     paths:
       - .cache/
       - node_modules/
+      - dist/*.7z
   script:
     - echo Uploading
     - cd  $CI_PROJECT_DIR
     - ls -la dist
     - |
-      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/${RELEASE_PACKAGE}"
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/win7z/0.0.1/${RELEASE_PACKAGE}"
