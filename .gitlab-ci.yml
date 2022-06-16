@@ -11,6 +11,7 @@ RRTest:
     #CI_DEBUG_TRACE: "true"
     ELECTRON_CACHE: "$CI_PROJECT_DIR/.cache/electron"
     ELECTRON_BUILDER_CACHE: "$CI_PROJECT_DIR/.cache/electron-builder"
+    RELEASE_PACKAGE: "Sigtools-2.1.2-win.7z"
   stage: rrtest
   when: manual
   image: electronuserland/builder:wine
@@ -25,6 +26,7 @@ RRTest:
     - yarn
     - yarn dist:win
     - ls -la dist
+    - curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${PACKAGE_REGISTRY_URL}/${RELEASE_PACKAGE}"
   artifacts:
     paths:
       - dist/*.7z
