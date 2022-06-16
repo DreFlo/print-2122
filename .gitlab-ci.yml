@@ -49,4 +49,4 @@ Upload:
     - cd  $CI_PROJECT_DIR
     - ls -la dist
     - |
-      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${PACKAGE_REGISTRY_URL}/${RELEASE_PACKAGE}"
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/${RELEASE_PACKAGE} "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/${RELEASE_PACKAGE}"
