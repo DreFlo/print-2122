@@ -5,6 +5,7 @@ variables:
 
 stages:
   - build
+  - upload
 
 Build:
   variables:
@@ -27,9 +28,9 @@ Build:
     - yarn
     - yarn dist:win
     - ls -la dist
-  artifacts:
-    paths:
-      - dist/*.7z
+  #artifacts:
+    #paths:
+      #- dist/*.7z
 
 Upload:
   variables:
